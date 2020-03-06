@@ -5,7 +5,7 @@ import { AuthenticationService } from './_services';
 import { User } from './_models';
 @Component({ selector: 'app', templateUrl: 'app.component.html' })
 export class AppComponent {
-    currentUser: User;
+    currentUser: any;
     // user subscr to db
     constructor(
         private router: Router,
