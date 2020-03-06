@@ -14,7 +14,7 @@ import { LoginComponent } from './login';
 
 import { RegisterComponent } from './register';
 import { AlertComponent } from './_components';
-
+//import {ChartsComponent} from './'
 
 // import { BarChartComponent } from './charts/bar-chart';
 // import { LineChartComponent } from './charts/line-chart';

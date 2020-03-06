@@ -6,14 +6,14 @@ import { AuthenticationService } from './_services';
 @Component({ selector: 'app', templateUrl: 'app.component.html' })
 export class AppComponent {
     currentUser: any;
-
+    // user subscr to db
     constructor(
         private router: Router,
         private authenticationService: AuthenticationService
     ) {
         this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
     }
-
+    //botton that when pressed on the application, logs the user out and redirects the app to the login website
     logout() {
         this.authenticationService.logout();
         this.router.navigate(['/login']);
