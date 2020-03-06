@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { environment } from '@environments/environment';
 
+import { User } from '../_models';
 @Injectable({ providedIn: 'root' })
 export class UserService {
     constructor(private http: HttpClient) { }
@@ -11,7 +12,7 @@ export class UserService {
         return this.http.get<any[]>(`${environment.apiUrl}/users`);
     }
 
-    register(user) {
+    register(user:User) {
         return this.http.post(`http://localhost:8000/createUser`, user);
     }
 
