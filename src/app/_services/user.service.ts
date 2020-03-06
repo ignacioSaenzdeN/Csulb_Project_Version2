@@ -12,7 +12,7 @@ export class UserService {
     }
 
     register(user) {
-        return this.http.post(`${environment.apiUrl}/createUser`, user);
+        return this.http.post(`http://localhost:8000/createUser`, user);
     }
 
     delete(id) {
