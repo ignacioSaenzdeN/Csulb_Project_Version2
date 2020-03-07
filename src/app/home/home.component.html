@@ -1,7 +1,9 @@
-<h1>Hi there {{currentUser.username}}!</h1>
+<h1>Hi there !</h1>
+<!-- this.authenticationService.currentUserValue() -->
 <p>You're logged in</p>
 <h3>All registered users:</h3>
 <ul>
+  getAll()
     <li *ngFor="let user of users">
         {{user.username}}
         - <a (click)="deleteUser(user.id)" class="text-danger">Delete</a>

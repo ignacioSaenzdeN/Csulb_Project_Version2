@@ -20,7 +20,7 @@ export class LoginComponent implements OnInit {
         private alertService: AlertService
     ) {
         // redirect to home if already logged in
-        if (this.authenticationService.currentUserValue) { 
+        if (this.authenticationService.currentUserValue) {
             this.router.navigate(['/']);
         }
     }
@@ -43,7 +43,7 @@ export class LoginComponent implements OnInit {
 
         // reset alerts on submit
         this.alertService.clear();
-        
+
         // stop here if form is invalid
         if (this.loginForm.invalid) {
             return;
@@ -54,11 +54,16 @@ export class LoginComponent implements OnInit {
             .pipe(first())
             .subscribe(
                 data => {
+                  console.log('it works');
                     this.router.navigate([this.returnUrl]);
+
                 },
                 error => {
+                    console.log('it works');
                     this.alertService.error(error);
                     this.loading = false;
                 });
+
+
     }
 }

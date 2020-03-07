@@ -9,7 +9,7 @@ export class UserService {
     constructor(private http: HttpClient) { }
 
     getAll() {
-        return this.http.get<any[]>(`${environment.apiUrl}/users`);
+        return this.http.get<any[]>(`http://localhost:8000/users`);
     }
 
     register(user:User) {

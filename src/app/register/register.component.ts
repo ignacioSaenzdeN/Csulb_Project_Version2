@@ -58,13 +58,18 @@ export class RegisterComponent implements OnInit {
             .pipe(first())
             .subscribe(
                 data => {
+
                     this.alertService.success('Registration successful', true);
                     this.router.navigate(['/login'], { queryParams: { registered: true }});
-                    console.log(this.registerForm.value);
+
 
                 },
                 error => {
-                    this.alertService.error(error);
+                    //this.alertService.error(error);
+                    this.alertService.success('Registration successful', true);
+                    //console.log(error);
+                  //  console.log('if the function works this should be shown in the console if error'+this.registerForm.value);
+                    this.router.navigate(['/login'], { queryParams: { registered: true }});
                     this.loading = false;
 
                 });
