@@ -3,7 +3,8 @@
 <p>You're logged in</p>
 <h3>All registered users:</h3>
 <ul>
-  getAll()
+
+    <!-- <script> userService.getAll()</script> -->
     <li *ngFor="let user of users">
         {{user.username}}
         - <a (click)="deleteUser(user.id)" class="text-danger">Delete</a>
