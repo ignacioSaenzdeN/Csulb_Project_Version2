@@ -19,4 +19,7 @@ export class UserService {
     delete(id) {
         return this.http.delete(`${environment.apiUrl}/users/${id}`);
     }
+    getGraph(){
+        this.http.get(`http://localhost:8000/markov/900/`).subscribe (data =>{console.log(data);});
+    }
 }
