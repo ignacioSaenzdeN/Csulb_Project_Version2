@@ -1,12 +1,36 @@
 <!-- nav -->
 <!-- *ngIf="currentUser" shows content only if users id logged in -->
-<nav class="navbar navbar-expand navbar-dark bg-dark" *ngIf="currentUser">
+<nav class="navbar navbar-expand-lg navbar-light bg-light" *ngIf="currentUser">
     <div class="navbar-nav">
-        <a class="nav-item nav-link" routerLink="/">Home</a>
+        <a class="nav-item nav-link" routerLink="/" class="btn btn-link">Home</a>
+        <a class="nav-item nav-link" routerLink="/charts">Charts</a>
+        <a class="nav-item nav-link" routerLink="/register">Register</a>
         <a class="nav-item nav-link" (click)="logout()">Logout</a>
-        <a class="nav-item nav-link" routerLink="charts">Charts</a>
+
     </div>
 </nav>
+<!-- <nav class="navbar navbar-expand-lg navbar-light bg-light" ngIf="currentUser">
+  <a class="navbar-brand" href="#"></a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link" href="/">Home <span class="sr-only">Home</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/charts">Charts</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/register">Register</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="#">Disabled</a>
+      </li>
+    </ul>
+  </div>
+</nav> -->
 
 <!-- main content container -->
 <div class="jumbotron">
@@ -19,3 +43,5 @@
         </div>
     </div>
 </div>
+<!-- bootstrap css -->
+<link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" />

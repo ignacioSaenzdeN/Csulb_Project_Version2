@@ -24,8 +24,10 @@ export class HomeComponent implements OnInit {
             .pipe(first())
             .subscribe(() => this.loadAllUsers());
     }
-
-    private loadAllUsers() {
+    getUsername (){
+      console.log(this.currentUser.username);
+    }
+    loadAllUsers() {
         this.userService.getAll()
             .pipe(first())
             .subscribe(users => this.users = users);

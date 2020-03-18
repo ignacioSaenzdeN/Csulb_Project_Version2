@@ -14,6 +14,7 @@ import { LoginComponent } from './login';
 
 import { RegisterComponent } from './register';
 import { AlertComponent } from './_components';
+import { ChartsComponent } from './charts/charts.component';
 //import {ChartsComponent} from './'
 
 // import { BarChartComponent } from './charts/bar-chart';
@@ -32,6 +33,7 @@ import { AlertComponent } from './_components';
         LoginComponent,
         RegisterComponent,
         AlertComponent,
+        ChartsComponent,
         // ChartsComponent,
         // BarChartComponent,
         // LineChartComponent
