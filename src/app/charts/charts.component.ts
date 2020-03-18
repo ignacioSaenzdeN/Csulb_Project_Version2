@@ -17,25 +17,28 @@ export class ChartsComponent implements OnInit {
   constructor(private http: HttpClient  ){}
   ngOnInit() {
   this.getGraph();
+  // let list= this.getGraphArr();
+  // console.log(list[0]);
+  // console.log(list[1]);
     this.chart = new Chart ('canvas', {
       type:'line',
       data:{
         //labels are in one of the coordinates
         //Eg: months (JAN,FEB,ETC.)
-        labels:[2,4,6,8,10,12],
+        labels:[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
         //datasets are the elements to be charted, the lines
         // each {} is one line/function
         datasets:[
           {
-          label: 'First dataset',
-          data: [100,200,300,200,400,250,600],
+          label: 'COE Enrolled',
+          data: [0, 900, 834, 807, 785, 764, 743, 720, 698, 548, 337, 168, 67, 19, 2, 0],
           backgroundColor: 'red',
           borderColor: 'red',
           fill: false,
         },
         {
-          label: 'Second dataset',
-          data: [200,400,600,400,800,500,1200],
+          label: 'COE graduating',
+          data: [0, 0, 0, 0, 0, 0, 0, 164, 212, 155, 83, 34, 9, 0, 0, 0],
           backgroundColor: 'blue',
           borderColor: 'blue',
           fill: false,
@@ -46,6 +49,10 @@ export class ChartsComponent implements OnInit {
   }// en of ngOnInit()
     private getGraph(){
         this.http.get(`http://localhost:8000/markov/900/`).subscribe(data =>{console.log(data);});
+        //.subscribe(data =>{console.log(data);})
+    }
+    private getGraphArr(){
+        return this.http.get(`http://localhost:8000/markov/900/`);
         //.subscribe(data =>{console.log(data);})
     }
 }
