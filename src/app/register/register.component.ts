@@ -21,9 +21,6 @@ export class RegisterComponent implements OnInit {
         private alertService: AlertService
     ) {
         // redirect to home if already logged in
-        if (this.authenticationService.currentUserValue) {
-            this.router.navigate(['/']);
-        }
     }
 
     ngOnInit() {
@@ -58,20 +55,16 @@ export class RegisterComponent implements OnInit {
             .pipe(first())
             .subscribe(
                 data => {
-
                     this.alertService.success('Registration successful', true);
-                    this.router.navigate(['/login'], { queryParams: { registered: true }});
-
-
+                //    this.router.navigate(['/login'], { queryParams: { registered: true }});
                 },
                 error => {
                     //this.alertService.error(error);
                     this.alertService.success('Registration successful', true);
                     //console.log(error);
                   //  console.log('if the function works this should be shown in the console if error'+this.registerForm.value);
-                    this.router.navigate(['/login'], { queryParams: { registered: true }});
+                    //this.router.navigate(['/login'], { queryParams: { registered: true }});
                     this.loading = false;
-
                 });
     }
 }
