@@ -1,8 +1,17 @@
 <p>
   charts:
 </p>
-<script type="text/javascript"> document.write(this.getGraph();  
+<script>this.getGraph();
 </script>
+
+students: <input type="text" class ="form-control" (input)="onUpdateServerName($event)"><br>
+<p>{{userInput}}</p>
+<!-- the following button works -->
+<!-- <button class="btn btn-primary" (click)="getGraphTest(userInput)">create Graph
+</button> -->
+<br>
+<button class="btn btn-primary" (click)="getGraph()">create Graph
+</button>
 <div style="width: 60%" >
   <canvas id="canvas"width="400" height="400"></canvas>
 </div>

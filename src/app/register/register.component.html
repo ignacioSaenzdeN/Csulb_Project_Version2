@@ -32,6 +32,13 @@
            <div *ngIf="f.confirmPassword.errors.mustMatch">Passwords must match</div>
          </div>
     </div>
+    <!-- <div class="form-group">
+         <label>Authorization</label>
+         <input type="text" formControlName="authorization" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.confirmPassword.errors }" />
+         <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
+             <div *ngIf="f.username.errors.required">authorization level is required</div>
+         </div>
+    </div> -->
 
     <div class="form-group">
         <button [disabled]="loading" class="btn btn-primary">
