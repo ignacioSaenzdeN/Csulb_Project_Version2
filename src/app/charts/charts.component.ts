@@ -21,10 +21,13 @@ export class ChartsComponent implements OnInit {
   chart = [];
   constructor(private http: HttpClient  ){}
   ngOnInit() {
+    // in case it helps
 //  this.getGraph();
   // let list= this.getGraphArr();
   // console.log(list[0]);
   // console.log(list[1]);
+
+  // if graph must show at the beginning of anything put code here
 
   }// en of ngOnInit()
     private getGraph(){
@@ -33,13 +36,33 @@ export class ChartsComponent implements OnInit {
         this.chart = new Chart ('canvas', {
           type:'line',
           data:{
-            //labels are in one of the coordinates
-            //Eg: months (JAN,FEB,ETC.)
+            //labels are in one of the coordinatesEg: months (JAN,FEB,ETC.)
             labels:[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
-            //datasets are the elements to be charted, the lines
-            // each {} is one line/function
-            datasets:[
-              {
+            //datasets are the elements to be charted, the lines each {} is one line/function
+            datasets:[{
+              label: 'COE Enrolled',
+              data: [0, 900, 834, 807, 785, 764, 743, 720, 698, 548, 337, 168, 67, 19, 2, 0],
+              backgroundColor: 'red',
+              borderColor: 'red',
+              fill: false,
+            },
+            {
+              label: 'COE graduating',
+              data: [0, 0, 0, 0, 0, 0, 0, 164, 212, 155, 83, 34, 9, 0, 0, 0],
+              backgroundColor: 'blue',
+              borderColor: 'blue',
+              fill: false,
+            }//end of second dataset
+          ]//end of dataset
+          }//end of data
+        })// enf of this.chart
+        this.chart = new Chart ('canvas1', {
+          type:'line',
+          data:{
+            //labels are in one of the coordinatesEg: months (JAN,FEB,ETC.)
+            labels:[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+            //datasets are the elements to be charted, the lines each {} is one line/function
+            datasets:[{
               label: 'COE Enrolled',
               data: [0, 900, 834, 807, 785, 764, 743, 720, 698, 548, 337, 168, 67, 19, 2, 0],
               backgroundColor: 'red',
@@ -57,10 +80,12 @@ export class ChartsComponent implements OnInit {
           }//end of data
         })// enf of this.chart
     }
-    private getGraphArr(input){
-        return this.http.get(`http://localhost:8000/markov/`+input+`/`);
+    private getGraphArr(userInput){
+        return this.http.get(`http://localhost:8000/markov/`+userInput+`/`);
         //.subscribe(data =>{console.log(data);})
     }
+
+    //this function works
     private getGraphTest(userInput){
         this.http.get(`http://localhost:8000/markov/`+userInput+`/`).subscribe(data =>{console.log(data);});
         //.subscribe(data =>{console.log(data);})

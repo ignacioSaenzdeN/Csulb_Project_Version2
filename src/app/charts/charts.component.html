@@ -1,17 +1,29 @@
 <p>
-  charts:
+  Charts:
 </p>
+
+<style>
+.div{
+   display:inline-block;
+}
+canvas{
+       display:inline-block;}
+</style>
 <script>this.getGraph();
 </script>
-
-students: <input type="text" class ="form-control" (input)="onUpdateServerName($event)"><br>
-<p>{{userInput}}</p>
+Incoming Students: <input type="text" class ="form-control" (input)="onUpdateServerName($event)" style="width: 200px;"/>
+<!-- <br> -->
+<!-- <p>{{userInput}}</p> -->
 <!-- the following button works -->
 <!-- <button class="btn btn-primary" (click)="getGraphTest(userInput)">create Graph
 </button> -->
 <br>
-<button class="btn btn-primary" (click)="getGraph()">create Graph
+<button class="btn btn-primary" (click)="getGraph()">Create Graph
 </button>
-<div style="width: 60%" >
-  <canvas id="canvas"width="400" height="400"></canvas>
+
+<div style="width: 50%" >
+  <canvas id="canvas"width="200" height="200"></canvas>
+</div>
+<div style="width: 50%">
+    <canvas id="canvas1"width="200" height="200"></canvas>
 </div>
