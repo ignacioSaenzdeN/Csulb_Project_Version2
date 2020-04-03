@@ -1,29 +1,42 @@
 <p>
   Charts:
 </p>
-
-<style>
+<!-- <style>
 .div{
    display:inline-block;
 }
-canvas{
+.canvas{
        display:inline-block;}
-</style>
-<script>this.getGraph();
-</script>
+#canvas{
+       display:inline-block;}
+#canvas1{
+      display:inline-block;}
+.cv{
+  display:inline-block;}
+}
+</style> -->
 Incoming Students: <input type="text" class ="form-control" (input)="onUpdateServerName($event)" style="width: 200px;"/>
-<!-- <br> -->
+<br>
 <!-- <p>{{userInput}}</p> -->
 <!-- the following button works -->
 <!-- <button class="btn btn-primary" (click)="getGraphTest(userInput)">create Graph
-</button> -->
+</button>
+<br> -->
+<button class="btn btn-primary" (click)="getGraphArr(userInput)">Create Graph
+</button>
 <br>
+<br>
+<!-- displays the demograph -->
 <button class="btn btn-primary" (click)="getGraph()">Create Graph
 </button>
 
-<div style="width: 50%" >
-  <canvas id="canvas"width="200" height="200"></canvas>
+<!-- HERE IS THE ISSUE: this is the last thing I tried, in the styles above you can see I tried different options but nothing worked
+I would like if those two canvases could be displayes right next to each other. -->
+<div class="canvas-container">
+  <canvas class ="cv"  id="canvas1"></canvas>
+  <canvas class ="cv"  id="canvas2"></canvas>
 </div>
-<div style="width: 50%">
-    <canvas id="canvas1"width="200" height="200"></canvas>
+<div class="canvas-container">
+  <canvas class ="cv"  id="canvas3" ></canvas>
+  <canvas class ="cv"  id="canvas4"></canvas>
 </div>

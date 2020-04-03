@@ -21,15 +21,12 @@ export class ChartsComponent implements OnInit {
   chart = [];
   constructor(private http: HttpClient  ){}
   ngOnInit() {
-    // in case it helps
-//  this.getGraph();
-  // let list= this.getGraphArr();
-  // console.log(list[0]);
-  // console.log(list[1]);
-
   // if graph must show at the beginning of anything put code here
 
-  }// en of ngOnInit()
+}// end of ngOnInit()
+
+myObj=[]
+  //Demo graphs
     private getGraph(){
         this.http.get(`http://localhost:8000/markov/900/`).subscribe(data =>{console.log(data);});
         //.subscribe(data =>{console.log(data);})
@@ -81,15 +78,101 @@ export class ChartsComponent implements OnInit {
         })// enf of this.chart
     }
     private getGraphArr(userInput){
-        return this.http.get(`http://localhost:8000/markov/`+userInput+`/`);
-        //.subscribe(data =>{console.log(data);})
-    }
 
+        //logs in the console what is being received
+        this.http.get(`http://localhost:8000/markov/`+userInput+`/`).subscribe(data =>{console.log(data);
+
+          // if (data.hasOwnProperty(key)){
+
+          var x_axis=[];
+          var dataset_list = [];
+          //this for loop will get each of the graphs
+          var charts,graphs,functions;
+          var colors=['red','blue','purple','yellow','black','brown','Crimson','Cyan','DarkOrchid'];
+          var canvases = ['canvas','canvas1','canvas2','canvas3','canvas4','canvas5'];
+          var iterator =0;
+          var i =1;
+              for (let graphs in data["Charts"]){
+                for (functions in data["Charts"][graphs]){
+                  if (functions == "x-axis"){
+                    x_axis = data["Charts"][graphs][functions];
+                  }else{
+                    // if (functions=="persistance"||functions=="retention"||functions=="graduation"){
+                    //   var temp_list=[];
+                    //   for(let coordinate in data["Charts"][graphs][functions]){
+                    //     console.log(coordinate);
+                    //     //temp_list.push(coordinate*10);
+                    //   }
+                    //   functions = temp_list;
+                    // }
+
+                    dataset_list.push( this.initializeDataset(functions, data["Charts"][graphs][functions],colors[iterator],colors[iterator])  );
+                    iterator = iterator +1;
+                  }
+                }
+                if (dataset_list.length>0){
+                  this.initializeGraph("canvas"+i,dataset_list,x_axis);
+                  dataset_list=[];
+                  iterator=0;
+                  i=i+1;
+                }
+
+              }
+          //  }
+
+//Things to call:
+// get the graphs and call makegraph function
+         }
+        );
+        // list of colors and iterator
+
+
+
+
+      //   for (charts in this.myObj[0]){
+      //     console.log("test");
+      //     console.log(charts);
+      //   if (charts == "Charts"){
+      //   for (graphs in this.myObj[charts]){
+      // //     // and the inner loop will get each of the functions of each graph
+      //     for (functions in this.myObj[charts][graphs]){
+      //       if (functions == "x-axis"){
+      //         x_axis = functions;
+      //       }else{
+      //         dataset_list.push( this.initializeDataset(functions, this.myObj[charts][graphs][functions],colors[iterator],colors[iterator])  );
+      //         iterator = iterator +1;
+      //       }
+      //     }
+      //     //create graph and resert variables
+      //     this.initializeGraph(canvases[iterator],dataset_list,x_axis);
+      //     dataset_list=[];
+      //     iterator=0;
+      //   }
+      // }
+      // }
+    }
+    private initializeDataset (_label,_data, _backgroundColor, _borderColor){
+      var ans ={"label": _label , "data":_data, "backgroundColor":_backgroundColor, "borderColor": _borderColor,"fill": false};
+      //console.log(ans);
+      return ans;
+    }
+    private initializeGraph (id,_datasets, _labels){
+      this.chart = new Chart (id,{
+        type:'line',
+        data: {
+          // labels: [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0],
+          labels: _labels,
+          datasets:_datasets,
+        }
+      })
+      //console.log(this.chart);
+    }
     //this function works
     private getGraphTest(userInput){
         this.http.get(`http://localhost:8000/markov/`+userInput+`/`).subscribe(data =>{console.log(data);});
         //.subscribe(data =>{console.log(data);})
     }
+
     onUpdateServerName (event: any){
       this.userInput = (<HTMLInputElement>event.target).value;
 
