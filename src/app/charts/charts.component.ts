@@ -4,12 +4,21 @@ import { UserService, AuthenticationService, AlertService } from '../_services';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
+//SliderModule
+import { Options } from 'ng5-slider';
 @Component({
   selector: 'app-charts',
   templateUrl: './charts.component.html',
   styleUrls: ['./charts.component.less']
 })
 export class ChartsComponent implements OnInit {
+
+  //slider stuff
+  value: number = 100;
+  options: Options = {
+    floor: 0,
+    ceil: 2000
+  };
   //addition
   //this input will be the number of students
   @Input('inputter') userInput :string;
@@ -22,7 +31,7 @@ export class ChartsComponent implements OnInit {
   constructor(private http: HttpClient  ){}
   ngOnInit() {
   // if graph must show at the beginning of anything put code here
-
+  this.userInput="0";
 }// end of ngOnInit()
 
 myObj=[]
@@ -175,6 +184,5 @@ myObj=[]
 
     onUpdateServerName (event: any){
       this.userInput = (<HTMLInputElement>event.target).value;
-
     }
 }

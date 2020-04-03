@@ -1,37 +1,21 @@
 <p>
   Charts:
 </p>
-<!-- <style>
-.div{
-   display:inline-block;
-}
-.canvas{
-       display:inline-block;}
-#canvas{
-       display:inline-block;}
-#canvas1{
-      display:inline-block;}
-.cv{
-  display:inline-block;}
-}
-</style> -->
-Incoming Students: <input type="text" class ="form-control" (input)="onUpdateServerName($event)" style="width: 200px;"/>
-<br>
-<!-- <p>{{userInput}}</p> -->
-<!-- the following button works -->
-<!-- <button class="btn btn-primary" (click)="getGraphTest(userInput)">create Graph
-</button>
+
+<!-- Incoming Students: <input type="text" class ="form-control" (input)="onUpdateServerName($event)" style="width: 200px;"/>
 <br> -->
+<!-- <p>{{userInput}}</p> -->
+
+<!-- slider -->
+<ng5-slider [(value)]="userInput" [options]="options" (input)="onUpdateServerName($event)"></ng5-slider>
+<br>
+
 <button class="btn btn-primary" (click)="getGraphArr(userInput)">Create Graph
 </button>
-<br>
-<br>
 <!-- displays the demograph -->
-<button class="btn btn-primary" (click)="getGraph()">Create Graph
-</button>
+<!-- <button class="btn btn-primary" (click)="getGraph()">Create Graph
+</button> -->
 
-<!-- HERE IS THE ISSUE: this is the last thing I tried, in the styles above you can see I tried different options but nothing worked
-I would like if those two canvases could be displayes right next to each other. -->
 <div class="canvas-container">
   <canvas class ="cv"  id="canvas1"></canvas>
   <canvas class ="cv"  id="canvas2"></canvas>
