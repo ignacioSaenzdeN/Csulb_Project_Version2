@@ -20,6 +20,7 @@ import { ChartsComponent } from './charts/charts.component';
 // import { LineChartComponent } from './charts/line-chart';
 //slider
 import { Ng5SliderModule } from 'ng5-slider';
+import { ProfileComponent } from './profile/profile.component';
 
 @NgModule({
     imports: [
@@ -37,6 +38,7 @@ import { Ng5SliderModule } from 'ng5-slider';
         RegisterComponent,
         AlertComponent,
         ChartsComponent,
+        ProfileComponent,
         // ChartsComponent,
         // BarChartComponent,
         // LineChartComponent

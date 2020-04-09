@@ -40,15 +40,12 @@ export class LoginComponent implements OnInit {
 
     onSubmit() {
         this.submitted = true;
-
         // reset alerts on submit
         this.alertService.clear();
-
         // stop here if form is invalid
         if (this.loginForm.invalid) {
             return;
         }
-
         this.loading = true;
         this.authenticationService.login(this.f.username.value, this.f.password.value)
             .pipe(first())
@@ -58,11 +55,8 @@ export class LoginComponent implements OnInit {
 
                 },
                 error => {
-                  
-                    this.alertService.error(error);
+                  //  this.alertService.error(error);
                     this.loading = false;
                 });
-
-
     }
 }
