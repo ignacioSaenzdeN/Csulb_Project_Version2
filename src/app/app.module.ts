@@ -18,7 +18,6 @@ import { ChartsComponent } from './charts/charts.component';
 //import {ChartsComponent} from './'
 // import { BarChartComponent } from './charts/bar-chart';
 // import { LineChartComponent } from './charts/line-chart';
-
 //slider
 import { Ng5SliderModule } from 'ng5-slider';
 
@@ -28,7 +27,8 @@ import { Ng5SliderModule } from 'ng5-slider';
         ReactiveFormsModule,
         HttpClientModule,
         appRoutingModule,
-        Ng5SliderModule
+        Ng5SliderModule,
+
     ],
     declarations: [
         AppComponent,

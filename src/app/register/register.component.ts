@@ -13,14 +13,17 @@ export class RegisterComponent implements OnInit {
     loading = false;
     submitted = false;
 
+    //Unit and access Options (declared on init)
+    unit_list:string[];
+    access_list:string[];
     constructor(
         private formBuilder: FormBuilder,
         private router: Router,
         private authenticationService: AuthenticationService,
         private userService: UserService,
         private alertService: AlertService
-    ) {
-        // redirect to home if already logged in
+    ){
+
     }
 
     ngOnInit() {
@@ -29,43 +32,40 @@ export class RegisterComponent implements OnInit {
             // lastName: ['', Validators.required],
             username: ['', Validators.required],
             email: [ '', [Validators.required,Validators.email]],
-            password: ['', [Validators.required, Validators.minLength(6)]],
-            confirmPassword:['', [Validators.required]],
+            unit_level: ['', Validators.required],
+            access: ['', Validators.required],
           //  authorization: ['', Validators.required],
-        },{
-            validator: MustMatch('password', 'confirmPassword')
         }
       );
+        this.set_unit_and_access_options();
     }
 
     // convenience getter for easy access to form fields
     get f() { return this.registerForm.controls; }
 
     onSubmit() {
+        console.log(this.registerForm.controls.unit_level);
+        console.log (this.registerForm.controls);
         this.submitted = true;
-
         // reset alerts on submit
         this.alertService.clear();
-
         // stop here if form is invalid
         if (this.registerForm.invalid) {
             return;
         }
         this.loading = true;
-        this.userService.register(this.registerForm.value)
-            .pipe(first())
-            .subscribe(
-                data => {
-                    this.alertService.success('Registration successful', true);
-                //    this.router.navigate(['/login'], { queryParams: { registered: true }});
-                },
-                error => {
-                    //this.alertService.error(error);
-                    this.alertService.success('Registration successful', true);
-                    //console.log(error);
-                  //  console.log('if the function works this should be shown in the console if error'+this.registerForm.value);
-                    //this.router.navigate(['/login'], { queryParams: { registered: true }});
-                    this.loading = false;
-                });
+        // this.userService.register(this.registerForm.value)
+        //     .pipe(first())
+        //     .subscribe(
+        //         data => {this.alertService.success('Registration successful', true);},
+        //         error => {this.alertService.success('Registration successful', true);
+        //             this.loading = false;
+        //         });
+        this.loading = false;
+    }
+    private set_unit_and_access_options(){
+        this.unit_list= ['','CECS','MAR','CE'];
+        this.access_list=['','provider','consumer'];
+        //.subscribe(data =>{console.log(data);})
     }
 }
