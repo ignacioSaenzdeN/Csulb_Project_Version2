@@ -3,7 +3,9 @@ import { Router } from '@angular/router';
 
 import { AuthenticationService } from './_services';
 import { User } from './_models';
-@Component({ selector: 'app', templateUrl: 'app.component.html' })
+@Component({ selector: 'app',
+styleUrls: ['./app.component.less'],
+templateUrl: 'app.component.html' })
 export class AppComponent {
     currentUser: User;
     // user subscr to db
@@ -11,7 +13,7 @@ export class AppComponent {
         private router: Router,
         private authenticationService: AuthenticationService
     ) {
-        this.authenticationService.currentUser.subscribe(x => this.currentUser = x);        
+        this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
     }
     //botton that when pressed on the application, logs the user out and redirects the app to the login website
     logout() {
