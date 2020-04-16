@@ -23,19 +23,18 @@ export class ChartsComponent implements OnInit {
   //this input will be the number of students
   @Input('inputter') userInput :string;
   //this boolean will prevent the graph from showing up until input is received
-  showGraph:boolean;
 
   chartsForm: FormGroup;
   title: 'Graph';
-  chart = [];
+  chart = Chart;
+  list_of_charts=[];
   constructor(private http: HttpClient  ){}
   ngOnInit() {
   // if graph must show at the beginning of anything put code here
   this.userInput="0";
 }// end of ngOnInit()
 
-myObj=[]
-  //Demo graphs
+  //Demo graphs to see structure of a graph
     private getGraph(){
         this.http.get(`http://localhost:8000/markov/900/`).subscribe(data =>{console.log(data);});
         //.subscribe(data =>{console.log(data);})
@@ -86,36 +85,31 @@ myObj=[]
           }//end of data
         })// enf of this.chart
     }
+
     private getGraphArr(userInput){
 
         //logs in the console what is being received
         this.http.get(`http://localhost:8000/markov/`+userInput+`/`).subscribe(data =>{console.log(data);
 
-          // if (data.hasOwnProperty(key)){
+          for (i = 0; i <this.list_of_charts.length ; i++){
+            this.list_of_charts[i].destroy();
+          }
+          this.list_of_charts=[];
 
           var x_axis=[];
           var dataset_list = [];
           //this for loop will get each of the graphs
           var charts,graphs,functions;
           var colors=['red','blue','purple','yellow','black','brown','Crimson','Cyan','DarkOrchid'];
-          var canvases = ['canvas','canvas1','canvas2','canvas3','canvas4','canvas5'];
           var iterator =0;
+          var graphs_container = "Figures";
           var i =1;
-              for (let graphs in data["Charts"]){
-                for (functions in data["Charts"][graphs]){
+              for (let graphs in data[graphs_container]){
+                for (functions in data[graphs_container][graphs]){
                   if (functions == "x-axis"){
-                    x_axis = data["Charts"][graphs][functions];
+                    x_axis = data[graphs_container][graphs][functions];
                   }else{
-                    // if (functions=="persistance"||functions=="retention"||functions=="graduation"){
-                    //   var temp_list=[];
-                    //   for(let coordinate in data["Charts"][graphs][functions]){
-                    //     console.log(coordinate);
-                    //     //temp_list.push(coordinate*10);
-                    //   }
-                    //   functions = temp_list;
-                    // }
-
-                    dataset_list.push( this.initializeDataset(functions, data["Charts"][graphs][functions],colors[iterator],colors[iterator])  );
+                    dataset_list.push( this.initializeDataset(functions, data[graphs_container][graphs][functions],colors[iterator],colors[iterator])  );
                     iterator = iterator +1;
                   }
                 }
@@ -125,40 +119,9 @@ myObj=[]
                   iterator=0;
                   i=i+1;
                 }
-
               }
-          //  }
-
-//Things to call:
-// get the graphs and call makegraph function
          }
         );
-        // list of colors and iterator
-
-
-
-
-      //   for (charts in this.myObj[0]){
-      //     console.log("test");
-      //     console.log(charts);
-      //   if (charts == "Charts"){
-      //   for (graphs in this.myObj[charts]){
-      // //     // and the inner loop will get each of the functions of each graph
-      //     for (functions in this.myObj[charts][graphs]){
-      //       if (functions == "x-axis"){
-      //         x_axis = functions;
-      //       }else{
-      //         dataset_list.push( this.initializeDataset(functions, this.myObj[charts][graphs][functions],colors[iterator],colors[iterator])  );
-      //         iterator = iterator +1;
-      //       }
-      //     }
-      //     //create graph and resert variables
-      //     this.initializeGraph(canvases[iterator],dataset_list,x_axis);
-      //     dataset_list=[];
-      //     iterator=0;
-      //   }
-      // }
-      // }
     }
     private initializeDataset (_label,_data, _backgroundColor, _borderColor){
       var ans ={"label": _label , "data":_data, "backgroundColor":_backgroundColor, "borderColor": _borderColor,"fill": false};
@@ -174,14 +137,14 @@ myObj=[]
           datasets:_datasets,
         }
       })
-      //console.log(this.chart);
+      this.list_of_charts.push(this.chart);
     }
     //this function works
     private getGraphTest(userInput){
         this.http.get(`http://localhost:8000/markov/`+userInput+`/`).subscribe(data =>{console.log(data);});
         //.subscribe(data =>{console.log(data);})
     }
-
+    //Not used
     onUpdateServerName (event: any){
       this.userInput = (<HTMLInputElement>event.target).value;
     }
