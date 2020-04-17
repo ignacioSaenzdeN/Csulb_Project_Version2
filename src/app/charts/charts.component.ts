@@ -101,6 +101,7 @@ export class ChartsComponent implements OnInit {
           //this for loop will get each of the graphs
           var charts,graphs,functions;
           var colors=['red','blue','purple','yellow','black','brown','Crimson','Cyan','DarkOrchid'];
+          var canvases = ['canvas','canvas1','canvas2','canvas3','canvas4','canvas5'];
           var iterator =0;
           var graphs_container = "Figures";
           var i =1;
@@ -109,7 +110,15 @@ export class ChartsComponent implements OnInit {
                   if (functions == "x-axis"){
                     x_axis = data[graphs_container][graphs][functions];
                   }else{
-                    dataset_list.push( this.initializeDataset(functions, data[graphs_container][graphs][functions],colors[iterator],colors[iterator])  );
+                    // console.log(functions);
+                    // console.log("funct at pos 0");
+                    // console.log(data[graphs_container][graphs][functions][0]);
+                    // console.log("funct at pos 1");
+                    // console.log(data[graphs_container][graphs][functions][1]);
+                    // console.log("check");
+                    console.log(data[graphs_container][graphs][functions]);
+                    dataset_list.push( this.initializeDataset(functions, data[graphs_container][graphs][functions][0],
+                    data[graphs_container][graphs][functions][1],data[graphs_container][graphs][functions][1])  );
                     iterator = iterator +1;
                   }
                 }

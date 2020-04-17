@@ -44,8 +44,13 @@ export class RegisterComponent implements OnInit {
     get f() { return this.registerForm.controls; }
 
     onSubmit() {
-        console.log(this.registerForm.controls.unit_level);
+        console.log("controls");
         console.log (this.registerForm.controls);
+        console.log (this.registerForm.controls.username.value);
+
+        //perhaps, overwrite a formcontrol with the following so it is in the right format
+        var access_lvl = this.registerForm.controls.unit_level.value +this.registerForm.controls.access.value;
+        console.log(access_lvl);
         this.submitted = true;
         // reset alerts on submit
         this.alertService.clear();

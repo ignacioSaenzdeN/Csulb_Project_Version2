@@ -15,9 +15,7 @@ import { LoginComponent } from './login';
 import { RegisterComponent } from './register';
 import { AlertComponent } from './_components';
 import { ChartsComponent } from './charts/charts.component';
-//import {ChartsComponent} from './'
-// import { BarChartComponent } from './charts/bar-chart';
-// import { LineChartComponent } from './charts/line-chart';
+
 //slider
 import { Ng5SliderModule } from 'ng5-slider';
 import { ProfileComponent } from './profile/profile.component';
