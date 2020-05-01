@@ -12,12 +12,19 @@ export class UserService {
         return this.http.get<any[]>(`http://localhost:8000/users`);
     }
 
-    register(user:User) {
-        return this.http.post(`http://localhost:8000/createUser`, user);
+    register(form) {
+      console.log("form");
+      console.log(form);
+      return this.http.post(`http://localhost:8000/createUser/`, form);
     }
 
     delete(id) {
         return this.http.delete(`${environment.apiUrl}/users/${id}`);
+    }
+    inviteuser(form){
+      console.log("inviting user");
+      this.register(form);
+      return this.http.post(`http://localhost:8000/permission/`, form);
     }
 
 }
