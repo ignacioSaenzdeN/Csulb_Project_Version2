@@ -5,7 +5,8 @@ import { first } from 'rxjs/operators';
 import { MustMatch } from '../_helpers/must-match.validator';
 import { UserService, AuthenticationService, AlertService } from '../_services';
 
-@Component({ templateUrl: 'register.component.html' })
+@Component({ templateUrl: 'register.component.html',
+styleUrls: ['./register.component.less'] })
 export class RegisterComponent implements OnInit {
     registerForm: FormGroup;
     loading = false;

@@ -14,12 +14,17 @@ export class ProfileComponent implements OnInit {
     private router:Router,
    ) { }
   public username;
+  public permission;
   ngOnInit() {
     if (this.authenticationService.currentUserValue) {
         this.router.navigate(['/profile']);
     }else{
         this.router.navigate(['/']);
     }
+    if (this.authenticationService.isProvider)
+      this.permission="provider";
+    else
+      this.permission="consumer"
       // the following 3 lines retrieve the username from the jwt that will be displayed
       // in the html
       var user_json = JSON.parse( localStorage.getItem('currentUser') );
