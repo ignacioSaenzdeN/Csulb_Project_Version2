@@ -9,16 +9,23 @@ styleUrls: ['./app.component.less'],
 templateUrl: 'app.component.html' })
 export class AppComponent {
     currentUser: User;
+    isProvider:boolean;
     // user subscr to db
     constructor(
         private router: Router,
         private authenticationService: AuthenticationService
     ) {
-
+      //  this.isProvider=false;
         // var user_json = JSON.parse( localStorage.getItem('currentUser') );
         // var decoded = jwt_decode(user_json.access);
         this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
+        this.authenticationService.isProviderObservable.subscribe(data => this.isProvider = data);
+        // this.authenticationService.isProvider.subscribe(x => this.isProvider = x);
+        // this.isProvider = this.authenticationService.isProvider;
+        console.log("isProvider");
+        console.log(this.isProvider);
     }
+
     //botton that when pressed on the application, logs the user out and redirects the app to the login website
     logout() {
         this.authenticationService.logout();

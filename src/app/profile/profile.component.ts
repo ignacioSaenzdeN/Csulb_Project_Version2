@@ -2,15 +2,24 @@ import { Component, OnInit } from '@angular/core';
 import {AuthenticationService} from '../_services';
 import * as jwt_decode from 'jwt-decode';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.less']
 })
 export class ProfileComponent implements OnInit {
-  constructor(private authenticationService: AuthenticationService,private http: HttpClient ) { }
+  constructor(private authenticationService: AuthenticationService,
+    private http: HttpClient,
+    private router:Router,
+   ) { }
   public username;
   ngOnInit() {
+    if (this.authenticationService.currentUserValue) {
+        this.router.navigate(['/profile']);
+    }else{
+        this.router.navigate(['/']);
+    }
       // the following 3 lines retrieve the username from the jwt that will be displayed
       // in the html
       var user_json = JSON.parse( localStorage.getItem('currentUser') );

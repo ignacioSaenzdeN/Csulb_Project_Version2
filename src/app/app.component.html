@@ -1,11 +1,11 @@
 <!-- nav -->
 <!-- *ngIf="currentUser" shows content only if users id logged in -->
-
+<body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light" *ngIf="currentUser">
     <div class="navbar-nav">
         <a class="nav-item nav-link" routerLink="/home" >Home</a>
         <a class="nav-item nav-link" routerLink="/charts">Charts</a>
-        <a class="nav-item nav-link" routerLink="/register">Invite user</a>
+        <a class="nav-item nav-link" routerLink="/register" *ngIf="this.authenticationService.isProvider">Invite user</a>
         <a class="nav-item nav-link" routerLink="/profile">Profile</a>
         <a class="nav-item nav-link" routerLink="/login"(click)="logout()">Logout</a>
     </div>
@@ -21,5 +21,6 @@
         </div>
     </div>
 </div>
+</body>
 <!-- bootstrap css -->
 <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" />

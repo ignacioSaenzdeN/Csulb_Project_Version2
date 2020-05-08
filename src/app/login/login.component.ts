@@ -5,12 +5,15 @@ import { first } from 'rxjs/operators';
 
 import { AuthenticationService, AlertService } from '../_services'
 
-@Component({templateUrl: 'login.component.html'})
+@Component({
+  templateUrl: 'login.component.html',
+  styleUrls: ['./login.component.less'],})
 export class LoginComponent implements OnInit {
     loginForm: FormGroup;
     loading = false;
     submitted = false;
     returnUrl: string;
+
 
     constructor(
         private formBuilder: FormBuilder,
@@ -21,7 +24,7 @@ export class LoginComponent implements OnInit {
     ) {
         // redirect to home if already logged in
         if (this.authenticationService.currentUserValue) {
-            this.router.navigate(['/']);
+            this.router.navigate(['/home']);
         }
     }
 

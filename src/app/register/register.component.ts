@@ -2,9 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
-
 import { MustMatch } from '../_helpers/must-match.validator';
-
 import { UserService, AuthenticationService, AlertService } from '../_services';
 
 @Component({ templateUrl: 'register.component.html' })
@@ -27,6 +25,11 @@ export class RegisterComponent implements OnInit {
     }
 
     ngOnInit() {
+      if (this.authenticationService.currentUserValue&& this.authenticationService.isProvider) {
+          this.router.navigate(['/register']);
+      }else{
+          this.router.navigate(['/']);
+      }
         this.registerForm = this.formBuilder.group({
             // firstName: ['', Validators.required],
             // lastName: ['', Validators.required],

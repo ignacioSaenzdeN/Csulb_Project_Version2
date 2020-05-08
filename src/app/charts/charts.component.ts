@@ -3,7 +3,7 @@ import {Chart} from 'chart.js';
 import { UserService, AuthenticationService, AlertService } from '../_services';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-
+import { Router, ActivatedRoute } from '@angular/router';
 //SliderModule
 import { Options } from 'ng5-slider';
 @Component({
@@ -28,8 +28,16 @@ export class ChartsComponent implements OnInit {
   title: 'Graph';
   chart = Chart;
   list_of_charts=[];
-  constructor(private http: HttpClient  ){}
+  constructor(private http: HttpClient,
+    private authenticationService: AuthenticationService,
+    private router: Router,
+  ){}
   ngOnInit() {
+    if (this.authenticationService.currentUserValue) {
+        this.router.navigate(['/charts']);
+    }else{
+        this.router.navigate(['/']);
+    }
   // if graph must show at the beginning of anything put code here
   this.userInput="0";
 }// end of ngOnInit()
@@ -104,11 +112,14 @@ export class ChartsComponent implements OnInit {
           var canvases = ['canvas','canvas1','canvas2','canvas3','canvas4','canvas5'];
           var iterator =0;
           var graphs_container = "Figures";
+          var description="default";
           var i =1;
               for (let graphs in data[graphs_container]){
                 for (functions in data[graphs_container][graphs]){
                   if (functions == "x-axis"){
                     x_axis = data[graphs_container][graphs][functions];
+                  }else if(functions=="description"){
+                    description=functions;
                   }else{
                     // console.log(functions);
                     // console.log("funct at pos 0");
@@ -124,6 +135,10 @@ export class ChartsComponent implements OnInit {
                 }
                 if (dataset_list.length>0){
                   this.initializeGraph("canvas"+i,dataset_list,x_axis);
+                  var canvas = <HTMLCanvasElement>document.getElementById("canvas"+(i+1));
+                  var context = canvas.getContext("2d");
+                  context.font = "bold 16px Arial";
+                  context.fillText(description, 100, 100);
                   dataset_list=[];
                   iterator=0;
                   i=i+1;

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { first } from 'rxjs/operators';
-
+import { Router } from '@angular/router';
 import { UserService, AuthenticationService } from '../_services';
 
 @Component({ templateUrl: 'home.component.html' })
@@ -10,13 +10,19 @@ export class HomeComponent implements OnInit {
 
     constructor(
         private authenticationService: AuthenticationService,
-        private userService: UserService
+        private userService: UserService,
+          private router: Router,
     ) {
         this.currentUser = this.authenticationService.currentUserValue;
+
     }
 
     ngOnInit() {
-        this.loadAllUsers();
+      if (this.authenticationService.currentUserValue) {
+          this.router.navigate(['/home']);
+      }else{
+          this.router.navigate(['/']);
+      }
     }
 
     deleteUser(id: number) {
