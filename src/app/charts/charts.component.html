@@ -6,7 +6,9 @@
 <p>
   Charts:
 </p>
-
+<div *ngIf="this.authenticationService.isProvider">
+<app-upload-file></app-upload-file>
+</div>
 <!-- slider -->
 <ng5-slider [(value)]="userInput" [options]="options" (input)="onUpdateServerName($event)"></ng5-slider>
 <br>

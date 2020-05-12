@@ -20,6 +20,10 @@ import { ChartsComponent } from './charts/charts.component';
 import { Ng5SliderModule } from 'ng5-slider';
 import { ProfileComponent } from './profile/profile.component';
 
+// Drag and Drop Stuff
+import { DragDropDirective } from './charts/drag-drop.directive';
+import { UploadFileComponent } from './charts/upload-file/upload-file.component';
+
 @NgModule({
     imports: [
         BrowserModule,
@@ -37,6 +41,9 @@ import { ProfileComponent } from './profile/profile.component';
         AlertComponent,
         ChartsComponent,
         ProfileComponent,
+        DragDropDirective,
+        UploadFileComponent,
+
         // ChartsComponent,
         // BarChartComponent,
         // LineChartComponent
