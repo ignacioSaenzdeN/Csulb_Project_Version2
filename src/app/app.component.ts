@@ -22,8 +22,6 @@ export class AppComponent {
         this.authenticationService.isProviderObservable.subscribe(data => this.isProvider = data);
         // this.authenticationService.isProvider.subscribe(x => this.isProvider = x);
         // this.isProvider = this.authenticationService.isProvider;
-        console.log("isProvider");
-        console.log(this.isProvider);
     }
 
     //botton that when pressed on the application, logs the user out and redirects the app to the login website

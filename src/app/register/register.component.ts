@@ -73,7 +73,6 @@ export class RegisterComponent implements OnInit {
         // reset alerts on submit
         this.alertService.clear();
         // stop here if form is invalid
-        console.log("asdads");
         if (this.registerForm.invalid) {
             return;
         }
@@ -104,4 +103,5 @@ export class RegisterComponent implements OnInit {
 
       this.userService.register(this.fooform.value);
     }
+
 }
