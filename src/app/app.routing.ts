@@ -13,7 +13,7 @@ const routes: Routes = [
     { path: 'register', component: RegisterComponent },
     { path: 'charts', component: ChartsComponent },
     {path: 'profile',component: ProfileComponent},
-    {path: 'upload', component: UploadFileComponent},
+    {path: 'uploadView', component: UploadFileComponent},
 
     // otherwise redirect to home
     { path: '**', redirectTo: 'login' }

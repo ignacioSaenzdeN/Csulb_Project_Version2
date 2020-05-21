@@ -27,7 +27,7 @@ export class UserService {
       return this.http.post(`http://localhost:8000/permission/`, form);
     }
     upload(form){
-      console.log("uploading");
+      console.log("uploaded");
       return this.http.post(`http://localhost:8000/upload/`, form);
     }
 

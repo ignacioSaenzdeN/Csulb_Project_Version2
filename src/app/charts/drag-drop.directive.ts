@@ -1,15 +1,16 @@
 import { Directive, Output, Input, EventEmitter, HostBinding, HostListener } from '@angular/core';
-
+import {UploadFileComponent} from './upload-file/upload-file.component';
 @Directive({
   selector: '[appDragDrop]'
 })
 export class DragDropDirective {
+  constructor (private uploadfilecomponent : UploadFileComponent,){}
   @Output() onFileDropped = new EventEmitter<any>();
 
   @HostBinding('style.background-color') private background = '#f5fcff'
   @HostBinding('style.opacity') private opacity = '1'
 
-  
+
   //Dragover listener
   @HostListener('dragover', ['$event']) onDragOver(evt) {
     evt.preventDefault();
@@ -31,6 +32,14 @@ export class DragDropDirective {
     this.background = '#f5fcff'
     this.opacity = '1'
     let files = evt.dataTransfer.files;
+
+
+ 		var reader = new FileReader();
+ 		reader.onload = () => {
+    this.uploadfilecomponent.fileContent= reader.result as string};
+ 		reader.onloadend = () => {reader = null;};
+ 		reader.readAsText( files[0] );
+
     if (files.length > 0) {
       this.onFileDropped.emit(files)
     }

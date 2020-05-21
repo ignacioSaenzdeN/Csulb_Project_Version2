@@ -16,9 +16,10 @@ export class UploadFileComponent  {
   departments:string[];
   uploadForm: FormGroup;
   files: any = [];
+  fileContent:string;
   loading = false;
   submitted = false;
-
+  temp;
 
   //slider Stuff
   value: number = 100;
@@ -37,7 +38,7 @@ export class UploadFileComponent  {
   ){}
   ngOnInit() {
     if (this.authenticationService.currentUserValue) {
-        this.router.navigate(['/upload']);
+        this.router.navigate(['/uploadView']);
     }else{
         this.router.navigate(['/']);
     }
@@ -64,13 +65,17 @@ export class UploadFileComponent  {
     get f() { return this.uploadForm.controls; }
   onSubmit() {
       this.uploadForm.controls.amountOfStudents.setValue(this.userInput);
-      this.uploadForm.controls.data.setValue(this.files);
+      console.log("filecontent");
+      console.log(this.fileContent);
+      this.uploadForm.controls.data.setValue(this.fileContent);
       this.submitted = true;
       this.alertService.clear();
-      // stop here if form is invalid
+      
+      console.log("valid?");
       if (this.uploadForm.invalid) {
           return;
       }
+      console.log("valid");
       // for (var temp in this.uploadForm.controls){
       //   console.log(this.uploadForm.controls[temp].value);
       // }
@@ -78,24 +83,25 @@ export class UploadFileComponent  {
       console.log(  this.uploadForm.controls.departmentName.value);
       console.log(  this.uploadForm.controls.collegeName.value);
       console.log(  this.uploadForm.controls.amountOfStudents.value);
-      console.log(  this.uploadForm.controls.data);
-      console.log("it will be sent");
+      console.log(  this.uploadForm.controls.data.value);
       this.loading = true;
+
       this.userService.upload(this.uploadForm.value)
           .pipe(first())
           .subscribe(
-              data => {this.alertService.success('Registration successful', true);},
-              error => {this.alertService.success('Registration successful', true);
-                  this.loading = false;
+              data =>{
+                console.log("unique ID");
+                console.log(data);
+               },
+              error => {console.log("in error");this.loading = false;
               });
-      console.log("it has been sent");
+      console.log("sent");
       this.loading = false;
   }
   private set_variables(){
       this.universities=['CSULB'];
       this.colleges= ['COE','CBA','CLA'];
       this.departments=[''];
-      //.subscribe(data =>{console.log(data);})
   }
   uploadFile(event) {
     for (let index = 0; index < event.length; index++) {
