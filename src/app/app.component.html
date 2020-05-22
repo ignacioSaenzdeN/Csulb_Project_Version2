@@ -6,8 +6,8 @@
         <a class="nav-item nav-link" routerLink="/home" >Home</a>
         <a class="nav-item nav-link" routerLink="/charts">Charts</a>
         <a class="nav-item nav-link" routerLink="/register" *ngIf="this.authenticationService.isProvider">Invite user</a>
+  <a class="nav-item nav-link" routerLink="/uploadView" *ngIf="this.authenticationService.isProvider">Upload data</a>
         <a class="nav-item nav-link" routerLink="/profile">Profile</a>
-        <a class="nav-item nav-link" routerLink="/uploadView" *ngIf="this.authenticationService.isProvider">Upload data</a>
         <a class="nav-item nav-link" routerLink="/login"(click)="logout()">Logout</a>
     </div>
 </nav>
@@ -25,3 +25,4 @@
 </body>
 <!-- bootstrap css -->
 <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">

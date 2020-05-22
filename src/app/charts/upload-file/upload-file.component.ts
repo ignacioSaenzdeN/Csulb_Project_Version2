@@ -19,7 +19,7 @@ export class UploadFileComponent  {
   fileContent:string;
   loading = false;
   submitted = false;
-  temp;
+  uniqueID: any;
 
   //slider Stuff
   value: number = 100;
@@ -70,7 +70,7 @@ export class UploadFileComponent  {
       this.uploadForm.controls.data.setValue(this.fileContent);
       this.submitted = true;
       this.alertService.clear();
-      
+
       console.log("valid?");
       if (this.uploadForm.invalid) {
           return;
@@ -92,6 +92,7 @@ export class UploadFileComponent  {
               data =>{
                 console.log("unique ID");
                 console.log(data);
+                this.uniqueID= data;
                },
               error => {console.log("in error");this.loading = false;
               });
@@ -104,9 +105,17 @@ export class UploadFileComponent  {
       this.departments=[''];
   }
   uploadFile(event) {
+    console.log("uploadgile");
     for (let index = 0; index < event.length; index++) {
       const element = event[index];
       this.files.push(element.name)
+
+      var reader = new FileReader();
+      reader.onload = () => {
+      this.fileContent= reader.result as string};
+      reader.onloadend = () => {reader = null;};
+      reader.readAsText( element);
+
     }
   }
   deleteAttachment(index) {
@@ -123,7 +132,10 @@ export class UploadFileComponent  {
 onUpdateDepartment (event: any){
   this.uploadForm.controls.departmentName.setValue((<HTMLInputElement>event.target).value);
 }
-
+train (){
+  this.http.post(`http://localhost:8000/train/`, {'uniqueID':this.uniqueID}).subscribe(data =>{console.log(data)});
+}
+//,'amountOfStudents':this.userInput}
 
   onUpdateCollege (event: any){
     this.uploadForm.controls.collegeName.setValue((<HTMLInputElement>event.target).value);
