@@ -1,5 +1,5 @@
 
-
+<div  *ngIf="this.upload_boolean===true">
 <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()">
   <div class="form-group">
       <label for="universityName">University</label>
@@ -54,6 +54,25 @@
       </button>
   </div>
   </form>
-
-  <button class="btn btn-primary" (click)="train()">Train
+</div>
+<div  *ngIf="this.upload_boolean===false">
+  <button class="btn btn-primary" (click)="train()">Train/ Train again
   </button>
+<div *ngIf="this.train_wait===true">
+  <p>
+      (Please wait, the process can take a few seconds)
+  </p>
+</div>
+  <div class="canvas-container">
+    <canvas class ="cv"  id="canvas1"></canvas>
+    <canvas class ="cv"  id="canvas2"></canvas>
+  </div>
+
+  <button class="btn btn-primary" (click)="accepted()">accept
+  </button>
+  <div *ngIf="this.accepted_bool===true">
+    <p>
+        The information has been stored
+    </p>
+  </div>
+</div>

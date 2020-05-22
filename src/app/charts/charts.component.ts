@@ -121,12 +121,6 @@ export class ChartsComponent implements OnInit {
                   }else if(functions=="description"){
                     description=functions;
                   }else{
-                    // console.log(functions);
-                    // console.log("funct at pos 0");
-                    // console.log(data[graphs_container][graphs][functions][0]);
-                    // console.log("funct at pos 1");
-                    // console.log(data[graphs_container][graphs][functions][1]);
-                    // console.log("check");
                     console.log(data[graphs_container][graphs][functions]);
                     dataset_list.push( this.initializeDataset(functions, data[graphs_container][graphs][functions][0],
                     data[graphs_container][graphs][functions][1],data[graphs_container][graphs][functions][1])  );

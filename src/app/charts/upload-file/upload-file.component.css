@@ -36,3 +36,7 @@
 .files-list .delete-file img{
   width:30px;
 }
+div,button {
+
+    font-size:1.2vw;
+}
