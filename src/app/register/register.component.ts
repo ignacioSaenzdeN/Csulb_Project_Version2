@@ -73,6 +73,7 @@ export class RegisterComponent implements OnInit {
         // reset alerts on submit
         this.alertService.clear();
         // stop here if form is invalid
+
         if (this.registerForm.invalid) {
             return;
         }

@@ -15,6 +15,8 @@ export class ProfileComponent implements OnInit {
    ) { }
   public username;
   public permission;
+  public change_username= false;
+  public change_password= false;
   ngOnInit() {
     if (this.authenticationService.currentUserValue) {
         this.router.navigate(['/profile']);
@@ -34,6 +36,12 @@ export class ProfileComponent implements OnInit {
   private getPerm(){
       this.http.get(`http://localhost:8000/permission/`).subscribe(data =>{console.log(data);});
       //.subscribe(data =>{console.log(data);})
+  }
+  private changeUsername(){
+    this.change_username= true;
+  }
+  private changPassword(){
+    this.change_username= true;
   }
 
 }

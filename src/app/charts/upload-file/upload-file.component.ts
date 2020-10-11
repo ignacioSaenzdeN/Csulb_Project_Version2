@@ -51,7 +51,6 @@ export class UploadFileComponent  {
     this.set_variables();
     this.createForm();
     this.upload_boolean=true;
-    console.log(this.upload_boolean);
   }// end of ngOnInit()
 
 
@@ -71,17 +70,12 @@ export class UploadFileComponent  {
     get f() { return this.uploadForm.controls; }
   onSubmit() {
       this.uploadForm.controls.amountOfStudents.setValue(this.userInput);
-      console.log("filecontent");
-      console.log(this.fileContent);
       this.uploadForm.controls.data.setValue(this.fileContent);
       this.submitted = true;
       this.alertService.clear();
-
-      console.log("valid?");
       if (this.uploadForm.invalid) {
           return;
       }
-      console.log("valid");
       // for (var temp in this.uploadForm.controls){
       //   console.log(this.uploadForm.controls[temp].value);
       // }
@@ -105,7 +99,6 @@ export class UploadFileComponent  {
       console.log("sent");
       this.loading = false;
       this.upload_boolean=false;
-      console.log(this.upload_boolean);
   }
   private set_variables(){
       this.universities=['CSULB'];
@@ -113,7 +106,6 @@ export class UploadFileComponent  {
       this.departments=[''];
   }
   uploadFile(event) {
-    console.log("uploadfile");
     for (let index = 0; index < event.length; index++) {
       const element = event[index];
       this.files.push(element.name)
@@ -163,12 +155,8 @@ train (){
     var graphs_container = "Figures";
     var description="default";
     var i =1;
-    for(let dummt in data){
-      console.log(dummt);
-    }
     console.log("space");
         for (let graphs in data){
-          console.log(graphs);
           if (graphs=="figure3"){
           for (functions in data[graphs]){
             if (functions == "x-axis"){
@@ -176,7 +164,6 @@ train (){
             }else if(functions=="description"){
               description=functions;
             }else{
-              console.log(data[graphs][functions]);
               dataset_list.push( this.initializeDataset(functions, data[graphs][functions][0],
               data[graphs][functions][1],data[graphs][functions][1])  );
               iterator = iterator +1;

@@ -5,5 +5,12 @@
 <br>
 <h4>The current user is {{this.username}} </h4>
 <h4>The user has permission type of: {{this.permission}}</h4>
+
+
+<button id="name_pass_change" class="link" (click)="changeUsername()">Change Username</button>
+<button  id="name_pass_change" class="link" (click)="changePassword()">Change Password</button>
+
 <!-- <button class="btn btn-primary" (click)="getPerm()">get permissions
 </button> -->
+{{this.change_username}}
+{{this.change_password}}
