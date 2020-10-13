@@ -8,9 +8,65 @@
 
 
 <button id="name_pass_change" class="link" (click)="changeUsername()">Change Username</button>
-<button  id="name_pass_change" class="link" (click)="changePassword()">Change Password</button>
 
-<!-- <button class="btn btn-primary" (click)="getPerm()">get permissions
-</button> -->
-{{this.change_username}}
-{{this.change_password}}
+<div  *ngIf="this.change_username===true">
+<form [formGroup]="usernameChangeForm" (ngSubmit)="onSubmitUsernameChange()">
+  <div class="form-group">
+      <label for="username">Username</label>
+      <input type="text" formControlName="username" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
+      <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
+          <div *ngIf="f.username.errors.required">Username is required</div>
+      </div>
+  </div>
+  <div class="form-group">
+      <label for="username_confirmation">Username Confirmation </label>
+      <input type="username_confirmation" formControlName="username_confirmation" class="form-control" (input)="match($event)" [ngClass]="{ 'is-invalid': submitted && f.username_confirmation.errors }" />
+      <div *ngIf="submitted && f.username_confirmation.errors" class="invalid-feedback">
+          <div *ngIf="f.username_confirmation.errors.required">Username confirmation is required</div>
+          <div *ngIf="f.username_confirmation.errors.minlength">username_confirmation must be at least 6 characters</div>
+      </div>
+  </div>
+  <p id="not_match_message"*ngIf="this.not_match_bool">The fields do not match, fix and submit again</p>
+  <p>Note: The username change might take some time </p>
+  <div class="form-group">
+      <button [disabled]="loading" class="btn btn-primary">
+          <span *ngIf="loading " class="spinner-border spinner-border-sm mr-1"></span>
+          Send Request
+      </button>
+  </div>
+
+</form>
+</div>
+
+
+<br>
+<button  id="name_pass_change" class="link" (click)="changePassword()">Change password</button>
+
+<div  *ngIf="this.change_password===true">
+  <form [formGroup]="passwordChangeForm" (ngSubmit)="onSubmitPasswordChange()">
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && f_pass.password.errors }" />
+        <div *ngIf="submitted && f_pass.password.errors" class="invalid-feedback">
+            <div *ngIf="f_pass.password.errors.required">Password is required</div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="password_confirmation">Password Confirmation </label>
+        <input type="password" formControlName="password_confirmation" class="form-control" (input)="match_password($event)" [ngClass]="{ 'is-invalid': submitted && f_pass.password_confirmation.errors }" />
+        <div *ngIf="submitted && f_pass.password_confirmation.errors" class="invalid-feedback">
+            <div *ngIf="f_pass.password_confirmation.errors.required">Password confirmation is required</div>
+
+        </div>
+    </div>
+    <p id="not_match_message"*ngIf="this.not_match_pass_bool">The fields do not match, fix and submit again</p>
+    <p>Note: The password change might take some time </p>
+    <div class="form-group">
+        <button [disabled]="loading" class="btn btn-primary">
+            <span *ngIf="loading " class="spinner-border spinner-border-sm mr-1"></span>
+            Send Request
+        </button>
+    </div>
+
+  </form>
+</div>
