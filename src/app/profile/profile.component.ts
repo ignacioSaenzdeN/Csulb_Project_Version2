@@ -49,6 +49,7 @@ export class ProfileComponent implements OnInit {
   get f() { return this.usernameChangeForm.controls; }
   get f_pass() { return this.passwordChangeForm.controls; }
   private changeUsername(){
+    if (this.change_username==false){
     this.change_username= true;
     this.usernameChangeForm = this.formBuilder.group({
         // firstName: ['', Validators.required],
@@ -58,6 +59,9 @@ export class ProfileComponent implements OnInit {
       //  authorization: ['', Validators.required],
     }
   );
+}else{
+  this.change_username=false;
+}
   }
   private  match(){
     return this.f.username.value== this.f.username_confirmation.value;
@@ -66,12 +70,16 @@ export class ProfileComponent implements OnInit {
     return this.f_pass.password.value== this.f_pass.password_confirmation.value;
   }
   private changePassword(){
+    if (this.change_password==false){
     this.change_password= true;
     this.passwordChangeForm = this.formBuilder.group({
         password: ['', Validators.required],
         password_confirmation: ['', Validators.required],
     }
   );
+}else{
+  this.change_password=false;
+}
   }
   onSubmitUsernameChange(){
     this.not_match_bool=false;
