@@ -1,5 +1,4 @@
 import { Routes, RouterModule } from '@angular/router';
-
 import { HomeComponent } from './home';
 import { LoginComponent } from './login';
 import { RegisterComponent } from './register';
@@ -7,6 +6,7 @@ import { AuthGuard } from './_helpers';
 import { ChartsComponent } from './charts';
 import { ProfileComponent} from './profile/profile.component';
 import {UploadFileComponent} from './charts/upload-file/upload-file.component';
+import {AccountResetComponent} from './account-reset/account-reset.component';
 const routes: Routes = [
     { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
     { path: 'login', component: LoginComponent },
@@ -14,7 +14,7 @@ const routes: Routes = [
     { path: 'charts', component: ChartsComponent },
     {path: 'profile',component: ProfileComponent},
     {path: 'uploadView', component: UploadFileComponent},
-
+    {path:  'account-reset', component: AccountResetComponent},
     // otherwise redirect to home
     { path: '**', redirectTo: 'login' }
 ];

@@ -61,4 +61,7 @@ export class LoginComponent implements OnInit {
                     this.loading = false;
                 });
     }
+    goToReset(){
+      this.router.navigate(['/account-reset']);
+    }
 }

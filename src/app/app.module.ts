@@ -23,6 +23,7 @@ import { ProfileComponent } from './profile/profile.component';
 // Drag and Drop Stuff
 import { DragDropDirective } from './charts/drag-drop.directive';
 import { UploadFileComponent } from './charts/upload-file/upload-file.component';
+import { AccountResetComponent } from './account-reset/account-reset.component';
 
 @NgModule({
     imports: [
@@ -43,6 +44,7 @@ import { UploadFileComponent } from './charts/upload-file/upload-file.component'
         ProfileComponent,
         DragDropDirective,
         UploadFileComponent,
+        AccountResetComponent,
 
         // ChartsComponent,
         // BarChartComponent,
