@@ -28,6 +28,7 @@ export class ChartsComponent implements OnInit {
   title: 'Graph';
   chart = Chart;
   list_of_charts=[];
+  description_temp="";
   constructor(private http: HttpClient,
     private authenticationService: AuthenticationService,
     private router: Router,
@@ -96,6 +97,9 @@ export class ChartsComponent implements OnInit {
 
     private getGraphArr(userInput){
 
+        // resetting description_temp variable
+        this.description_temp="";
+        this.description_temp="Description of each figure: \n"
         //logs in the console what is being received
         this.http.get(`http://localhost:8000/markov/`+userInput+`/`).subscribe(data =>{console.log(data);
 
@@ -108,7 +112,7 @@ export class ChartsComponent implements OnInit {
           var dataset_list = [];
           //this for loop will get each of the graphs
           var charts,graphs,functions;
-          var colors=['red','blue','purple','yellow','black','brown','Crimson','Cyan','DarkOrchid'];
+          //var colors=['red','blue','purple','yellow','black','brown','Crimson','Cyan','DarkOrchid'];
           var canvases = ['canvas','canvas1','canvas2','canvas3','canvas4','canvas5'];
           var iterator =0;
           var graphs_container = "Figures";
@@ -119,7 +123,7 @@ export class ChartsComponent implements OnInit {
                   if (functions == "x-axis"){
                     x_axis = data[graphs_container][graphs][functions];
                   }else if(functions=="description"){
-                    description=functions;
+                    this.description_temp+=data[graphs_container][graphs][functions]+"\n";
                   }else{
                     console.log(data[graphs_container][graphs][functions]);
                     dataset_list.push( this.initializeDataset(functions, data[graphs_container][graphs][functions][0],
@@ -127,12 +131,11 @@ export class ChartsComponent implements OnInit {
                     iterator = iterator +1;
                   }
                 }
+                //this allocates the graphs into the canvases in the html
                 if (dataset_list.length>0){
                   this.initializeGraph("canvas"+i,dataset_list,x_axis);
                   var canvas = <HTMLCanvasElement>document.getElementById("canvas"+(i+1));
                   var context = canvas.getContext("2d");
-                  context.font = "bold 16px Arial";
-                  context.fillText(description, 100, 100);
                   dataset_list=[];
                   iterator=0;
                   i=i+1;
