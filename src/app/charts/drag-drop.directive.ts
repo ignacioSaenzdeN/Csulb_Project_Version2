@@ -36,7 +36,8 @@ export class DragDropDirective {
 
  		var reader = new FileReader();
  		reader.onload = () => {
-    this.uploadfilecomponent.fileContent= reader.result as string};
+    //this.uploadfilecomponent.fileContent= reader.result as string
+  };
  		reader.onloadend = () => {reader = null;};
  		reader.readAsText( files[0] );
 

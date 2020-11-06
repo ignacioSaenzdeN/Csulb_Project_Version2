@@ -6,26 +6,41 @@ import { HttpClient } from '@angular/common/http';
 import { Options } from 'ng5-slider';
 import { first } from 'rxjs/operators';
 import {Chart} from 'chart.js';
+import * as XLSX from 'xlsx';
 @Component({
   selector: 'app-upload-file',
   templateUrl: './upload-file.component.html',
   styleUrls: ['./upload-file.component.css']
 })
 export class UploadFileComponent  {
+  // these variables are currently hardcoded but eventually they should be obtained through a get
   universities: string[];
   colleges:string[];
   departments:string[];
+
+  // variables related to the form and the files uploaded to the form
   uploadForm: FormGroup;
   files: any = [];
-  fileContent:string;
+  fileContent:object;
+  ExcelData:[][];
+
+  //variables related to submission of form
   loading = false;
   submitted = false;
+  // this is mainly for testing purposes
   uniqueID: any;
+
+  //this boolean switches from the uploading form to the training section once the form is submitted
   upload_boolean=true;
+
+  // training charts
   list_of_charts=[];
   chart = Chart;
+  // bool that activates once the user click train
   train_wait=false;
+  // bool that activates once the user confirms training
   accepted_bool=false;
+
   //slider Stuff
   value: number = 100;
   options: Options = {
@@ -42,14 +57,19 @@ export class UploadFileComponent  {
     private alertService: AlertService
   ){}
   ngOnInit() {
+    // if user is not validated, the user will be redirected to the login
     if (this.authenticationService.currentUserValue) {
         this.router.navigate(['/uploadView']);
     }else{
         this.router.navigate(['/']);
     }
+    // this prevents the slider from saying N/A or similar
     this.userInput="0";
+    //this initializes the hardcoded variables; it should be deleted or modified eventually
     this.set_variables();
+    //initializes the form
     this.createForm();
+    // it makes sure that the component starts with the upload form and not the trining
     this.upload_boolean=true;
   }// end of ngOnInit()
 
@@ -65,20 +85,22 @@ export class UploadFileComponent  {
       //  authorization: ['', Validators.required],
     });
 
-      //.subscribe(data =>{console.log(data);})
   }
+  // f() is just a shortcut to access the controls
     get f() { return this.uploadForm.controls; }
+
+  // for the form submission
   onSubmit() {
+      // it was easier to set the slider value and the file content this way
       this.uploadForm.controls.amountOfStudents.setValue(this.userInput);
       this.uploadForm.controls.data.setValue(this.fileContent);
       this.submitted = true;
       this.alertService.clear();
+
+      // if there are issues with any of the form fields, the submission will be rejected
       if (this.uploadForm.invalid) {
           return;
       }
-      // for (var temp in this.uploadForm.controls){
-      //   console.log(this.uploadForm.controls[temp].value);
-      // }
       console.log(  this.uploadForm.controls.universityName.value);
       console.log(  this.uploadForm.controls.departmentName.value);
       console.log(  this.uploadForm.controls.collegeName.value);
@@ -86,6 +108,10 @@ export class UploadFileComponent  {
       console.log(  this.uploadForm.controls.data.value);
       this.loading = true;
 
+      // console.log("now it should work");
+      // return;
+
+      // this sends the form to the backend, in the front end we get the ID of the submission
       this.userService.upload(this.uploadForm.value)
           .pipe(first())
           .subscribe(
@@ -96,36 +122,68 @@ export class UploadFileComponent  {
                },
               error => {console.log("in error");this.loading = false;
               });
+
       console.log("sent");
       this.loading = false;
       this.upload_boolean=false;
   }
+
+  // this should eventually not be hardcoded
   private set_variables(){
       this.universities=['CSULB'];
       this.colleges= ['COE','CBA','CLA'];
       this.departments=[''];
   }
-  uploadFile(event) {
+
+  uploadFile(event){
+    // technically we wil upload only one file at a time so this might not be necessary
     for (let index = 0; index < event.length; index++) {
       const element = event[index];
       this.files.push(element.name)
-
-      var reader = new FileReader();
-      reader.onload = () => {
-      this.fileContent= reader.result as string};
-      reader.onloadend = () => {reader = null;};
-      reader.readAsText( element);
-
     }
+
+    // this whole process is just to access the data inside the sheet of an Excel file
+    // we have to go layer by layer like a russian doll
+    const reader: FileReader = new FileReader();
+    reader.onload =()=>{
+      var content =reader.result as string;
+      const file :XLSX.WorkBook = XLSX.read (content,{type:'binary'});
+      const page1 : string = file.SheetNames[0];
+      const page1_sheet :XLSX.WorkSheet = file.Sheets[page1];
+      this.ExcelData = (XLSX.utils.sheet_to_json(page1_sheet, {header:1 }));
+      console.log(this.ExcelData);
+      this.fileContent= this.ExcelData;
+    }
+    // after this function is called, onload is activated.
+    reader.readAsBinaryString(event[0]);
+
   }
+  //Not used, this is in the file to be uploaded is a .txt
+  // uploadTextFile(event) {
+  //   for (let index = 0; index < event.length; index++) {
+  //     const element = event[index];
+  //     this.files.push(element.name)
+  //
+  //     var reader = new FileReader();
+  //     reader.onload = () => {
+  //     this.fileContent= reader.result as string};
+  //     reader.onloadend = () => {reader = null;};
+  //     reader.readAsText( element);
+  //
+  //   }
+  // }
+
+  //deletes an uploaded file from the list
   deleteAttachment(index) {
     this.files.splice(index, 1)
   }
 
-  //slider
-  onUpdateServerName (event: any){
+
+  onUpdateSlider (event: any){
     this.userInput = (<HTMLInputElement>event.target).value;
   }
+
+// these two functions just assign what the user chose to the form
  onUpdateUniversity (event: any){
   this.uploadForm.controls.universityName.setValue((<HTMLInputElement>event.target).value);
 }
@@ -135,27 +193,32 @@ onUpdateDepartment (event: any){
 // train (){
 //   this.http.post(`http://localhost:8000/train/`, {'uniqueID':this.uniqueID,'amountOfStudents':this.userInput}).subscribe(data =>{console.log(data);});
 // }
+
 train (){
   this.train_wait=true;
   this.http.post(`http://localhost:8000/train/`, {'uniqueID':this.uniqueID,'amountOfStudents':this.userInput}).subscribe(data =>{
     console.log(data);
-
+    // to prevent the graphs from overlapping when the user trains the model multiple times, the variable are resetted
     for (i = 0; i <this.list_of_charts.length ; i++){
       this.list_of_charts[i].destroy();
     }
+
     this.list_of_charts=[];
 
     var x_axis=[];
     var dataset_list = [];
     //this for loop will get each of the graphs
     var charts,graphs,functions;
+    // the colors are not used as we switched to colorblind-friendly colors
     var colors=['red','blue','purple','yellow','black','brown','Crimson','Cyan','DarkOrchid'];
     var canvases = ['canvas','canvas1','canvas2','canvas3','canvas4','canvas5'];
     var iterator =0;
     var graphs_container = "Figures";
     var description="default";
     var i =1;
-    console.log("space");
+    //please refers to the charts component to unserstand this logic.
+    // SUMMARY: the charts data is received as single points in json objects
+    // the function goes layer by layer, collects the points and then creates a graph
         for (let graphs in data){
           if (graphs=="figure3"){
           for (functions in data[graphs]){
@@ -171,10 +234,6 @@ train (){
           }
           if (dataset_list.length>0){
             this.initializeGraph("canvas"+i,dataset_list,x_axis);
-            // var canvas = <HTMLCanvasElement>document.getElementById("canvas"+(i+1));
-            // var context = canvas.getContext("2d");
-            // context.font = "bold 16px Arial";
-            // context.fillText(description, 100, 100);
             dataset_list=[];
             iterator=0;
             i=i+1;
@@ -183,27 +242,31 @@ train (){
       }
   });
 }
+// just to output a confirmation message in the html
 private accepted(){
   this.accepted_bool=true;
 }
+
+// to make the chart code shorter and more understandable
 private initializeDataset (_label,_data, _backgroundColor, _borderColor){
   var ans ={"label": _label , "data":_data, "backgroundColor":_backgroundColor, "borderColor": _borderColor,"fill": false};
-  //console.log(ans);
   return ans;
 }
+// to make the chart code shorter and more understandable
+// to learn more about the charts, refer to chart.js
 private initializeGraph (id,_datasets, _labels){
   this.chart = new Chart (id,{
     type:'line',
     data: {
-      // labels: [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0],
       labels: _labels,
       datasets:_datasets,
     }
   })
   this.list_of_charts.push(this.chart);
 }
-//,'amountOfStudents':this.userInput}
 
+// this eventually should not be hardcoded
+// based on the input of the college, the departments of the college would change
   onUpdateCollege (event: any){
     this.uploadForm.controls.collegeName.setValue((<HTMLInputElement>event.target).value);
     if (this.uploadForm.controls.collegeName.value =="COE"){
