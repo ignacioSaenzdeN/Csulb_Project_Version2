@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs';
 
 import { AlertService } from '../_services';
 
+//Currently not used but it is available if necessary
 @Component({ selector: 'alert', templateUrl: 'alert.component.html' })
 export class AlertComponent implements OnInit, OnDestroy {
     private subscription: Subscription;

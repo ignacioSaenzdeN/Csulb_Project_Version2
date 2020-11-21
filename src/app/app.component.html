@@ -7,7 +7,7 @@
         <a class="nav-item nav-link" routerLink="/home" >Home</a>
         <a class="nav-item nav-link" routerLink="/charts">Charts</a>
         <a class="nav-item nav-link" routerLink="/register" *ngIf="this.authenticationService.isProvider">Invite user</a>
-  <a class="nav-item nav-link" routerLink="/uploadView" *ngIf="this.authenticationService.isProvider">Upload data</a>
+        <a class="nav-item nav-link" routerLink="/uploadView" *ngIf="this.authenticationService.isProvider">Upload data</a>
         <a class="nav-item nav-link" routerLink="/profile">Profile</a>
         <a class="nav-item nav-link" routerLink="/login"(click)="logout()">Logout</a>
     </div>

@@ -1,4 +1,7 @@
 
+
+<!-- The purpose of the html code is not display a form that retrieves the necessary
+data a user needs to input to train the model -->
 <div  *ngIf="this.upload_boolean===true">
 <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()">
   <div class="form-group">
@@ -33,7 +36,7 @@
       </div>
   </div>
 
-
+<!-- this section of code is specifically for the upload of files -->
 <div class="uploadfilecontainer" (click)="fileInput.click()" appDragDrop (onFileDropped)="uploadFile($event)">
   <input hidden type="file" #fileInput (change)="uploadFile($event.target.files)">
 </div>
@@ -54,6 +57,12 @@
       </button>
   </div>
   </form>
+
+<!-- The following code can be converted into its own component but it was chosen
+to be included as part of this component as it was a small addition.
+Once the data is upload the following html code will allow for the model to be trained
+using the previously updated data -->
+
 </div>
 <div  *ngIf="this.upload_boolean===false">
   <button class="btn btn-primary" (click)="train()">Train/ Train again

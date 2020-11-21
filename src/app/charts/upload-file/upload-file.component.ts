@@ -193,7 +193,8 @@ onUpdateDepartment (event: any){
 // train (){
 //   this.http.post(`http://localhost:8000/train/`, {'uniqueID':this.uniqueID,'amountOfStudents':this.userInput}).subscribe(data =>{console.log(data);});
 // }
-
+// As it can be deduced by the function name, the purpose of the following code is to
+// train the model
 train (){
   this.train_wait=true;
   this.http.post(`http://localhost:8000/train/`, {'uniqueID':this.uniqueID,'amountOfStudents':this.userInput}).subscribe(data =>{
@@ -247,6 +248,9 @@ private accepted(){
   this.accepted_bool=true;
 }
 
+// To following two functions are originally fromt the charts component.
+// The code was copied as it was a small addition and it allows developers to
+// easily understand the training function
 // to make the chart code shorter and more understandable
 private initializeDataset (_label,_data, _backgroundColor, _borderColor){
   var ans ={"label": _label , "data":_data, "backgroundColor":_backgroundColor, "borderColor": _borderColor,"fill": false};
@@ -267,6 +271,7 @@ private initializeGraph (id,_datasets, _labels){
 
 // this eventually should not be hardcoded
 // based on the input of the college, the departments of the college would change
+// this will be done through a get request to the backend most likely.
   onUpdateCollege (event: any){
     this.uploadForm.controls.collegeName.setValue((<HTMLInputElement>event.target).value);
     if (this.uploadForm.controls.collegeName.value =="COE"){

@@ -5,10 +5,6 @@
   Charts:
 </p>
 <!-- this is only in case we ant the upload information in the graphs -->
-<!-- <div *ngIf="this.authenticationService.isProvider">
-<app-upload-file></app-upload-file>
-</div> -->
-<!-- slider -->
 <ng5-slider [(value)]="userInput" [options]="options" (input)="onUpdateServerName($event)"></ng5-slider>
 <br>
 
@@ -19,14 +15,6 @@
 <!-- <button class="btn btn-primary" (click)="getGraph()">Create Graph
 </button> -->
 
-<!-- <div class="canvas-container">
-  <canvas class ="cv"  id="canvas1"></canvas>
-  <canvas class ="cv"  id="canvas2"></canvas>
-</div>
-<div class="canvas-container">
-  <canvas class ="cv"  id="canvas3" ></canvas>
-  <canvas class ="cv"  id="canvas4"></canvas>
-</div> -->
 <div class="canvas-container">
   <canvas class ="cv"  id="canvas1"></canvas>
   <canvas class ="cv"  id="canvas2"></canvas>
@@ -35,6 +23,8 @@
   <canvas class ="cv"  id="canvas3"></canvas>
   <canvas class ="cv"  id="canvas4"></canvas>
 </div>
+
+<!-- for future use if needed -->
 <!-- <div class="canvas-container">
   <canvas class ="cv"  id="canvas5" ></canvas>
   <canvas class ="cv"  id="canvas6"></canvas>
@@ -47,4 +37,5 @@
 <br>
 <br>
 <br>
+<!-- this will load the description of the graphs displayed above -->
 <pre>{{this.description_temp}}</pre>

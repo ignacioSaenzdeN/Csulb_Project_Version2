@@ -22,23 +22,28 @@ export class ChartsComponent implements OnInit {
   //addition
   //this input will be the number of students
   @Input('inputter') userInput :string;
-  //this boolean will prevent the graph from showing up until input is received
 
-  chartsForm: FormGroup;
-  title: 'Graph';
+  // title: 'Graph';
   chart = Chart;
+
+  //this variable will include all the raw data from each set of graphs
   list_of_charts=[];
+  // this variable will include the description of each of the graphs
   description_temp="";
+
   constructor(private http: HttpClient,
     private authenticationService: AuthenticationService,
     private router: Router,
   ){}
+  //if the user is logged in, the user will remain in ChartsComponent, the user
+  // will be redirected to the login otherwise
   ngOnInit() {
     if (this.authenticationService.currentUserValue) {
         this.router.navigate(['/charts']);
     }else{
         this.router.navigate(['/']);
     }
+
   // if graph must show at the beginning of anything put code here
   this.userInput="0";
 }// end of ngOnInit()
@@ -95,6 +100,11 @@ export class ChartsComponent implements OnInit {
         })// enf of this.chart
     }
 
+
+// This function will send the user input (# of students) and receive all the
+// necessary data to create the desired graphs
+// NOTE: In order to make this function easier to read, parts of the code has been
+// converted into functions to reduce the overall size of this function
     private getGraphArr(userInput){
 
         // resetting description_temp variable
@@ -103,6 +113,8 @@ export class ChartsComponent implements OnInit {
         //logs in the console what is being received
         this.http.get(`http://localhost:8000/markov/`+userInput+`/`).subscribe(data =>{console.log(data);
 
+        // This loop destorys the previously stored data to make sure there is
+        // no overlap betwee old data and new data
           for (i = 0; i <this.list_of_charts.length ; i++){
             this.list_of_charts[i].destroy();
           }
@@ -115,6 +127,13 @@ export class ChartsComponent implements OnInit {
           //var colors=['red','blue','purple','yellow','black','brown','Crimson','Cyan','DarkOrchid'];
           var canvases = ['canvas','canvas1','canvas2','canvas3','canvas4','canvas5'];
           var iterator =0;
+          // the following strings need to match the values they have in the backend
+          // to properly access the data.
+          // the code below, starts decapsuling the data received from the backend
+          // and stores the data from each layer in its corresponding variable.
+          // The concept of the code below is similar to the russian dolls.
+          // To better understand the structure of the data received, check \
+          // the backend code
           var graphs_container = "Figures";
           var description="default";
           var i =1;
@@ -125,7 +144,7 @@ export class ChartsComponent implements OnInit {
                   }else if(functions=="description"){
                     this.description_temp+=data[graphs_container][graphs][functions]+"\n";
                   }else{
-                    console.log(data[graphs_container][graphs][functions]);
+                    // console.log(data[graphs_container][graphs][functions]);
                     dataset_list.push( this.initializeDataset(functions, data[graphs_container][graphs][functions][0],
                     data[graphs_container][graphs][functions][1],data[graphs_container][graphs][functions][1])  );
                     iterator = iterator +1;
@@ -134,7 +153,7 @@ export class ChartsComponent implements OnInit {
                 //this allocates the graphs into the canvases in the html
                 if (dataset_list.length>0){
                   this.initializeGraph("canvas"+i,dataset_list,x_axis);
-                  var canvas = <HTMLCanvasElement>document.getElementById("canvas"+(i+1));
+                  var canvas = <HTMLCanvasElement>document.getElementById("canvas"+(i));
                   var context = canvas.getContext("2d");
                   dataset_list=[];
                   iterator=0;
@@ -144,11 +163,15 @@ export class ChartsComponent implements OnInit {
          }
         );
     }
+    // this function helps reducing the code int the getGraphArr function
+    // the data returned is a component necessary to build the entire chart
     private initializeDataset (_label,_data, _backgroundColor, _borderColor){
       var ans ={"label": _label , "data":_data, "backgroundColor":_backgroundColor, "borderColor": _borderColor,"fill": false};
       //console.log(ans);
       return ans;
     }
+    // using the smaller components, the entire chart is built. The purpose of this
+    // function is to reduce the size of getGraphArr
     private initializeGraph (id,_datasets, _labels){
       this.chart = new Chart (id,{
         type:'line',
@@ -160,7 +183,8 @@ export class ChartsComponent implements OnInit {
       })
       this.list_of_charts.push(this.chart);
     }
-    //this function works
+
+    //this function is for testing purposes
     private getGraphTest(userInput){
         this.http.get(`http://localhost:8000/markov/`+userInput+`/`).subscribe(data =>{console.log(data);});
         //.subscribe(data =>{console.log(data);})

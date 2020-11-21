@@ -13,10 +13,13 @@ export class HomeComponent implements OnInit {
         private userService: UserService,
           private router: Router,
     ) {
+      // this assigment reaches out to the authenticationService and retrieves the value of the current user
         this.currentUser = this.authenticationService.currentUserValue;
 
     }
-
+    // after previously retrieving the value, if the value is accpedted (the person accessing the link is logged in)
+    // the user will remain in the home page. If an unidentified user tries to access the link, it will be redirected to
+    // the login page
     ngOnInit() {
       if (this.authenticationService.currentUserValue) {
           this.router.navigate(['/home']);
@@ -25,14 +28,18 @@ export class HomeComponent implements OnInit {
       }
     }
 
+    // not used
     deleteUser(id: number) {
         this.userService.delete(id)
             .pipe(first())
             .subscribe(() => this.loadAllUsers());
     }
+
+    // testing purposes
     getUsername (){
       console.log(this.currentUser.username);
     }
+    //not used
     loadAllUsers() {
         this.userService.getAll()
             .pipe(first())

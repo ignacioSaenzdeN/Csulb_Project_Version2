@@ -3,6 +3,9 @@ import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from
 
 import { AuthenticationService } from '../_services';
 
+
+// Currently we are using a different sytem to regulate access so the follwing code
+// should be unused.
 @Injectable({ providedIn: 'root' })
 export class AuthGuard implements CanActivate {
     constructor(

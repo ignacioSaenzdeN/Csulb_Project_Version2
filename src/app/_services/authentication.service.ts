@@ -6,6 +6,8 @@ import {User} from '../_models';
 import { environment } from '@environments/environment';
 import { of as observableOf } from 'rxjs';
 
+// The code below is used for authentication purposes as well as determining
+// level of access between users
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
     private currentUserSubject: BehaviorSubject<User>;
@@ -14,7 +16,7 @@ export class AuthenticationService {
     public isProvider:boolean;
     public isProviderObservable: Observable<boolean>;
     constructor(private http: HttpClient) {
-        this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
+
         this.currentUser = this.currentUserSubject.asObservable();
         this.isProviderObservable = observableOf( this.isProvider);
         this.getperm();
@@ -33,6 +35,8 @@ export class AuthenticationService {
                 return user;
             }));
     }
+    // The following example retrieves the level of access of an indivual.
+    // The reques returns the access the user has to each level
     getpermission(username,password){
       this.permissions=[];
       this.isProvider=false;
@@ -40,11 +44,17 @@ export class AuthenticationService {
           for (let perm in data){
             this.permissions.push(data[perm]);
           }
+          // At the moment, the permissions are stored next to the token
           localStorage.setItem('curr_permissions',JSON.stringify(this.permissions));
 
-
+          // As currently, there is no way to retrieve the level of access,
+          // this function will check if the word provider is in any of the
+          // permissions received.
           var temp = JSON.parse( localStorage.getItem('curr_permissions') );
           var entire_perm=temp[0];
+          // With the current system, "provide" always remains in the same
+          //  position of the string, so this is the current system used to
+          // retrieve the level of access
           var permission = entire_perm.substring(entire_perm.length-8, entire_perm.length);
           if (permission=="provider"){
             this.isProvider=true;
@@ -57,6 +67,8 @@ export class AuthenticationService {
           // console.log(JSON.parse( localStorage.getItem('curr_permissions[0]') ));
         });
     }
+    // This function does the same as the previous one but it retrieves the data
+    // that is currently locally stored.
     getperm(){
       var temp = JSON.parse( localStorage.getItem('curr_permissions') );
       if (temp==null){

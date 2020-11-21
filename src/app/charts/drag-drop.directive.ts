@@ -1,5 +1,8 @@
 import { Directive, Output, Input, EventEmitter, HostBinding, HostListener } from '@angular/core';
 import {UploadFileComponent} from './upload-file/upload-file.component';
+
+// The following code is only used for uploading files
+// most of it is not used but it is there in case it can become useful
 @Directive({
   selector: '[appDragDrop]'
 })
