@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Router, NavigationStart } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 
+
+// The following code aims to provide success/ fail notifications to the User
 @Injectable({ providedIn: 'root' })
 export class AlertService {
     private subject = new Subject<any>();
