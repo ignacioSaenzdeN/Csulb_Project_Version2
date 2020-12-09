@@ -82,6 +82,8 @@ export class RegisterComponent implements OnInit {
         // }
         console.log("it will be sent");
         this.loading = true;
+        this.userService.register(this.registerForm.value)
+            .pipe(first()).subscribe();
         this.userService.inviteuser(this.registerForm.value)
             .pipe(first())
             .subscribe(
@@ -89,6 +91,7 @@ export class RegisterComponent implements OnInit {
                 error => {this.alertService.success('Registration successful', true);
                     this.loading = false;
                 });
+
         console.log("it has been sent");
         this.loading = false;
     }

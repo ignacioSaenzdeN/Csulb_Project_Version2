@@ -15,25 +15,26 @@ export class UserService {
     }
 // Used to invite users into the system
     register(form) {
-      console.log("form");
+      console.log("form for registering user:");
       console.log(form);
       return this.http.post(`http://localhost:8000/createUser/`, form);
     }
-// Not used
-    delete(id) {
-        return this.http.delete(`${environment.apiUrl}/users/${id}`);
-    }
+
 // this method determines the level of access of the new user upon its creation
     inviteuser(form){
       console.log("inviting user");
-      this.register(form);
+      // this.register(form);
       return this.http.post(`http://localhost:8000/permission/`, form);
     }
 
-// the following method is used when uploading files to the backend
+// the following method is used when uploading files to train the model
     upload(form){
       console.log("uploaded");
       return this.http.post(`http://localhost:8000/upload/`, form);
+    }
+// Not used
+    delete(id) {
+      return this.http.delete(`${environment.apiUrl}/users/${id}`);
     }
 
 }

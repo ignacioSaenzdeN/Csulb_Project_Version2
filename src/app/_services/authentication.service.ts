@@ -17,7 +17,6 @@ export class AuthenticationService {
     public isProviderObservable: Observable<boolean>;
     constructor(private http: HttpClient) {
         this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
-        console.log("hello")
         this.currentUser = this.currentUserSubject.asObservable();
         this.isProviderObservable = observableOf( this.isProvider);
         this.getperm();
