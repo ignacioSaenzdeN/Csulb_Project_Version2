@@ -41,7 +41,9 @@ export class AuthenticationService {
       this.permissions=[];
       this.isProvider=false;
         this.http.post<any>('http://localhost:8000/getpermission/',{'username':username,'password':password}).subscribe(data =>{
+          console.log("hello");
           for (let perm in data){
+            console.log(perm);
             this.permissions.push(data[perm]);
           }
           // At the moment, the permissions are stored next to the token
