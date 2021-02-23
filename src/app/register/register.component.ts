@@ -88,10 +88,9 @@ export class RegisterComponent implements OnInit {
                 .pipe(first())
                 .subscribe(
                     data => {this.alertService.success('Registration successful', true);},
-                    error => {this.alertService.success('Registration Unsuccessful', true);
+                    error => {this.alertService.error('Registration Unsuccessful', true);
                         this.loading = false;
                     });
-
           }
         );
 

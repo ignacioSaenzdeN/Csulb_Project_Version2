@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import {User} from '../_models';
 import { environment } from '@environments/environment';
 import { of as observableOf } from 'rxjs';
+import * as jwt_decode from 'jwt-decode';
 
 // The code below is used for authentication purposes as well as determining
 // level of access between users
@@ -32,6 +33,10 @@ export class AuthenticationService {
                 // store user details and jwt token in local storage to keep user logged in between page refreshes
                 localStorage.setItem('currentUser', JSON.stringify(user));
                 this.currentUserSubject.next(user);
+                console.log(user);
+                let temp = jwt_decode(user.access);
+                console.log(temp);
+                console.log("sda");
                 return user;
             }));
     }
@@ -43,7 +48,6 @@ export class AuthenticationService {
         this.http.post<any>('http://localhost:8000/getpermission/',{'username':username,'password':password}).subscribe(data =>{
           console.log("hello");
           for (let perm in data){
-            console.log(perm);
             this.permissions.push(data[perm]);
           }
           // At the moment, the permissions are stored next to the token
