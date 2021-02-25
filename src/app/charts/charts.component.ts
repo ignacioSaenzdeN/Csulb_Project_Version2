@@ -44,6 +44,7 @@ export class ChartsComponent implements OnInit {
         this.router.navigate(['/']);
     }
     this.authenticationService.refresh();
+    console.log(this.authenticationService.isTokenValid==true);
   // if graph must show at the beginning of anything put code here
   this.userInput="0";
 }// end of ngOnInit()

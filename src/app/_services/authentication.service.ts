@@ -39,9 +39,15 @@ export class AuthenticationService {
                 return user;
             }));
     }
+    isTokenValid(){
+      let currentTimeInSeconds=Math.floor(Date.now()/1000);
+      let token = JSON.parse( localStorage.getItem('currentUser') );
+      let accessToken =jwt_decode(token.access);
+      let expirationDate = accessToken.exp;
+      return expirationDate> currentTimeInSeconds;
+    }
     refresh(){
-      let temp = localStorage.getItem('currentUser');
-      console.log(temp);
+      this.isTokenValid();
       let token = JSON.parse( localStorage.getItem('currentUser') );
       console.log("auth refresh");
       console.log(jwt_decode(token.refresh));
