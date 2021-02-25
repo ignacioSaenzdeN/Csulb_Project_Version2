@@ -44,7 +44,10 @@ export class AuthenticationService {
       let token = JSON.parse( localStorage.getItem('currentUser') );
       let accessToken =jwt_decode(token.access);
       let expirationDate = accessToken.exp;
-      return expirationDate> currentTimeInSeconds;
+      console.log("current time is: "+ currentTimeInSeconds);
+      console.log("expiration time is: "+ expirationDate);
+      console.log("the substraction is: "+ (expirationDate - currentTimeInSeconds));
+      return expirationDate > currentTimeInSeconds;
     }
     refresh(){
       this.isTokenValid();
