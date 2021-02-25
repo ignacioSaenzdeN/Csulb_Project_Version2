@@ -43,7 +43,7 @@ export class ChartsComponent implements OnInit {
     }else{
         this.router.navigate(['/']);
     }
-
+    this.authenticationService.refresh();
   // if graph must show at the beginning of anything put code here
   this.userInput="0";
 }// end of ngOnInit()

@@ -36,9 +36,15 @@ export class AuthenticationService {
                 console.log(user);
                 let temp = jwt_decode(user.access);
                 console.log(temp);
-                console.log("sda");
                 return user;
             }));
+    }
+    refresh(){
+      let temp = localStorage.getItem('currentUser');
+      console.log(temp);
+      let token = JSON.parse( localStorage.getItem('currentUser') );
+      console.log("auth refresh");
+      console.log(jwt_decode(token.refresh));
     }
     // The following example retrieves the level of access of an indivual.
     // The reques returns the access the user has to each level
