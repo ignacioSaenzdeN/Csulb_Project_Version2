@@ -26,7 +26,7 @@ export class RegisterComponent implements OnInit {
     }
 
     ngOnInit() {
-      if (this.authenticationService.currentUserValue&& this.authenticationService.isProvider) {
+      if (this.authenticationService.currentUserValue&& this.authenticationService.isProvider &&this.authenticationService.isTokenValid()) {
           this.router.navigate(['/register']);
       }else{
           this.router.navigate(['/']);

@@ -58,9 +58,10 @@ export class UploadFileComponent  {
   ){}
   ngOnInit() {
     // if user is not validated, the user will be redirected to the login
-    if (this.authenticationService.currentUserValue) {
+    if (this.authenticationService.currentUserValue && this.authenticationService.isTokenValid()) {
         this.router.navigate(['/uploadView']);
     }else{
+        this.authenticationService.logout();
         this.router.navigate(['/']);
     }
     // this prevents the slider from saying N/A or similar

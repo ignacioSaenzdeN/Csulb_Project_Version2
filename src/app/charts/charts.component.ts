@@ -38,9 +38,10 @@ export class ChartsComponent implements OnInit {
   //if the user is logged in, the user will remain in ChartsComponent, the user
   // will be redirected to the login otherwise
   ngOnInit() {
-    if (this.authenticationService.currentUserValue) {
+    if (this.authenticationService.currentUserValue && this.authenticationService.isTokenValid() ) {
         this.router.navigate(['/charts']);
     }else{
+        this.authenticationService.logout();
         this.router.navigate(['/']);
     }
   // if graph must show at the beginning of anything put code here

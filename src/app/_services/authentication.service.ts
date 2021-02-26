@@ -33,9 +33,7 @@ export class AuthenticationService {
                 // store user details and jwt token in local storage to keep user logged in between page refreshes
                 localStorage.setItem('currentUser', JSON.stringify(user));
                 this.currentUserSubject.next(user);
-                console.log(user);
                 let temp = jwt_decode(user.access);
-                console.log(temp);
                 return user;
             }));
     }
@@ -44,16 +42,27 @@ export class AuthenticationService {
       let token = JSON.parse( localStorage.getItem('currentUser') );
       let accessToken =jwt_decode(token.access);
       let expirationDate = accessToken.exp;
-      console.log("current time is: "+ currentTimeInSeconds);
-      console.log("expiration time is: "+ expirationDate);
-      console.log("the substraction is: "+ (expirationDate - currentTimeInSeconds));
+      let minutesLeft= 120
+      if ( (expirationDate -currentTimeInSeconds) <= minutesLeft){
+        this.refresh();
+      }
       return expirationDate > currentTimeInSeconds;
     }
     refresh(){
-      this.isTokenValid();
       let token = JSON.parse( localStorage.getItem('currentUser') );
-      console.log("auth refresh");
-      console.log(jwt_decode(token.refresh));
+      // console.log("auth refresh");
+      // console.log(jwt_decode(token.refresh));
+      // console.log("hello2");
+      let temp =jwt_decode(token.refresh);
+      console.log(temp);
+      this.http.post<any>(`http://localhost:8000/api/refresh/`, {"refresh":token.refresh }).pipe().subscribe(
+        data => {
+          localStorage.setItem('currentUser', JSON.stringify(data));
+          this.currentUserSubject.next(data);},
+        error => {
+          console.log(error);
+        }
+      );
     }
     // The following example retrieves the level of access of an indivual.
     // The reques returns the access the user has to each level
