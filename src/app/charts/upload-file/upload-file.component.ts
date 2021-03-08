@@ -58,9 +58,10 @@ export class UploadFileComponent  {
   ){}
   ngOnInit() {
     // if user is not validated, the user will be redirected to the login
-    if (this.authenticationService.currentUserValue) {
+    if (this.authenticationService.currentUserValue && this.authenticationService.isTokenValid()) {
         this.router.navigate(['/uploadView']);
     }else{
+        this.authenticationService.logout();
         this.router.navigate(['/']);
     }
     // this prevents the slider from saying N/A or similar
@@ -99,10 +100,11 @@ export class UploadFileComponent  {
 
       // if there are issues with any of the form fields, the submission will be rejected
       if (this.uploadForm.invalid) {
-          console.log(this.uploadForm.controls.universityName);
-          console.log(this.uploadForm.controls.collegeName);
-          console.log(this.uploadForm.controls.departmentName);
-          console.log(this.uploadForm.controls.amountOfStudents);
+
+        console.log(this.uploadForm.controls.universityName);
+        console.log(this.uploadForm.controls.collegeName);
+        console.log(this.uploadForm.controls.departmentName);
+        console.log(this.uploadForm.controls.amountOfStudents);
           console.log(this.uploadForm.controls.data);
           return;
       }
@@ -156,8 +158,16 @@ export class UploadFileComponent  {
       const page1 : string = file.SheetNames[0];
       const page1_sheet :XLSX.WorkSheet = file.Sheets[page1];
       this.ExcelData = (XLSX.utils.sheet_to_json(page1_sheet, {header:1 }));
-      console.log(this.ExcelData);
-      this.fileContent= this.ExcelData;
+      // console.log(this.ExcelData);
+      this.fileContent= this.ExcelData[0];
+      for (let i in this.fileContent){
+        // console.log(this.fileContent[i]);
+        // console.log(isNaN(+this.fileContent[i]));
+        if (isNaN(+this.fileContent[i])){
+          this.fileContent=[];
+          break;
+        }
+      }
     }
     // after this function is called, onload is activated.
     reader.readAsBinaryString(event[0]);
@@ -246,7 +256,9 @@ train (){
           }
         }
       }
+        this.train_wait=false;
   });
+
 }
 // just to output a confirmation message in the html
 private accepted(){

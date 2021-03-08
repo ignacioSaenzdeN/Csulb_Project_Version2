@@ -21,9 +21,10 @@ export class HomeComponent implements OnInit {
     // the user will remain in the home page. If an unidentified user tries to access the link, it will be redirected to
     // the login page
     ngOnInit() {
-      if (this.authenticationService.currentUserValue) {
+      if (this.authenticationService.currentUserValue && this.authenticationService.isTokenValid()) {
           this.router.navigate(['/home']);
       }else{
+          this.authenticationService.logout();
           this.router.navigate(['/']);
       }
     }

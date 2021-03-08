@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import {User} from '../_models';
 import { environment } from '@environments/environment';
 import { of as observableOf } from 'rxjs';
+import * as jwt_decode from 'jwt-decode';
 
 // The code below is used for authentication purposes as well as determining
 // level of access between users
@@ -32,8 +33,36 @@ export class AuthenticationService {
                 // store user details and jwt token in local storage to keep user logged in between page refreshes
                 localStorage.setItem('currentUser', JSON.stringify(user));
                 this.currentUserSubject.next(user);
+                let temp = jwt_decode(user.access);
                 return user;
             }));
+    }
+    isTokenValid(){
+      let currentTimeInSeconds=Math.floor(Date.now()/1000);
+      let token = JSON.parse( localStorage.getItem('currentUser') );
+      let accessToken =jwt_decode(token.access);
+      let expirationDate = accessToken.exp;
+      let minutesLeft= 120
+      if ( (expirationDate -currentTimeInSeconds) <= minutesLeft){
+        this.refresh();
+      }
+      return expirationDate > currentTimeInSeconds;
+    }
+    refresh(){
+      let token = JSON.parse( localStorage.getItem('currentUser') );
+      // console.log("auth refresh");
+      // console.log(jwt_decode(token.refresh));
+      // console.log("hello2");
+      let temp =jwt_decode(token.refresh);
+      console.log(temp);
+      this.http.post<any>(`http://localhost:8000/api/refresh/`, {"refresh":token.refresh }).pipe().subscribe(
+        data => {
+          localStorage.setItem('currentUser', JSON.stringify(data));
+          this.currentUserSubject.next(data);},
+        error => {
+          console.log(error);
+        }
+      );
     }
     // The following example retrieves the level of access of an indivual.
     // The reques returns the access the user has to each level
@@ -41,6 +70,7 @@ export class AuthenticationService {
       this.permissions=[];
       this.isProvider=false;
         this.http.post<any>('http://localhost:8000/getpermission/',{'username':username,'password':password}).subscribe(data =>{
+          console.log("hello");
           for (let perm in data){
             this.permissions.push(data[perm]);
           }

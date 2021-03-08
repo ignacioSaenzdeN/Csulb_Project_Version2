@@ -26,9 +26,10 @@ export class ProfileComponent implements OnInit {
   private not_match_bool=false;
   private not_match_pass_bool=false;
   ngOnInit() {
-    if (this.authenticationService.currentUserValue) {
+    if (this.authenticationService.currentUserValue && this.authenticationService.isTokenValid()) {
         this.router.navigate(['/profile']);
     }else{
+        this.authenticationService.logout();
         this.router.navigate(['/']);
     }
     if (this.authenticationService.isProvider)
