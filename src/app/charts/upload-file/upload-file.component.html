@@ -4,6 +4,9 @@
 data a user needs to input to train the model -->
 <div  *ngIf="this.upload_boolean===true">
 <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()">
+  <div  *ngIf="submitted &&this.fileContent.length==0" class="alert alert-danger" role="alert">
+    The value in the excel file should only be integers, please fix the issue and submit again.
+  </div>
   <div class="form-group">
       <label for="universityName">University</label>
       <select formControlName="universityName" class="form-control" (input)="onUpdateUniversity($event)" [ngClass]="{ 'is-invalid': submitted && f.universityName.errors }"  >
@@ -65,7 +68,10 @@ using the previously updated data -->
 
 </div>
 <div  *ngIf="this.upload_boolean===false">
-  <button class="btn btn-primary" (click)="train()">Train/ Train again
+  {{this.train_wait==true}}
+  {{this.train_wait}}
+  {{train_wait}}
+  <button class="btn btn-primary" [disabled]="this.train_wait===true"(click)="train()">Train/ Train again
   </button>
 <div *ngIf="this.train_wait===true">
   <p>

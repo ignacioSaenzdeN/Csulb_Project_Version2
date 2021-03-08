@@ -157,8 +157,16 @@ export class UploadFileComponent  {
       const page1 : string = file.SheetNames[0];
       const page1_sheet :XLSX.WorkSheet = file.Sheets[page1];
       this.ExcelData = (XLSX.utils.sheet_to_json(page1_sheet, {header:1 }));
-      console.log(this.ExcelData);
-      this.fileContent= this.ExcelData;
+      // console.log(this.ExcelData);
+      this.fileContent= this.ExcelData[0];
+      for (let i in this.fileContent){
+        // console.log(this.fileContent[i]);
+        // console.log(isNaN(+this.fileContent[i]));
+        if (isNaN(+this.fileContent[i])){
+          this.fileContent=[];
+          break;
+        }
+      }
     }
     // after this function is called, onload is activated.
     reader.readAsBinaryString(event[0]);
@@ -247,7 +255,9 @@ train (){
           }
         }
       }
+        this.train_wait=false;
   });
+
 }
 // just to output a confirmation message in the html
 private accepted(){
