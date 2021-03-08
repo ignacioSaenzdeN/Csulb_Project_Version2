@@ -68,9 +68,7 @@ using the previously updated data -->
 
 </div>
 <div  *ngIf="this.upload_boolean===false">
-  {{this.train_wait==true}}
-  {{this.train_wait}}
-  {{train_wait}}
+
   <button class="btn btn-primary" [disabled]="this.train_wait===true"(click)="train()">Train/ Train again
   </button>
 <div *ngIf="this.train_wait===true">
