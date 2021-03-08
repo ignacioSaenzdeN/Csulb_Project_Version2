@@ -39,8 +39,8 @@ export class ProfileComponent implements OnInit {
       // the following 3 lines retrieve the username from the jwt that will be displayed
       // in the html
       var user_json = JSON.parse( localStorage.getItem('currentUser') );
-      var decoded = jwt_decode(user_json.access);
-      this.username = decoded.username;
+      // var decoded = jwt_decode(user_json.access);
+      // this.username = decoded.username;
   }
   private getPerm(){
       this.http.get(`http://localhost:8000/permission/`).subscribe(data =>{console.log(data);});

@@ -37,4 +37,19 @@ export class UserService {
       return this.http.delete(`${environment.apiUrl}/users/${id}`);
     }
 
+// Used to request password reset link
+   sendPasswordResetLink(email){
+     return this.http.post(`http://localhost:8000/account-reset-validate/`, email);
+   }
+
+// Used to verify token
+   passwordResetVerifyToken(passwordResetToken){
+     return this.http.post(`http://localhost:8000/account-reset-validate/verify-token/`, passwordResetToken);
+   }
+// Used to verify token and send new password 
+  confirmPasswordReset(tokenPassword){
+    return this.http.post(`http://localhost:8000/account-reset-validate/confirm/`, tokenPassword);
+  }
+
+
 }
