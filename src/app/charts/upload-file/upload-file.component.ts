@@ -99,6 +99,11 @@ export class UploadFileComponent  {
 
       // if there are issues with any of the form fields, the submission will be rejected
       if (this.uploadForm.invalid) {
+          console.log(this.uploadForm.controls.universityName);
+          console.log(this.uploadForm.controls.collegeName);
+          console.log(this.uploadForm.controls.departmentName);
+          console.log(this.uploadForm.controls.amountOfStudents);
+          console.log(this.uploadForm.controls.data);
           return;
       }
       console.log(  this.uploadForm.controls.universityName.value);

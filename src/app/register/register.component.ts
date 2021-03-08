@@ -26,11 +26,11 @@ export class RegisterComponent implements OnInit {
     }
 
     ngOnInit() {
-      if (this.authenticationService.currentUserValue&& this.authenticationService.isProvider) {
-          this.router.navigate(['/register']);
-      }else{
-          this.router.navigate(['/']);
-      }
+    //   if (this.authenticationService.currentUserValue&& this.authenticationService.isProvider) {
+    //       this.router.navigate(['/register']);
+    //   }else{
+    //       this.router.navigate(['/']);
+    //   }
         this.registerForm = this.formBuilder.group({
             // firstName: ['', Validators.required],
             // lastName: ['', Validators.required],
@@ -82,15 +82,19 @@ export class RegisterComponent implements OnInit {
         // }
         console.log("it will be sent");
         this.loading = true;
-        this.userService.register(this.registerForm.value)
-            .pipe(first()).subscribe();
-        this.userService.inviteuser(this.registerForm.value)
-            .pipe(first())
-            .subscribe(
-                data => {this.alertService.success('Registration successful', true);},
-                error => {this.alertService.success('Registration successful', true);
-                    this.loading = false;
-                });
+        this.userService.register(this.registerForm.value).toPromise().then(
+          res=>{
+            this.userService.inviteuser(this.registerForm.value)
+                .pipe(first())
+                .subscribe(
+                    data => {this.alertService.success('Registration successful', true);},
+                    error => {this.alertService.success('Registration Unsuccessful', true);
+                        this.loading = false;
+                    });
+
+          }
+        );
+
 
         console.log("it has been sent");
         this.loading = false;
