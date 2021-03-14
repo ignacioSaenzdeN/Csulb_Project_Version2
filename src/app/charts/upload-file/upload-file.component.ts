@@ -7,6 +7,7 @@ import { Options } from 'ng5-slider';
 import { first } from 'rxjs/operators';
 import {Chart} from 'chart.js';
 import * as XLSX from 'xlsx';
+import Papa from 'papaparse';
 @Component({
   selector: 'app-upload-file',
   templateUrl: './upload-file.component.html',
@@ -22,7 +23,8 @@ export class UploadFileComponent  {
   uploadForm: FormGroup;
   files: any = [];
   fileContent:object;
-  ExcelData:[][];
+  ExcelData:[][] = [];
+  ExcelDataObject:{} = {}
 
   //variables related to submission of form
   loading = false;
@@ -143,6 +145,7 @@ export class UploadFileComponent  {
   }
 
   uploadFile(event){
+    //let extension = event[0].name.split('.').pop();
     // technically we wil upload only one file at a time so this might not be necessary
     for (let index = 0; index < event.length; index++) {
       const element = event[index];
@@ -153,21 +156,61 @@ export class UploadFileComponent  {
     // we have to go layer by layer like a russian doll
     const reader: FileReader = new FileReader();
     reader.onload =()=>{
+      // if (extension === "csv"){
+      //   this.ExcelData = Papa.parse(reader);
+      // }
+      // else{
       var content =reader.result as string;
       const file :XLSX.WorkBook = XLSX.read (content,{type:'binary'});
       const page1 : string = file.SheetNames[0];
       const page1_sheet :XLSX.WorkSheet = file.Sheets[page1];
       this.ExcelData = (XLSX.utils.sheet_to_json(page1_sheet, {header:1 }));
+      // console.log("This.exceldata");
       // console.log(this.ExcelData);
-      this.fileContent= this.ExcelData[0];
-      for (let i in this.fileContent){
-        // console.log(this.fileContent[i]);
-        // console.log(isNaN(+this.fileContent[i]));
-        if (isNaN(+this.fileContent[i])){
-          this.fileContent=[];
+      // }
+      // grab only number data accounts with 3 rows and 1 colum of labels
+      let tempExcelData = []
+      for(let i = 2; i < this.ExcelData.length; i++){
+        let temp:number[] = [];
+        for(let j = 2; j < this.ExcelData[0].length; j++){
+          temp.unshift(this.ExcelData[i].pop());
+          //temp.insert(0, this.ExcelData[i]);
+        }
+        tempExcelData.push(temp);
+      }
+      console.log(tempExcelData);
+      // TODO: only allow integers
+      let flag = false;
+      for(let i = 0; i < tempExcelData.length; i++){
+        let tempExcelDataSlice =  tempExcelData[i].slice(1);
+        for(let j = 0; j < tempExcelDataSlice.length; j++){
+          if(isNaN(+tempExcelDataSlice[j])){
+            this.ExcelDataObject = {}
+            //When flag is se to true it means that we have found a type that is not an int
+            flag = true;
+            break;
+          }
+        }
+        if(flag){
           break;
         }
+        this.ExcelDataObject[tempExcelData[i][0].slice(3)] = tempExcelData[i].slice(1);
       }
+      console.log("this.exceldataobject");
+      console.log(this.ExcelDataObject);
+      this.fileContent= this.ExcelDataObject;
+      // We use the same flag from line 189 and set fileContent to empty array for the html to return an error message
+      if(flag){
+        this.fileContent = [];
+      }
+      // for (let i in this.fileContent){
+      //   // console.log(this.fileContent[i]);
+      //   // console.log(isNaN(+this.fileContent[i]));
+      //   if (isNaN(+this.fileContent[i])){
+      //     this.fileContent=[];
+      //     break;
+      //   }
+      // }
     }
     // after this function is called, onload is activated.
     reader.readAsBinaryString(event[0]);

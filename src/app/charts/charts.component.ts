@@ -111,8 +111,9 @@ export class ChartsComponent implements OnInit {
         this.description_temp="";
         this.description_temp="Description of each figure: \n"
         //logs in the console what is being received
-        this.http.get(`http://localhost:8000/markov/`+userInput+`/`).subscribe(data =>{console.log(data);
-
+        this.http.get(`http://localhost:8000/markov/`+userInput+`/`).subscribe(data =>{
+        console.log("chart component get data")
+        console.log(data)
         // This loop destorys the previously stored data to make sure there is
         // no overlap betwee old data and new data
           for (i = 0; i <this.list_of_charts.length ; i++){
@@ -138,7 +139,11 @@ export class ChartsComponent implements OnInit {
           var description="default";
           var i =1;
               for (let graphs in data[graphs_container]){
+                console.log("graphs in data[graphs_container]")
+                console.log(graphs)
                 for (functions in data[graphs_container][graphs]){
+                  console.log("functions in data[graphs_container][graphs]")
+                  console.log(functions)
                   if (functions == "x-axis"){
                     x_axis = data[graphs_container][graphs][functions];
                   }else if(functions=="description"){
