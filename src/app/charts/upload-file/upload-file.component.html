@@ -7,39 +7,8 @@ data a user needs to input to train the model -->
   <div  *ngIf="submitted &&  this.fileContent.length==0" class="alert alert-danger" role="alert">
     The value in the excel file should only be integers, please fix the issue and submit again.
   </div>
-  <div class="form-group">
-      <label for="universityName">University</label>
-      <select formControlName="universityName" class="form-control" (input)="onUpdateUniversity($event)" [ngClass]="{ 'is-invalid': submitted && f.universityName.errors }"  >
-          <option *ngFor ="let university of universities"  [(value)]="university">{{university}}
-          </option>
-      </select>
-      <div *ngIf="submitted && f.universityName.errors" class="invalid-feedback">
-          <div *ngIf="f.universityName.errors.required">University is required</div>
-      </div>
-  </div>
-  <div class="form-group">
-      <label for="collegeName">College</label>
-      <select formControlName="collegeName" class="form-control" (input)="onUpdateCollege($event)" [ngClass]="{ 'is-invalid': submitted && f.collegeName.errors }"  >
-          <option *ngFor ="let college of colleges"  [(value)]="college" >{{college}}
-          </option>
-      </select>
-      <div *ngIf="submitted && f.collegeName.errors" class="invalid-feedback">
-          <div *ngIf="f.collegeName.errors.required">College is required</div>
-      </div>
-  </div>
-
-  <div class="form-group">
-      <label for="departmentName">Department</label>
-      <select formControlName="departmentName" class="form-control" (input)="onUpdateDepartment($event)" [ngClass]="{ 'is-invalid': submitted && f.departmentName.errors }"  >
-          <option *ngFor ="let department of departments"  [(value)]="department">{{department}}
-          </option>
-      </select>
-      <div *ngIf="submitted && f.departmentName.errors" class="invalid-feedback">
-          <div *ngIf="f.departmentName.errors.required">Department is required</div>
-      </div>
-  </div>
-
-<!-- this section of code is specifically for the upload of files -->
+  <!-- this section of code is specifically for the upload of files -->
+<label>1. Insert a data sheet: </label>
 <div class="uploadfilecontainer" (click)="fileInput.click()" appDragDrop (onFileDropped)="uploadFile($event)">
   <input hidden type="file" #fileInput (change)="uploadFile($event.target.files)">
 </div>
@@ -49,26 +18,65 @@ data a user needs to input to train the model -->
       <img src="data:image/png;base64,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">
     </button>
   </div>
-
+  <br> 
+<!-- 
   <ng5-slider [(value)]="userInput" [options]="options" (input)="onUpdateSlider($event)"></ng5-slider>
-  <br>
+  <br> -->
+
+
+  <div *ngIf="studentType" class="form-group">
+      <!-- <label *ngIf="studentType" for="universityName">Student type</label> -->
+      <label>2. Select a cohort: </label>
+      <select formControlName="studentTypeF" class="form-control" (change)="setCohorYearType($event)" [(ngModel)]="studentTypeSelected" >
+        <option selected [disabled]="true">- Student type -</option>
+        <option *ngFor ="let type of studentType">{{type}}
+        </option>
+      </select>
+      <div *ngIf="submitted && f.studentTypeF.errors" class="invalid-feedback">
+          <div *ngIf="f.studentTypeF.errors.required">Student type is required</div>
+      </div>
+  </div>
+  <div class="form-group">
+      <!-- <label  *ngIf="studentTypeSelected" for="collegeName">Year term</label> -->
+      <select  *ngIf="studentTypeSelected" formControlName="yearTermF" class="form-control" (change)="setAcademicType($event)" [(ngModel)]="cohortYearSelected" >
+        <option selected [disabled]="true">- Year term -</option>
+        <option *ngFor ="let type of cohortYear"  >{{type}}
+        </option>
+      </select>
+      <div *ngIf="submitted && f.yearTermF.errors" class="invalid-feedback">
+          <div *ngIf="f.yearTermF.errors.required"> Year term is required</div>
+      </div>
+  </div>
 
   <div class="form-group">
-      <button [disabled]="loading" class="btn btn-primary">
-          <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
-          Upload
-      </button>
+      <!-- <label *ngIf="cohortYearSelected" for="departmentName">Academic type</label> -->
+      <select *ngIf="cohortYearSelected"  formControlName="academicTypeF" class="form-control" [(ngModel)]="cohortAcademicTypeSelected" >
+        <option selected [disabled]="true">- Academic type -</option>
+        <option *ngFor ="let type of cohortAcademicType">{{type}}
+        </option>
+      </select>
+      <div *ngIf="submitted && f.academicTypeF.errors" class="invalid-feedback">
+          <div *ngIf="f.academicTypeF.errors.required">Academic type is required</div>
+      </div>
   </div>
-  </form>
+  <div class="form-group">
+    <button  *ngIf="cohortAcademicTypeSelected"  [disabled]="loading" class="btn btn-primary">
+        <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+        Upload
+    </button>
+</div>
+</form>
+</div>
 
 <!-- The following code can be converted into its own component but it was chosen
 to be included as part of this component as it was a small addition.
 Once the data is upload the following html code will allow for the model to be trained
 using the previously updated data -->
 
-</div>
-<div  *ngIf="this.upload_boolean===false">
 
+<div  *ngIf="this.upload_boolean===false">
+  <label>3. Train the cohort </label>
+  <br>
   <button class="btn btn-primary" [disabled]="this.train_wait===true"(click)="train()">Train/ Train again
   </button>
 <div *ngIf="this.train_wait===true">

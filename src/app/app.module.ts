@@ -26,6 +26,9 @@ import { UploadFileComponent } from './charts/upload-file/upload-file.component'
 import { AccountResetComponent } from './account-reset/account-reset.component';
 import { AccountResetValidateComponent } from './account-reset/account-reset-validate/account-reset-validate.component';
 
+//FormsModule for dropdown in data submission
+import { FormsModule } from '@angular/forms';
+
 @NgModule({
     imports: [
         BrowserModule,
@@ -33,6 +36,7 @@ import { AccountResetValidateComponent } from './account-reset/account-reset-val
         HttpClientModule,
         appRoutingModule,
         Ng5SliderModule,
+        FormsModule,
 
     ],
     declarations: [

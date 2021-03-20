@@ -19,6 +19,17 @@ export class ChartsComponent implements OnInit {
     floor: 0,
     ceil: 2000
   };
+  queryGraphs: FormGroup;
+    //this will contain queried data for the drop down menu
+  academicLabel:string[];
+  academicLabelSelected:string = "";
+  studentType:string[] = ["FRESHMEN", "TRANSFER"];
+  studentTypeSelected:string = "";
+  cohortYear:string[];
+  cohortYearSelected:string = "";
+  cohortAcademicType:string[];
+  cohortAcademicTypeSelected:string = "";
+  
   //addition
   //this input will be the number of students
   @Input('inputter') userInput :string;
@@ -32,22 +43,36 @@ export class ChartsComponent implements OnInit {
   description_temp="";
 
   constructor(private http: HttpClient,
+    private formBuilder: FormBuilder,
     private authenticationService: AuthenticationService,
     private router: Router,
   ){}
   //if the user is logged in, the user will remain in ChartsComponent, the user
   // will be redirected to the login otherwise
-  ngOnInit() {
+  ngOnInit() {  
     if (this.authenticationService.currentUserValue && this.authenticationService.isTokenValid() ) {
         this.router.navigate(['/charts']);
     }else{
         this.authenticationService.logout();
         this.router.navigate(['/']);
     }
-  // if graph must show at the beginning of anything put code here
-  this.userInput="0";
-}// end of ngOnInit()
+    // if graph must show at the beginning of anything put code here
+    this.userInput="0";
+    //initializes the form
+    this.createForm();
+  }// end of ngOnInit()
 
+  private createForm(){
+    this.queryGraphs = this.formBuilder.group({
+      academicLabel: ['', Validators.required],
+      studentType: ['', Validators.required],
+      yearTerm: ['', Validators.required],
+      academicType: ['', Validators.required],
+    });
+  }
+
+  // f() is just a shortcut to access the controls
+  get f() { return this.queryGraphs.controls; }
   //Demo graphs to see structure of a graph
     private getGraph(){
         this.http.get(`http://localhost:8000/markov/900/`).subscribe(data =>{console.log(data);});
@@ -198,4 +223,30 @@ export class ChartsComponent implements OnInit {
     onUpdateServerName (event: any){
       this.userInput = (<HTMLInputElement>event.target).value;
     }
+
+    getStudentType(){
+      console.log(this.studentTypeSelected);
+      this.http.get(`http://localhost:8000/getYearTerm/${this.studentTypeSelected}`).subscribe(data =>{
+        console.log(data);
+        this.cohortYear = Object.values(data).map(a => a.yearTerm);
+        console.log(this.cohortYear);
+      });
+    }
+    getAcademicLabel(){
+      console.log(this.academicLabelSelected);
+      this.http.get(`http://localhost:8000/getAcademicLabel/`).subscribe(data =>{
+        console.log(data);
+        this.academicLabel = Object.values(data).map(a => a.academicLabel);
+        console.log(this.academicLabel);
+      });
+    }
+    getAcademicType(){
+      console.log(this.cohortAcademicTypeSelected);
+      this.http.get(`http://localhost:8000/getAcademicType/${this.studentTypeSelected}/${this.cohortYearSelected}/${this.academicLabelSelected}`).subscribe(data =>{
+        console.log(data);
+        this.cohortAcademicType = Object.values(data).map(a => a.academicType);
+        console.log(this.cohortAcademicType);
+      });
+    }
+
 }

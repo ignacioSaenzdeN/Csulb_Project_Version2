@@ -2,11 +2,68 @@
 
 <div>
 <p>
-  Charts:
+  Charts: 
 </p>
 <!-- this is only in case we ant the upload information in the graphs -->
-<ng5-slider [(value)]="userInput" [options]="options" (input)="onUpdateServerName($event)"></ng5-slider>
-<br>
+<!-- <ng5-slider [(value)]="userInput" [options]="options" (input)="onUpdateServerName($event)"></ng5-slider>
+<br> -->
+<form [formGroup]="queryGraphs" (ngSubmit)="onSubmit()">
+<!-- 
+  <ng5-slider [(value)]="userInput" [options]="options" (input)="onUpdateSlider($event)"></ng5-slider>
+  <br> -->
+  <div class="form-group">
+      <!-- <label *ngIf="studentType" for="universityName">Student type</label> -->
+      <select  formControlName="studentType" class="form-control" (change)="getStudentType($event)" [(ngModel)]="studentTypeSelected" >
+        <option selected [disabled]="true">- Select student type -</option>
+        <option *ngFor ="let type of studentType" >{{type}}
+        </option>
+      </select>
+      <div *ngIf="submitted && f.studentType.errors" class="invalid-feedback">
+          <div *ngIf="f.studentType.errors.required">University is required</div>
+      </div>
+  </div>
+  <div class="form-group">
+    <!-- <label *ngIf="studentType" for="universityName">Student type</label> -->
+    <select  *ngIf="studentTypeSelected" formControlName="yearTerm" class="form-control" (change)="getAcademicLabel($event)" [(ngModel)]="cohortYearSelected">
+      <option selected [disabled]="true" value="">- Year term -</option>
+      <option *ngFor ="let year of cohortYear">{{year}}
+      </option>
+    </select>
+    <div *ngIf="submitted && f.academicLabel.errors" class="invalid-feedback">
+        <div *ngIf="f.academicLabel.errors.required">University is required</div>
+    </div>
+</div>
+  <div class="form-group">
+      <!-- <label  *ngIf="studentTypeSelected" for="collegeName">Year term</label> -->
+      <select  *ngIf="cohortYearSelected" formControlName="academicLabel" class="form-control" (change)="getAcademicType($event)" [(ngModel)]="academicLabelSelected" >
+        <option selected [disabled]="true" value="">-  Academic label -</option>
+        <option *ngFor ="let label of academicLabel" >{{label}}
+        </option>
+      </select>
+      <div *ngIf="submitted && f.yearTerm.errors" class="invalid-feedback">
+          <div *ngIf="f.yearTerm.errors.required">College is required</div>
+      </div>
+  </div>
+
+  <div class="form-group">
+      <!-- <label *ngIf="cohortYearSelected" for="departmentName">Academic type</label> -->
+      <select *ngIf="academicLabelSelected"  formControlName="academicType" class="form-control" [(ngModel)]="cohortAcademicTypeSelected" >
+        <option selected [disabled]="true" value="">- Select academic type -</option>
+        <option *ngFor ="let cohortAcademic of cohortAcademicType" >{{cohortAcademic}}
+        </option>
+      </select>
+      <div *ngIf="submitted && f.academicTypeF.errors" class="invalid-feedback">
+          <div *ngIf="f.academicType.errors.required">Department is required</div>
+      </div>
+  </div>
+  <div class="form-group">
+    <button  *ngIf="cohortAcademicTypeSelected"  [disabled]="loading" class="btn btn-primary">
+        <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+        Upload
+    </button>
+</div>
+</form>
+
 
 <button class="btn btn-primary" (click)="getGraphArr(userInput)">Create Graph
 </button>

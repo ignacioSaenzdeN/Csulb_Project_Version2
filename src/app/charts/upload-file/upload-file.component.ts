@@ -23,8 +23,16 @@ export class UploadFileComponent  {
   uploadForm: FormGroup;
   files: any = [];
   fileContent:object;
-  ExcelData:[][] = [];
+  ExcelData:any [][];
   ExcelDataObject:{} = {}
+  studentType:string[];
+  studentTypeSelected:string = "";
+  cohortYear:string[];
+  cohortYearSelected:string = "";
+  cohortAcademicType:string[];
+  cohortAcademicTypeSelected:string = "";
+  // Ask if necesasary here or in this.uploadForm
+  cohortamountOfStudents:string = "";
 
   //variables related to submission of form
   loading = false;
@@ -69,7 +77,7 @@ export class UploadFileComponent  {
     // this prevents the slider from saying N/A or similar
     this.userInput="0";
     //this initializes the hardcoded variables; it should be deleted or modified eventually
-    this.set_variables();
+    // this.set_variables();
     //initializes the form
     this.createForm();
     // it makes sure that the component starts with the upload form and not the trining
@@ -80,10 +88,11 @@ export class UploadFileComponent  {
 
   private createForm(){
     this.uploadForm = this.formBuilder.group({
-        universityName: ['', Validators.required],
-        collegeName: ['', Validators.required],
-        departmentName: ['', Validators.required],
+        studentTypeF: ['', Validators.required],
+        yearTermF: ['', Validators.required],
+        academicTypeF: ['', Validators.required],
         amountOfStudents: [ '', [Validators.required]],
+        academicLabel: [ '', [Validators.required]],
         data: [ '', [Validators.required]],
       //  authorization: ['', Validators.required],
     });
@@ -94,33 +103,42 @@ export class UploadFileComponent  {
 
   // for the form submission
   onSubmit() {
+      console.log(this.ExcelDataObject);
+      //Sets the object with cohort data and amount of students to be handled by the backend
+      this.cohortamountOfStudents = this.ExcelDataObject[this.studentTypeSelected][this.cohortYearSelected][this.cohortAcademicTypeSelected]["HEADCOUNT"][0];
+      this.fileContent = this.ExcelDataObject[this.studentTypeSelected][this.cohortYearSelected][this.cohortAcademicTypeSelected];
+      console.log(this.fileContent)
       // it was easier to set the slider value and the file content this way
-      this.uploadForm.controls.amountOfStudents.setValue(this.userInput);
+      this.uploadForm.controls.amountOfStudents.setValue(this.cohortamountOfStudents);
       this.uploadForm.controls.data.setValue(this.fileContent);
+      this.uploadForm.controls.academicLabel.setValue(this.ExcelData[1][2].slice(3));
       this.submitted = true;
       this.alertService.clear();
 
       // if there are issues with any of the form fields, the submission will be rejected
       if (this.uploadForm.invalid) {
-
-        console.log(this.uploadForm.controls.universityName);
-        console.log(this.uploadForm.controls.collegeName);
-        console.log(this.uploadForm.controls.departmentName);
+        console.log("is invalid");
+        console.log(this.uploadForm.controls.studentTypeF);
+        console.log(this.uploadForm.controls.yearTermF);
+        console.log(this.uploadForm.controls.academicTypeF);
         console.log(this.uploadForm.controls.amountOfStudents);
-          console.log(this.uploadForm.controls.data);
+        console.log(this.uploadForm.controls.academicLabel);
+        console.log(this.uploadForm.controls.data);
           return;
       }
-      console.log(  this.uploadForm.controls.universityName.value);
-      console.log(  this.uploadForm.controls.departmentName.value);
-      console.log(  this.uploadForm.controls.collegeName.value);
+      console.log("is valid")
+      console.log(  this.uploadForm.controls.studentTypeF.value);
+      console.log(  this.uploadForm.controls.academicTypeF.value);
+      console.log(  this.uploadForm.controls.yearTermF.value);
       console.log(  this.uploadForm.controls.amountOfStudents.value);
+      console.log(this.uploadForm.controls.academicLabel);
       console.log(  this.uploadForm.controls.data.value);
       this.loading = true;
 
       // console.log("now it should work");
       // return;
 
-      // this sends the form to the backend, in the front end we get the ID of the submission
+      //this sends the form to the backend, in the front end we get the ID of the submission
       this.userService.upload(this.uploadForm.value)
           .pipe(first())
           .subscribe(
@@ -138,11 +156,11 @@ export class UploadFileComponent  {
   }
 
   // this should eventually not be hardcoded
-  private set_variables(){
-      this.universities=['CSULB'];
-      this.colleges= ['COE','CBA','CLA'];
-      this.departments=[''];
-  }
+  // private set_variables(){
+  //     this.universities=['CSULB'];
+  //     this.colleges= ['COE','CBA','CLA'];
+  //     this.departments=[''];
+  // }
 
   uploadFile(event){
     //let extension = event[0].name.split('.').pop();
@@ -156,83 +174,52 @@ export class UploadFileComponent  {
     // we have to go layer by layer like a russian doll
     const reader: FileReader = new FileReader();
     reader.onload =()=>{
-      // if (extension === "csv"){
-      //   this.ExcelData = Papa.parse(reader);
-      // }
-      // else{
       var content =reader.result as string;
       const file :XLSX.WorkBook = XLSX.read (content,{type:'binary'});
       const page1 : string = file.SheetNames[0];
       const page1_sheet :XLSX.WorkSheet = file.Sheets[page1];
       this.ExcelData = (XLSX.utils.sheet_to_json(page1_sheet, {header:1 }));
-      // console.log("This.exceldata");
-      // console.log(this.ExcelData);
-      // }
+      console.log(this.ExcelData);
+      console.log(this.ExcelData.length);
+      console.log(this.ExcelData[0].length);
       // grab only number data accounts with 3 rows and 1 colum of labels
-      let tempExcelData = []
-      for(let i = 2; i < this.ExcelData.length; i++){
-        let temp:number[] = [];
-        for(let j = 2; j < this.ExcelData[0].length; j++){
-          temp.unshift(this.ExcelData[i].pop());
-          //temp.insert(0, this.ExcelData[i]);
-        }
-        tempExcelData.push(temp);
-      }
-      console.log(tempExcelData);
-      // TODO: only allow integers
-      let flag = false;
-      for(let i = 0; i < tempExcelData.length; i++){
-        let tempExcelDataSlice =  tempExcelData[i].slice(1);
-        for(let j = 0; j < tempExcelDataSlice.length; j++){
-          if(isNaN(+tempExcelDataSlice[j])){
-            this.ExcelDataObject = {}
-            //When flag is se to true it means that we have found a type that is not an int
-            flag = true;
-            break;
+      var cohortStudent = "";
+      var cohortYearTerm = "";
+      var cohortAcademicType = "";
+      var countType = "";
+      for(var i = 2; i < this.ExcelData.length; i++){
+        var tempArr = []
+        for(var j = 4; j < this.ExcelData[i].length; j++){
+          if(this.ExcelData[i][0] != cohortStudent){
+            cohortStudent = this.ExcelData[i][0];
+            this.ExcelDataObject[cohortStudent] = {};
           }
+          if(this.ExcelData[i][1] != cohortYearTerm){
+            cohortYearTerm = this.ExcelData[i][1];
+            this.ExcelDataObject[cohortStudent][cohortYearTerm] = {};
+          }
+          if(this.ExcelData[i][2] != cohortAcademicType){
+            cohortAcademicType = this.ExcelData[i][2];
+            this.ExcelDataObject[cohortStudent][cohortYearTerm][cohortAcademicType] = {};
+          }
+          if(this.ExcelData[i][3] != countType){
+            countType = this.ExcelData[i][3].slice(3);
+            this.ExcelDataObject[cohortStudent][cohortYearTerm][cohortAcademicType][countType] = tempArr;
+          }
+          this.ExcelDataObject[cohortStudent][cohortYearTerm][cohortAcademicType][countType].push(this.ExcelData[i][j]);
         }
-        if(flag){
-          break;
-        }
-        this.ExcelDataObject[tempExcelData[i][0].slice(3)] = tempExcelData[i].slice(1);
-      }
-      console.log("this.exceldataobject");
-      console.log(this.ExcelDataObject);
-      this.fileContent= this.ExcelDataObject;
-      // We use the same flag from line 189 and set fileContent to empty array for the html to return an error message
-      if(flag){
-        this.fileContent = [];
-      }
-      // for (let i in this.fileContent){
-      //   // console.log(this.fileContent[i]);
-      //   // console.log(isNaN(+this.fileContent[i]));
-      //   if (isNaN(+this.fileContent[i])){
-      //     this.fileContent=[];
-      //     break;
-      //   }
-      // }
+      } 
+      this.studentType =  Object.keys(this.ExcelDataObject);
     }
+    
     // after this function is called, onload is activated.
     reader.readAsBinaryString(event[0]);
 
   }
-  //Not used, this is in the file to be uploaded is a .txt
-  // uploadTextFile(event) {
-  //   for (let index = 0; index < event.length; index++) {
-  //     const element = event[index];
-  //     this.files.push(element.name)
-  //
-  //     var reader = new FileReader();
-  //     reader.onload = () => {
-  //     this.fileContent= reader.result as string};
-  //     reader.onloadend = () => {reader = null;};
-  //     reader.readAsText( element);
-  //
-  //   }
-  // }
 
   //deletes an uploaded file from the list
   deleteAttachment(index) {
+    console.log("here")
     this.files.splice(index, 1)
   }
 
@@ -243,10 +230,10 @@ export class UploadFileComponent  {
 
 // these two functions just assign what the user chose to the form
  onUpdateUniversity (event: any){
-  this.uploadForm.controls.universityName.setValue((<HTMLInputElement>event.target).value);
+  this.uploadForm.controls.studentTypeF.setValue((<HTMLInputElement>event.target).value);
 }
 onUpdateDepartment (event: any){
-  this.uploadForm.controls.departmentName.setValue((<HTMLInputElement>event.target).value);
+  this.uploadForm.controls.academicTypeF.setValue((<HTMLInputElement>event.target).value);
 }
 // train (){
 //   this.http.post(`http://localhost:8000/train/`, {'uniqueID':this.uniqueID,'amountOfStudents':this.userInput}).subscribe(data =>{console.log(data);});
@@ -255,7 +242,7 @@ onUpdateDepartment (event: any){
 // train the model
 train (){
   this.train_wait=true;
-  this.http.post(`http://localhost:8000/train/`, {'uniqueID':this.uniqueID,'amountOfStudents':this.userInput}).subscribe(data =>{
+  this.http.post(`http://localhost:8000/train/`, {'uniqueID':this.uniqueID,'amountOfStudents':this.cohortamountOfStudents}).subscribe(data =>{
     console.log(data);
     // to prevent the graphs from overlapping when the user trains the model multiple times, the variable are resetted
     for (i = 0; i <this.list_of_charts.length ; i++){
@@ -332,18 +319,25 @@ private initializeGraph (id,_datasets, _labels){
 // this eventually should not be hardcoded
 // based on the input of the college, the departments of the college would change
 // this will be done through a get request to the backend most likely.
-  onUpdateCollege (event: any){
-    this.uploadForm.controls.collegeName.setValue((<HTMLInputElement>event.target).value);
-    if (this.uploadForm.controls.collegeName.value =="COE"){
-      this.departments=['','CECS','CECEM','EE'];
-    }else if (this.uploadForm.controls.collegeName.value =="CBA"){
-      this.departments=['','finance','business administration'];
-    }else if (this.uploadForm.controls.collegeName.value =="CLA"){
-      this.departments=['','psychology'];
-    }else{
-      this.departments=['click again'];
-    }
-  }
+  // onUpdateCollege (event: any){
+  //   this.uploadForm.controls.collegeName.setValue((<HTMLInputElement>event.target).value);
+  //   if (this.uploadForm.controls.collegeName.value =="COE"){
+  //     this.departments=['','CECS','CECEM','EE'];
+  //   }else if (this.uploadForm.controls.collegeName.value =="CBA"){
+  //     this.departments=['','finance','business administration'];
+  //   }else if (this.uploadForm.controls.collegeName.value =="CLA"){
+  //     this.departments=['','psychology'];
+  //   }else{
+  //     this.departments=['click again'];
+  //   }
+  // }
 
+  setCohorYearType(){
+    console.log(this.studentTypeSelected)
+    this.cohortYear = Object.keys(this.ExcelDataObject[this.studentTypeSelected]);
+  }
+  setAcademicType(){
+    this.cohortAcademicType = Object.keys(this.ExcelDataObject[this.studentTypeSelected][this.cohortYearSelected]);
+  }
 
 }
