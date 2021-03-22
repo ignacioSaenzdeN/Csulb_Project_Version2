@@ -39,17 +39,20 @@ export class UploadFileComponent  {
   submitted = false;
   // this is mainly for testing purposes
   uniqueID: any;
-
-  //this boolean switches from the uploading form to the training section once the form is submitted
-  upload_boolean=true;
-
   // training charts
   list_of_charts=[];
   chart = Chart;
+  
+  //this boolean switches from the uploading form to the training section once the form is submitted
+  upload_boolean=false;
   // bool that activates once the user click train
   train_wait=false;
   // bool that activates once the user confirms training
   accepted_bool=false;
+  //Hides upload component when training par is in progress
+  isSubmitClicked=false;
+  showUpload = true;
+  showSelection = false;
 
   //slider Stuff
   value: number = 100;
@@ -80,8 +83,6 @@ export class UploadFileComponent  {
     // this.set_variables();
     //initializes the form
     this.createForm();
-    // it makes sure that the component starts with the upload form and not the trining
-    this.upload_boolean=true;
   }// end of ngOnInit()
 
 
@@ -103,6 +104,10 @@ export class UploadFileComponent  {
 
   // for the form submission
   onSubmit() {
+      // Hides upload and corhor selection components when training is about to occur
+      this.isSubmitClicked = true;
+      this.showUpload = false;
+      this.upload_boolean=true;
       console.log(this.ExcelDataObject);
       //Sets the object with cohort data and amount of students to be handled by the backend
       this.cohortamountOfStudents = this.ExcelDataObject[this.studentTypeSelected][this.cohortYearSelected][this.cohortAcademicTypeSelected]["HEADCOUNT"][0];
@@ -152,7 +157,7 @@ export class UploadFileComponent  {
 
       console.log("sent");
       this.loading = false;
-      this.upload_boolean=false;
+      this.showSelection = false;
   }
 
   // this should eventually not be hardcoded
@@ -214,7 +219,7 @@ export class UploadFileComponent  {
     
     // after this function is called, onload is activated.
     reader.readAsBinaryString(event[0]);
-
+    this.showSelection = true;
   }
 
   //deletes an uploaded file from the list
@@ -242,6 +247,7 @@ onUpdateDepartment (event: any){
 // train the model
 train (){
   this.train_wait=true;
+  console.log(this.cohortYearSelected, this.studentTypeSelected, this.cohortAcademicTypeSelected)
   this.http.post(`http://localhost:8000/train/`, {'uniqueID':this.uniqueID,'amountOfStudents':this.cohortamountOfStudents}).subscribe(data =>{
     console.log(data);
     // to prevent the graphs from overlapping when the user trains the model multiple times, the variable are resetted
@@ -287,6 +293,8 @@ train (){
         }
       }
         this.train_wait=false;
+        console.log("Data")
+        console.log(data);
   });
 
 }
@@ -356,6 +364,48 @@ private initializeGraph (id,_datasets, _labels){
     //  authorization: ['', Validators.required],
   });
     this.cohortAcademicType = Object.keys(this.ExcelDataObject[this.studentTypeSelected][this.cohortYearSelected]);
+  }
+
+  clearOnSelect(){
+    this.upload_boolean = false
+    for (let i = 0; i <this.list_of_charts.length ; i++){
+      this.list_of_charts[i].destroy();
+    }
+
+    this.list_of_charts=[];
+
+  }
+
+  hideComponentsForTrain(){
+    //These are 4 flags to control the flow of the options are shown un the upload component
+    this.isSubmitClicked = false;
+    this.showUpload = true;
+    this.showSelection = false;
+    this.upload_boolean = false
+
+    //Resets data of uploaded file
+    this.files = [];
+    this.fileContent = {};
+    this.ExcelDataObject = {};
+    
+
+    //Restets data associated with drop down menu for upload
+    this.studentType = [];
+    this. studentTypeSelected  = "";
+    this.cohortYear = [];
+    this.cohortYearSelected = "";
+    this.cohortAcademicType = [];
+    this.cohortAcademicTypeSelected = "";
+
+    //Resets the charts
+    for (let i = 0; i <this.list_of_charts.length ; i++){
+      this.list_of_charts[i].destroy();
+    }
+
+    this.list_of_charts=[];
+
+    
+
   }
 
 }

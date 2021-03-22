@@ -1,12 +1,22 @@
 <!-- The purpose of the html code is not display a form that retrieves the necessary
 data a user needs to input to train the model -->
-<div  *ngIf="this.upload_boolean===true">
+<div>
   <h2>Train cohort</h2>
+  <div *ngIf = "isSubmitClicked" class="div-button">
+    <div class="numberCircle">1</div><label>Insert a data sheet: </label>
+    <br>
+  <button [disabled]="train_wait" (click)="hideComponentsForTrain()" class="btn btn-primary">
+    New upload
+  </button>
+<br>
+<br>
+</div>
 <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()">
-  <div  *ngIf="submitted &&  this.fileContent.length==0" class="alert alert-danger" role="alert">
+  <!-- <div  *ngIf="submitted &&  this.fileContent.length==0" class="alert alert-danger" role="alert">
     The value in the excel file should only be integers, please fix the issue and submit again.
-  </div>
+  </div> -->
   <!-- this section of code is specifically for the upload of files -->
+  <div  *ngIf="showUpload">
 <div class="numberCircle">1</div><label> Insert a data sheet: </label>
 <div class="uploadfilecontainer" (click)="fileInput.click()" appDragDrop (onFileDropped)="uploadFile($event)">
   <input hidden type="file" #fileInput (change)="uploadFile($event.target.files)">
@@ -18,17 +28,18 @@ data a user needs to input to train the model -->
     </button>
   </div>
   <br> 
+</div>
 <!-- 
   <ng5-slider [(value)]="userInput" [options]="options" (input)="onUpdateSlider($event)"></ng5-slider>
   <br> -->
 
-
+  
   <div *ngIf="studentType" class="form-group">
+    <div class="numberCircle">2</div><label>Select a cohort: </label>
       <!-- <label *ngIf="studentType" for="universityName">Student type</label> -->
-      <div class="numberCircle">2</div><label>Select a cohort: </label>
-      <select formControlName="studentTypeF" class="form-control" (change)="setCohorYearType($event)" [(ngModel)]="studentTypeSelected" >
-        <option selected [disabled]="true">- Student type -</option>
-        <option *ngFor ="let type of studentType">{{type}}
+      <select  formControlName="studentTypeF" class="form-control" (change)="setCohorYearType($event); clearOnSelect()" [(ngModel)]="studentTypeSelected" >
+        <option selected [disabled]="true"  value="">- Student type -</option>
+        <option [disabled]="train_wait" *ngFor ="let type of studentType">{{type}}
         </option>
       </select>
       <div *ngIf="submitted && f.studentTypeF.errors" class="invalid-feedback">
@@ -37,9 +48,9 @@ data a user needs to input to train the model -->
   </div>
   <div class="form-group">
       <!-- <label  *ngIf="studentTypeSelected" for="collegeName">Year term</label> -->
-      <select  *ngIf="studentTypeSelected" formControlName="yearTermF" class="form-control" (change)="setAcademicType($event)" [(ngModel)]="cohortYearSelected" >
-        <option selected [disabled]="true">- Year term -</option>
-        <option *ngFor ="let type of cohortYear"  >{{type}}
+      <select  *ngIf="studentTypeSelected"  formControlName="yearTermF" class="form-control" (change)="setAcademicType($event); clearOnSelect()" [(ngModel)]="cohortYearSelected" >
+        <option selected [disabled]="true"  value="">- Year term -</option>
+        <option [disabled]="train_wait" *ngFor ="let type of cohortYear"  >{{type}}
         </option>
       </select>
       <div *ngIf="submitted && f.yearTermF.errors" class="invalid-feedback">
@@ -49,9 +60,9 @@ data a user needs to input to train the model -->
 
   <div class="form-group">
       <!-- <label *ngIf="cohortYearSelected" for="departmentName">Academic type</label> -->
-      <select *ngIf="cohortYearSelected"  formControlName="academicTypeF" class="form-control" [(ngModel)]="cohortAcademicTypeSelected" >
-        <option selected [disabled]="true">- Academic type -</option>
-        <option *ngFor ="let type of cohortAcademicType">{{type}}
+      <select *ngIf="cohortYearSelected"  formControlName="academicTypeF" class="form-control" (change)="clearOnSelect()" [(ngModel)]="cohortAcademicTypeSelected" >
+        <option selected [disabled]="true"  value="">- Academic type -</option>
+        <option [disabled]="train_wait" *ngFor ="let type of cohortAcademicType">{{type}}
         </option>
       </select>
       <div *ngIf="submitted && f.academicTypeF.errors" class="invalid-feedback">
@@ -59,9 +70,9 @@ data a user needs to input to train the model -->
       </div>
   </div>
   <div class="form-group">
-    <button  *ngIf="cohortAcademicTypeSelected"  [disabled]="loading" class="btn btn-primary">
+    <button  *ngIf="cohortAcademicTypeSelected"  [disabled]="train_wait" class="btn btn-primary">
         <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
-        Upload
+        Submit
     </button>
 </div>
 </form>
@@ -73,26 +84,28 @@ Once the data is upload the following html code will allow for the model to be t
 using the previously updated data -->
 
 
-<div  *ngIf="this.upload_boolean===false">
-  <label>3. Train the cohort </label>
+<div  *ngIf="this.upload_boolean">
+  <div class="numberCircle">3</div><label>Train the cohort </label>
   <br>
-  <button class="btn btn-primary" [disabled]="this.train_wait===true"(click)="train()">Train/ Train again
-  </button>
-<div *ngIf="this.train_wait===true">
-  <p>
-      (Please wait, the process can take a few seconds)
-  </p>
-</div>
-  <div class="canvas-container">
-    <canvas class ="cv"  id="canvas1"></canvas>
-    <canvas class ="cv"  id="canvas2"></canvas>
-  </div>
-
-  <button class="btn btn-primary" (click)="accepted()">accept
+  <button class="btn btn-primary" [disabled]="this.train_wait===true"(click)="train()">Train
+  </button>&nbsp;
+  <button class="btn btn-primary" (click)="accepted()">Accept
   </button>
   <div *ngIf="this.accepted_bool===true">
     <p>
         The information has been stored
     </p>
   </div>
+<!-- <div *ngIf="this.train_wait===true">
+  <p>
+      (Please wait, the process can take a few seconds)
+  </p>
+  <br>
+  <p>Selected cohort: {{studentTypeSelected}} in {{cohortYearSelected}} for {{cohortAcademicTypeSelected}}</p>
+</div> -->
+  <div class="canvas-container">
+    <canvas class ="cv"  id="canvas1"></canvas>
+    <canvas class ="cv"  id="canvas2"></canvas>
+  </div>
+
 </div>

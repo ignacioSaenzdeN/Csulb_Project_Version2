@@ -300,12 +300,12 @@ export class ChartsComponent implements OnInit {
       this.userInput = (<HTMLInputElement>event.target).value;
     }
 
-    getCohort(aBool){
+    getCohort(steadyState){
       if(isNaN(+this.sigma) || isNaN(+this.alpha) || isNaN(+this.beta)){
         console.log("Error we got non numeric values")
         return;
       }
-      this.http.get(`http://localhost:8000/getModifiedChartCohort/${this.userInput}/${this.sigma}/${this.alpha}/${this.beta}/${aBool}`).subscribe(data =>{
+      this.http.get(`http://localhost:8000/getModifiedChartCohort/${this.userInput}/${this.sigma}/${this.alpha}/${this.beta}/${steadyState}`).subscribe(data =>{
         //Reset greek letters shown in input both labels and editable values  
         console.log(data);
         this.sigma = data["MetaData"]["sigma"];
@@ -364,8 +364,7 @@ export class ChartsComponent implements OnInit {
     getYearTerm(){
       this.resetForms('', this.studentTypeSelected, '', '');
       this.resetMenuItems([], [], []);
-      // this.hideInputsAndChart();
-        this.list_of_charts=[];
+      this.list_of_charts=[];
       console.log(this.studentTypeSelected);
       this.http.get(`http://localhost:8000/getYearTerm/${this.studentTypeSelected}`).subscribe(data =>{
         console.log(data);
@@ -376,7 +375,6 @@ export class ChartsComponent implements OnInit {
     getAcademicLabel(){
       this.resetForms('', this.studentTypeSelected, this.cohortYearSelected, '');
       this.resetMenuItems([], this.cohortYear, []);
-      // this.hideInputsAndChart();
       console.log(this.academicLabelSelected);
       this.http.get(`http://localhost:8000/getAcademicLabel/${this.studentTypeSelected}/${this.cohortYearSelected}`).subscribe(data =>{
         console.log(data);
@@ -387,7 +385,6 @@ export class ChartsComponent implements OnInit {
     getAcademicType(){
       this.resetForms(this.academicLabelSelected, this.studentTypeSelected, this.cohortYearSelected, '');
       this.resetMenuItems(this.academicLabel, this.cohortYear, []);
-      // this.hideInputsAndChart();
       console.log(this.cohortAcademicTypeSelected);
       this.http.get(`http://localhost:8000/getAcademicType/${this.studentTypeSelected}/${this.cohortYearSelected}/${this.academicLabelSelected}`).subscribe(data =>{
         console.log(data);
