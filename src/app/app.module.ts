@@ -2,7 +2,8 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-
+import { NgProgressModule } from '@ngx-progressbar/core';
+import { NgProgressHttpModule  } from '@ngx-progressbar/http';
 // used to create fake backend
 
 
@@ -29,7 +30,11 @@ import { AccountResetValidateComponent } from './account-reset/account-reset-val
 //FormsModule for dropdown in data submission
 import { FormsModule } from '@angular/forms';
 
+//Toggle button for charts
+
+
 @NgModule({
+
     imports: [
         BrowserModule,
         ReactiveFormsModule,
@@ -37,7 +42,8 @@ import { FormsModule } from '@angular/forms';
         appRoutingModule,
         Ng5SliderModule,
         FormsModule,
-
+        NgProgressModule,
+        NgProgressHttpModule,
     ],
     declarations: [
         AppComponent,

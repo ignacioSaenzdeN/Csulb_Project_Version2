@@ -4,7 +4,11 @@ import  {LoginComponent}from './login';
 // import { jwt_decode  } from 'jwt-decode';
 import { AuthenticationService } from './_services';
 import { User } from './_models';
+
 @Component({ selector: 'app',
+template: `
+    <ng-progress id="myProgress"></ng-progress>
+  `,
 styleUrls: ['./app.component.less'],
 templateUrl: 'app.component.html' })
 export class AppComponent {

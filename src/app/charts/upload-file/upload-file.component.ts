@@ -333,10 +333,28 @@ private initializeGraph (id,_datasets, _labels){
   // }
 
   setCohorYearType(){
+    this.uploadForm = this.formBuilder.group({
+      studentTypeF: [this.studentTypeSelected, Validators.required],
+      yearTermF: ['', Validators.required],
+      academicTypeF: ['', Validators.required],
+      amountOfStudents: [ '', [Validators.required]],
+      academicLabel: [ '', [Validators.required]],
+      data: [ '', [Validators.required]],
+    //  authorization: ['', Validators.required],
+  });
     console.log(this.studentTypeSelected)
     this.cohortYear = Object.keys(this.ExcelDataObject[this.studentTypeSelected]);
   }
   setAcademicType(){
+    this.uploadForm = this.formBuilder.group({
+      studentTypeF: [this.studentTypeSelected, Validators.required],
+      yearTermF: [this.cohortYearSelected, Validators.required],
+      academicTypeF: ['', Validators.required],
+      amountOfStudents: [ '', [Validators.required]],
+      academicLabel: [ '', [Validators.required]],
+      data: [ '', [Validators.required]],
+    //  authorization: ['', Validators.required],
+  });
     this.cohortAcademicType = Object.keys(this.ExcelDataObject[this.studentTypeSelected][this.cohortYearSelected]);
   }
 

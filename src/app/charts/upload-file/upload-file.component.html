@@ -1,14 +1,13 @@
-
-
 <!-- The purpose of the html code is not display a form that retrieves the necessary
 data a user needs to input to train the model -->
 <div  *ngIf="this.upload_boolean===true">
+  <h2>Train cohort</h2>
 <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()">
   <div  *ngIf="submitted &&  this.fileContent.length==0" class="alert alert-danger" role="alert">
     The value in the excel file should only be integers, please fix the issue and submit again.
   </div>
   <!-- this section of code is specifically for the upload of files -->
-<label>1. Insert a data sheet: </label>
+<div class="numberCircle">1</div><label> Insert a data sheet: </label>
 <div class="uploadfilecontainer" (click)="fileInput.click()" appDragDrop (onFileDropped)="uploadFile($event)">
   <input hidden type="file" #fileInput (change)="uploadFile($event.target.files)">
 </div>
@@ -26,7 +25,7 @@ data a user needs to input to train the model -->
 
   <div *ngIf="studentType" class="form-group">
       <!-- <label *ngIf="studentType" for="universityName">Student type</label> -->
-      <label>2. Select a cohort: </label>
+      <div class="numberCircle">2</div><label>Select a cohort: </label>
       <select formControlName="studentTypeF" class="form-control" (change)="setCohorYearType($event)" [(ngModel)]="studentTypeSelected" >
         <option selected [disabled]="true">- Student type -</option>
         <option *ngFor ="let type of studentType">{{type}}
