@@ -150,6 +150,7 @@ export class UploadFileComponent  {
 
     // this whole process is just to access the data inside the sheet of an Excel file
     // we have to go layer by layer like a russian doll
+
     const reader: FileReader = new FileReader();
     reader.onload =()=>{
       var content =reader.result as string;
@@ -159,14 +160,18 @@ export class UploadFileComponent  {
       this.ExcelData = (XLSX.utils.sheet_to_json(page1_sheet, {header:1 }));
       // console.log(this.ExcelData);
       this.fileContent= this.ExcelData[0];
-      for (let i in this.fileContent){
-        // console.log(this.fileContent[i]);
-        // console.log(isNaN(+this.fileContent[i]));
-        if (isNaN(+this.fileContent[i])){
-          this.fileContent=[];
-          break;
-        }
+      for (let row in this.ExcelData){
+        console.log(row);
+        console.log(this.ExcelData[row]);
       }
+      // for (let i in this.fileContent){
+      //   // console.log(this.fileContent[i]);
+      //   // console.log(isNaN(+this.fileContent[i]));
+      //   // if (isNaN(+this.fileContent[i])){
+      //   //   this.fileContent=[];
+      //   //   break;
+      //   }
+      // }
     }
     // after this function is called, onload is activated.
     reader.readAsBinaryString(event[0]);
