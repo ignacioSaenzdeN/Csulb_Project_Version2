@@ -2,7 +2,8 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-
+import { NgProgressModule } from '@ngx-progressbar/core';
+import { NgProgressHttpModule  } from '@ngx-progressbar/http';
 // used to create fake backend
 
 
@@ -24,15 +25,25 @@ import { ProfileComponent } from './profile/profile.component';
 import { DragDropDirective } from './charts/drag-drop.directive';
 import { UploadFileComponent } from './charts/upload-file/upload-file.component';
 import { AccountResetComponent } from './account-reset/account-reset.component';
+import { AccountResetValidateComponent } from './account-reset/account-reset-validate/account-reset-validate.component';
+
+//FormsModule for dropdown in data submission
+import { FormsModule } from '@angular/forms';
+
+//Toggle button for charts
+
 
 @NgModule({
+
     imports: [
         BrowserModule,
         ReactiveFormsModule,
         HttpClientModule,
         appRoutingModule,
         Ng5SliderModule,
-
+        FormsModule,
+        NgProgressModule,
+        NgProgressHttpModule,
     ],
     declarations: [
         AppComponent,
@@ -45,6 +56,7 @@ import { AccountResetComponent } from './account-reset/account-reset.component';
         DragDropDirective,
         UploadFileComponent,
         AccountResetComponent,
+        AccountResetValidateComponent,
 
         // ChartsComponent,
         // BarChartComponent,

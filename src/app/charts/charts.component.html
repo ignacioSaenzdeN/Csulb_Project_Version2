@@ -1,15 +1,104 @@
 
 
 <div>
-<p>
-  Charts:
-</p>
+  <h2>Charts</h2>
 <!-- this is only in case we ant the upload information in the graphs -->
-<ng5-slider [(value)]="userInput" [options]="options" (input)="onUpdateServerName($event)"></ng5-slider>
+<!-- <ng5-slider [(value)]="userInput" [options]="options" (input)="onUpdateServerName($event)"></ng5-slider>
+<br> -->
+<form [formGroup]="queryGraphs">
+  <div *ngIf = "showChartOptionalInputs && hideNewCohortButton" class="div-button">
+    <div class="numberCircle">1</div><label>Select a cohort: </label>
+    <br>
+  <button (click)="hideSelectCohort = true; hideNewCohortButton= false; hideInputsAndChart()" class="btn btn-primary">
+    New cohort
+  </button>
 <br>
+<br>
+</div>
+  <div *ngIf="hideSelectCohort">
+    <div class="numberCircle">1</div><label>Select a cohort: </label>
+  <div class="form-group">
+      <!-- <label *ngIf="studentType" for="universityName">Student type</label> -->
+      <select  formControlName="studentType" class="form-control" (change)="getYearTerm($event)" [(ngModel)]="studentTypeSelected" >
+        <option selected [disabled]="true">- Select student type -</option>
+        <option *ngFor ="let type of studentType" >{{type}}
+        </option>
+      </select>
+      <!-- <div *ngIf="submitted && f.studentType.errors" class="invalid-feedback">
+          <div *ngIf="f.studentType.errors.required">University is required</div>
+      </div> -->
+  </div>
+  <div class="form-group">
+    <!-- <label *ngIf="studentType" for="universityName">Student type</label> -->
+    <select  *ngIf="studentTypeSelected" [disabled]="studentTypeSelected" formControlName="yearTerm" class="form-control" (change)="getAcademicLabel($event)" [(ngModel)]="cohortYearSelected">
+      <option selected [disabled]="true" value="">- Year term -</option>
+      <option *ngFor ="let year of cohortYear">{{year}}
+      </option>
+    </select>
+    <!-- <div *ngIf="submitted && f.academicLabel.errors" class="invalid-feedback">
+        <div *ngIf="f.academicLabel.errors.required">University is required</div>
+    </div> -->
+</div>
+  <div class="form-group">
+      <!-- <label  *ngIf="studentTypeSelected" for="collegeName">Year term</label> -->
+      <select  *ngIf="cohortYearSelected" [disabled]="cohortYearSelected" formControlName="academicLabel" class="form-control" (change)="getAcademicType($event)" [(ngModel)]="academicLabelSelected" >
+        <option selected [disabled]="true" value="">-  Academic label -</option>
+        <option *ngFor ="let label of academicLabel" >{{label}}
+        </option>
+      </select>
+      <!-- <div *ngIf="submitted && f.yearTerm.errors" class="invalid-feedback">
+          <div *ngIf="f.yearTerm.errors.required">College is required</div>
+      </div> -->
+  </div>
 
-<button class="btn btn-primary" (click)="getGraphArr(userInput)">Create Graph
-</button>
+  <div class="form-group">
+      <!-- <label *ngIf="cohortYearSelected" for="departmentName">Academic type</label> -->
+      <select *ngIf="academicLabelSelected" [disabled]="academicLabelSelected"  formControlName="academicType" class="form-control" [(ngModel)]="cohortAcademicTypeSelected" >
+        <option selected [disabled]="true" value="">- Select academic type -</option>
+        <option *ngFor ="let cohortAcademic of cohortAcademicType" >{{cohortAcademic}}
+        </option>
+      </select>
+      <!-- <div *ngIf="submitted && f.academicTypeF.errors" class="invalid-feedback">
+          <div *ngIf="f.academicType.errors.required">Department is required</div>
+      </div> -->
+  </div>
+  <div class="form-group">
+    <button  *ngIf="cohortAcademicTypeSelected"  (click)="getGraphArr(userInput); hideNewCohortButton= true" [disabled]="loading" class="btn btn-primary">
+        <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+        Get charts
+    </button>
+</div>
+</div> 
+</form>
+</div>
+
+<div class="div-button" *ngIf="showChartOptionalInputs">
+  <div class="numberCircle">2</div><label>Manipulate the cohort: </label>
+  <ng5-slider  [(value)]="userInput" [options]="options" (input)="onUpdateSlider($event)"></ng5-slider>
+  <br>
+    <br>
+    <!-- TODO: make sure to output warning message -->
+  <div class="input-group col-sm-12">
+    <label>σ:&nbsp;</label>
+    <input value={{sigma}} type="text" class="form-control" placeholder={{sigma}}  [(ngModel)]="sigma"/>
+    <label>α:&nbsp;</label>
+    <input value={{alpha}} type="text" class="form-control" placeholder={{alpha}}  [(ngModel)]="alpha"/>
+    <label>β:&nbsp;</label>
+    <input value={{beta}} type="text" class="form-control" placeholder={{beta}}  [(ngModel)]="beta"/>
+  </div>
+  <br>
+  <button (click)="getCohort($event, False)" class="btn btn-primary">
+    Edit cohort
+   </button>
+  <br>
+  <br>
+  <br>
+  
+  <label>Steady state (p)</label>&nbsp;
+  <input (change)="getCohort($event.target.value)" type="radio" id="zero" name="steadyState" value="False">
+  <label for="zero">0</label>&nbsp;
+  <input  (change)="getCohort($event.target.value)" type="radio" id="one" name="steadyState" value="True">
+  <label for="one">1</label><br>
 </div>
 <!-- displays the demograph -->
 <!-- <button class="btn btn-primary" (click)="getGraph()">Create Graph
