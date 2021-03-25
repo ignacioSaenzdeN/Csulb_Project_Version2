@@ -180,22 +180,6 @@ export class UploadFileComponent  {
       const page1 : string = file.SheetNames[0];
       const page1_sheet :XLSX.WorkSheet = file.Sheets[page1];
       this.ExcelData = (XLSX.utils.sheet_to_json(page1_sheet, {header:1 }));
-<<<<<<< HEAD
-      // console.log(this.ExcelData);
-      this.fileContent= this.ExcelData[0];
-      for (let row in this.ExcelData){
-        console.log(row);
-        console.log(this.ExcelData[row]);
-      }
-      // for (let i in this.fileContent){
-      //   // console.log(this.fileContent[i]);
-      //   // console.log(isNaN(+this.fileContent[i]));
-      //   // if (isNaN(+this.fileContent[i])){
-      //   //   this.fileContent=[];
-      //   //   break;
-      //   }
-      // }
-=======
       console.log(this.ExcelData);
       console.log(this.ExcelData.length);
       console.log(this.ExcelData[0].length);
@@ -225,11 +209,10 @@ export class UploadFileComponent  {
           }
           this.ExcelDataObject[cohortStudent][cohortYearTerm][cohortAcademicType][countType].push(this.ExcelData[i][j]);
         }
-      } 
+      }
       this.studentType =  Object.keys(this.ExcelDataObject);
->>>>>>> 5aa89b4eea2efdf6baab675a074f0e7765b1f4a5
     }
-    
+
     // after this function is called, onload is activated.
     reader.readAsBinaryString(event[0]);
 
