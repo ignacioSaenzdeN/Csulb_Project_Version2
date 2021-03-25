@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
 //SliderModule
 import { Options } from 'ng5-slider';
-import { truncateSync } from 'fs';
+
 @Component({
   selector: 'app-charts',
   templateUrl: './charts.component.html',
@@ -53,6 +53,9 @@ export class ChartsComponent implements OnInit {
   list_of_charts=[];
   // this variable will include the description of each of the graphs
   description_temp="";
+
+  // this id is used for querying the highereddatabase when we edit the cohor
+  higherEdId = "";
 
   constructor(private http: HttpClient,
     private formBuilder: FormBuilder,
@@ -163,10 +166,12 @@ export class ChartsComponent implements OnInit {
       var description="default";
       var i =1;
           for (let graphs in data[graphs_container]){
-
             for (functions in data[graphs_container][graphs]){
+              console.log("outside")
               if (functions == "x-axis"){
                 x_axis = data[graphs_container][graphs][functions];
+                console.log("x_axis")
+                console.log(x_axis);
               }else if(functions=="description"){
                 this.description_temp+=data[graphs_container][graphs][functions]+"\n";
               }else if(functions == 'yLabel'){
@@ -174,12 +179,8 @@ export class ChartsComponent implements OnInit {
               }
               else{
                 // console.log(data[graphs_container][graphs][functions]);
-                console.log(data[graphs_container][graphs][functions].length)
                 if((graphs == "figure3") && (data[graphs_container][graphs][functions].length > 2)){
                   let checkBool = (data[graphs_container][graphs][functions][2] === 'true')
-                  console.log("figure3")
-                  console.log(data[graphs_container][graphs][functions][2])
-                  console.log(Boolean(data[graphs_container][graphs][functions][2]))
                   dataset_list.push( this.initializeDataset(functions, data[graphs_container][graphs][functions][0],
                     data[graphs_container][graphs][functions][1],data[graphs_container][graphs][functions][1], checkBool));
                 }
@@ -192,8 +193,6 @@ export class ChartsComponent implements OnInit {
             }
             //this allocates the graphs into the canvases in the html
             if (dataset_list.length>0){
-              console.log("i");
-              console.log(i);
               this.initializeGraph("canvas"+i,dataset_list,x_axis, yLabel);
               var canvas = <HTMLCanvasElement>document.getElementById("canvas"+(i));
               var context = canvas.getContext("2d");
@@ -215,7 +214,8 @@ export class ChartsComponent implements OnInit {
         //logs in the console what is being received
         this.http.get(`http://localhost:8000/getPredictionData/${this.studentTypeSelected}/${this.cohortYearSelected}/${this.cohortAcademicTypeSelected}`).subscribe(data =>{
         //set the variables based on our request for the prediction values
-        var metaData =  data["MetaData"]
+        this.higherEdId = data["higherEdId"];
+        var metaData =  data["MetaData"];
         this.userInput = metaData.numberOfStudents;
         this.sigma = this.sigma + metaData.sigma;
         this.alpha = this.alpha + metaData.alpha;
@@ -344,9 +344,8 @@ export class ChartsComponent implements OnInit {
         console.log("Error we got non numeric values")
         return;
       }
-      this.http.get(`http://localhost:8000/getModifiedChartCohort/${this.userInput}/${this.sigma}/${this.alpha}/${this.beta}/${steadyState}`).subscribe(data =>{
+      this.http.get(`http://localhost:8000/getModifiedChartCohort/${this.userInput}/${this.sigma}/${this.alpha}/${this.beta}/${steadyState}/${this.higherEdId}`).subscribe(data =>{
         //Reset greek letters shown in input both labels and editable values  
-        console.log(data);
         this.sigma = data["MetaData"]["sigma"];
         this.alpha = data["MetaData"]["alpha"];
         this.beta = data["MetaData"]["beta"]; 
@@ -404,31 +403,22 @@ export class ChartsComponent implements OnInit {
       this.resetForms('', this.studentTypeSelected, '', '');
       this.resetMenuItems([], [], []);
       this.list_of_charts=[];
-      console.log(this.studentTypeSelected);
       this.http.get(`http://localhost:8000/getYearTerm/${this.studentTypeSelected}`).subscribe(data =>{
-        console.log(data);
         this.cohortYear = Object.values(data).map(a => a.yearTerm);
-        console.log(this.cohortYear);
       });
     }
     getAcademicLabel(){
       this.resetForms('', this.studentTypeSelected, this.cohortYearSelected, '');
       this.resetMenuItems([], this.cohortYear, []);
-      console.log(this.academicLabelSelected);
       this.http.get(`http://localhost:8000/getAcademicLabel/${this.studentTypeSelected}/${this.cohortYearSelected}`).subscribe(data =>{
-        console.log(data);
         this.academicLabel = Object.values(data).map(a => a.academicLabel);
-        console.log(this.academicLabel);
       });
     }
     getAcademicType(){
       this.resetForms(this.academicLabelSelected, this.studentTypeSelected, this.cohortYearSelected, '');
       this.resetMenuItems(this.academicLabel, this.cohortYear, []);
-      console.log(this.cohortAcademicTypeSelected);
       this.http.get(`http://localhost:8000/getAcademicType/${this.studentTypeSelected}/${this.cohortYearSelected}/${this.academicLabelSelected}`).subscribe(data =>{
-        console.log(data);
         this.cohortAcademicType = Object.values(data).map(a => a.academicType);
-        console.log(this.cohortAcademicType);
       });
     }
 
