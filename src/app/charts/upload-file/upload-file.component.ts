@@ -49,10 +49,9 @@ export class UploadFileComponent  {
   train_wait=false;
   // bool that activates once the user confirms training
   accepted_bool=false;
-  //Hides upload component when training par is in progress
-  isSubmitClicked=false;
-  showUpload = true;
-  showSelection = false;
+  //Hides train component when a new selection is made
+  showTrain = false;
+
 
   //slider Stuff
   value: number = 100;
@@ -105,8 +104,8 @@ export class UploadFileComponent  {
   // for the form submission
   onSubmit() {
       // Hides upload and corhor selection components when training is about to occur
-      this.isSubmitClicked = true;
-      this.showUpload = false;
+      // this.isSubmitClicked = true;
+      // this.showUpload = false;
       this.upload_boolean=true;
       console.log(this.ExcelDataObject);
       //Sets the object with cohort data and amount of students to be handled by the backend
@@ -157,7 +156,7 @@ export class UploadFileComponent  {
 
       console.log("sent");
       this.loading = false;
-      this.showSelection = false;
+      this.showTrain = true;
   }
 
   // this should eventually not be hardcoded
@@ -219,7 +218,7 @@ export class UploadFileComponent  {
     
     // after this function is called, onload is activated.
     reader.readAsBinaryString(event[0]);
-    this.showSelection = true;
+
   }
 
   //deletes an uploaded file from the list
@@ -248,6 +247,7 @@ onUpdateDepartment (event: any){
 train (){
   this.train_wait=true;
   console.log(this.cohortYearSelected, this.studentTypeSelected, this.cohortAcademicTypeSelected)
+  console.log(this.uniqueID, this.cohortamountOfStudents)
   this.http.post(`http://localhost:8000/train/`, {'uniqueID':this.uniqueID,'amountOfStudents':this.cohortamountOfStudents}).subscribe(data =>{
     console.log(data);
     // to prevent the graphs from overlapping when the user trains the model multiple times, the variable are resetted
@@ -285,6 +285,10 @@ train (){
             }
           }
           if (dataset_list.length>0){
+            console.log("dataset_list")
+            console.log(dataset_list)
+            console.log("x_axis")
+            console.log(x_axis)
             this.initializeGraph("canvas"+i,dataset_list,x_axis);
             dataset_list=[];
             iterator=0;
@@ -319,7 +323,24 @@ private initializeGraph (id,_datasets, _labels){
     data: {
       labels: _labels,
       datasets:_datasets,
+    },
+    options : {
+      scales: {
+        yAxes: [{
+          scaleLabel: {
+            display: true,
+            labelString: 'Persistance, Retention, and Graduation (%)'
+          }
+        }],
+        xAxes: [{
+          scaleLabel: {
+            display: true,
+            labelString: 'Time'
+          }
+        }]
+      }
     }
+    
   })
   this.list_of_charts.push(this.chart);
 }
@@ -367,7 +388,9 @@ private initializeGraph (id,_datasets, _labels){
   }
 
   clearOnSelect(){
-    this.upload_boolean = false
+    // this.upload_boolean = false
+    this.showTrain = false;
+
     for (let i = 0; i <this.list_of_charts.length ; i++){
       this.list_of_charts[i].destroy();
     }
@@ -376,12 +399,11 @@ private initializeGraph (id,_datasets, _labels){
 
   }
 
-  hideComponentsForTrain(){
-    //These are 4 flags to control the flow of the options are shown un the upload component
-    this.isSubmitClicked = false;
-    this.showUpload = true;
-    this.showSelection = false;
+  resetOnNewSubmit(){
+    //These are 2 flags to control the flow of the options are shown un the upload component
     this.upload_boolean = false
+    this.showTrain = false;
+
 
     //Resets data of uploaded file
     this.files = [];

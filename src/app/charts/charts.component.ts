@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
 //SliderModule
 import { Options } from 'ng5-slider';
+import { truncateSync } from 'fs';
 @Component({
   selector: 'app-charts',
   templateUrl: './charts.component.html',
@@ -141,6 +142,7 @@ export class ChartsComponent implements OnInit {
       for (i = 0; i <this.list_of_charts.length ; i++){
         this.list_of_charts[i].destroy();
       }
+      var yLabel = "";
       this.list_of_charts=[];
 
       var x_axis=[];
@@ -161,21 +163,38 @@ export class ChartsComponent implements OnInit {
       var description="default";
       var i =1;
           for (let graphs in data[graphs_container]){
+
             for (functions in data[graphs_container][graphs]){
               if (functions == "x-axis"){
                 x_axis = data[graphs_container][graphs][functions];
               }else if(functions=="description"){
                 this.description_temp+=data[graphs_container][graphs][functions]+"\n";
-              }else{
+              }else if(functions == 'yLabel'){
+                yLabel = data[graphs_container][graphs][functions];
+              }
+              else{
                 // console.log(data[graphs_container][graphs][functions]);
-                dataset_list.push( this.initializeDataset(functions, data[graphs_container][graphs][functions][0],
-                data[graphs_container][graphs][functions][1],data[graphs_container][graphs][functions][1])  );
+                console.log(data[graphs_container][graphs][functions].length)
+                if((graphs == "figure3") && (data[graphs_container][graphs][functions].length > 2)){
+                  let checkBool = (data[graphs_container][graphs][functions][2] === 'true')
+                  console.log("figure3")
+                  console.log(data[graphs_container][graphs][functions][2])
+                  console.log(Boolean(data[graphs_container][graphs][functions][2]))
+                  dataset_list.push( this.initializeDataset(functions, data[graphs_container][graphs][functions][0],
+                    data[graphs_container][graphs][functions][1],data[graphs_container][graphs][functions][1], checkBool));
+                }
+                else{
+                  dataset_list.push( this.initializeDataset(functions, data[graphs_container][graphs][functions][0],
+                  data[graphs_container][graphs][functions][1],data[graphs_container][graphs][functions][1], true));
+                }
                 iterator = iterator +1;
               }
             }
             //this allocates the graphs into the canvases in the html
             if (dataset_list.length>0){
-              this.initializeGraph("canvas"+i,dataset_list,x_axis);
+              console.log("i");
+              console.log(i);
+              this.initializeGraph("canvas"+i,dataset_list,x_axis, yLabel);
               var canvas = <HTMLCanvasElement>document.getElementById("canvas"+(i));
               var context = canvas.getContext("2d");
               dataset_list=[];
@@ -271,20 +290,40 @@ export class ChartsComponent implements OnInit {
     }
     // this function helps reducing the code int the getGraphArr function
     // the data returned is a component necessary to build the entire chart
-    private initializeDataset (_label,_data, _backgroundColor, _borderColor){
-      var ans ={"label": _label , "data":_data, "backgroundColor":_backgroundColor, "borderColor": _borderColor,"fill": false};
+    private initializeDataset (_label,_data, _backgroundColor, _borderColor, _showLineBool){
+      // let shape = _showLineBool ? "circle" : "star";
+      let shapeBackground = _showLineBool ? _backgroundColor : "#e9ecef";
+      // console.log("shape");
+      // console.log(shape);
+      var ans ={"label": _label , "data":_data, "backgroundColor":_backgroundColor, "borderColor": _borderColor,"fill": false, "showLine": _showLineBool, "pointStyle": "circle", "pointBackgroundColor": shapeBackground};
       //console.log(ans);
       return ans;
     }
     // using the smaller components, the entire chart is built. The purpose of this
     // function is to reduce the size of getGraphArr
-    private initializeGraph (id,_datasets, _labels){
+    private initializeGraph (id,_datasets, _labels, yAxisLabel){
       this.chart = new Chart (id,{
         type:'line',
         data: {
           // labels: [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0],
           labels: _labels,
           datasets:_datasets,
+        },
+        options : {
+          scales: {
+            yAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: yAxisLabel
+              }
+            }],
+            xAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: 'Time (Semesters)'
+              }
+            }]
+          }
         }
       })
       this.list_of_charts.push(this.chart);
