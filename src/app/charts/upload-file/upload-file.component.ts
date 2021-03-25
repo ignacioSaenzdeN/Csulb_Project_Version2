@@ -39,17 +39,19 @@ export class UploadFileComponent  {
   submitted = false;
   // this is mainly for testing purposes
   uniqueID: any;
-
-  //this boolean switches from the uploading form to the training section once the form is submitted
-  upload_boolean=true;
-
   // training charts
   list_of_charts=[];
   chart = Chart;
+  
+  //this boolean switches from the uploading form to the training section once the form is submitted
+  upload_boolean=false;
   // bool that activates once the user click train
   train_wait=false;
   // bool that activates once the user confirms training
   accepted_bool=false;
+  //Hides train component when a new selection is made
+  showTrain = false;
+
 
   //slider Stuff
   value: number = 100;
@@ -64,7 +66,7 @@ export class UploadFileComponent  {
     private authenticationService: AuthenticationService,
     private router: Router,
     private userService: UserService,
-    private alertService: AlertService
+    private alertService: AlertService,
   ){}
   ngOnInit() {
     // if user is not validated, the user will be redirected to the login
@@ -80,8 +82,6 @@ export class UploadFileComponent  {
     // this.set_variables();
     //initializes the form
     this.createForm();
-    // it makes sure that the component starts with the upload form and not the trining
-    this.upload_boolean=true;
   }// end of ngOnInit()
 
 
@@ -103,6 +103,10 @@ export class UploadFileComponent  {
 
   // for the form submission
   onSubmit() {
+      // Hides upload and corhor selection components when training is about to occur
+      // this.isSubmitClicked = true;
+      // this.showUpload = false;
+      this.upload_boolean=true;
       console.log(this.ExcelDataObject);
       //Sets the object with cohort data and amount of students to be handled by the backend
       this.cohortamountOfStudents = this.ExcelDataObject[this.studentTypeSelected][this.cohortYearSelected][this.cohortAcademicTypeSelected]["HEADCOUNT"][0];
@@ -152,7 +156,7 @@ export class UploadFileComponent  {
 
       console.log("sent");
       this.loading = false;
-      this.upload_boolean=false;
+      this.showTrain = true;
   }
 
   // this should eventually not be hardcoded
@@ -243,51 +247,59 @@ onUpdateDepartment (event: any){
 // train the model
 train (){
   this.train_wait=true;
+  console.log(this.cohortYearSelected, this.studentTypeSelected, this.cohortAcademicTypeSelected)
+  console.log(this.uniqueID, this.cohortamountOfStudents)
   this.http.post(`http://localhost:8000/train/`, {'uniqueID':this.uniqueID,'amountOfStudents':this.cohortamountOfStudents}).subscribe(data =>{
     console.log(data);
     // to prevent the graphs from overlapping when the user trains the model multiple times, the variable are resetted
-    for (i = 0; i <this.list_of_charts.length ; i++){
+    for (let i = 0; i <this.list_of_charts.length ; i++){
       this.list_of_charts[i].destroy();
     }
-
     this.list_of_charts=[];
+    this.displayGraph(data);
 
-    var x_axis=[];
-    var dataset_list = [];
+    // var x_axis=[];
+    // var dataset_list = [];
     //this for loop will get each of the graphs
-    var charts,graphs,functions;
+    // var charts,graphs,functions;
     // the colors are not used as we switched to colorblind-friendly colors
-    var colors=['red','blue','purple','yellow','black','brown','Crimson','Cyan','DarkOrchid'];
-    var canvases = ['canvas','canvas1','canvas2','canvas3','canvas4','canvas5'];
-    var iterator =0;
-    var graphs_container = "Figures";
-    var description="default";
-    var i =1;
+    // var colors=['red','blue','purple','yellow','black','brown','Crimson','Cyan','DarkOrchid'];
+    // var canvases = ['canvas','canvas1','canvas2','canvas3','canvas4','canvas5'];
+    // var iterator =0;
+    // var graphs_container = "Figures";
+    // var description="default";
+    // var i =1;
     //please refers to the charts component to unserstand this logic.
     // SUMMARY: the charts data is received as single points in json objects
     // the function goes layer by layer, collects the points and then creates a graph
-        for (let graphs in data){
-          if (graphs=="figure3"){
-          for (functions in data[graphs]){
-            if (functions == "x-axis"){
-              x_axis = data[graphs][functions];
-            }else if(functions=="description"){
-              description=functions;
-            }else{
-              dataset_list.push( this.initializeDataset(functions, data[graphs][functions][0],
-              data[graphs][functions][1],data[graphs][functions][1])  );
-              iterator = iterator +1;
-            }
-          }
-          if (dataset_list.length>0){
-            this.initializeGraph("canvas"+i,dataset_list,x_axis);
-            dataset_list=[];
-            iterator=0;
-            i=i+1;
-          }
-        }
-      }
+      //   for (let graphs in data){
+      //     if (graphs=="figure3"){
+      //     for (functions in data[graphs]){
+      //       if (functions == "x-axis"){
+      //         x_axis = data[graphs][functions];
+      //       }else if(functions=="description"){
+      //         description=functions;
+      //       }else{
+      //         dataset_list.push( this.initializeDataset(functions, data[graphs][functions][0],
+      //         data[graphs][functions][1],data[graphs][functions][1])  );
+      //         iterator = iterator +1;
+      //       }
+      //     }
+      //     if (dataset_list.length>0){
+      //       console.log("dataset_list")
+      //       console.log(dataset_list)
+      //       console.log("x_axis")
+      //       console.log(x_axis)
+      //       this.initializeGraph("canvas"+i,dataset_list,x_axis);
+      //       dataset_list=[];
+      //       iterator=0;
+      //       i=i+1;
+      //     }
+      //   }
+      // }
         this.train_wait=false;
+        console.log("Data")
+        console.log(data);
   });
 
 }
@@ -295,27 +307,109 @@ train (){
 private accepted(){
   this.accepted_bool=true;
 }
+private displayGraph(data){
 
-// To following two functions are originally fromt the charts component.
-// The code was copied as it was a small addition and it allows developers to
-// easily understand the training function
-// to make the chart code shorter and more understandable
-private initializeDataset (_label,_data, _backgroundColor, _borderColor){
-  var ans ={"label": _label , "data":_data, "backgroundColor":_backgroundColor, "borderColor": _borderColor,"fill": false};
-  return ans;
+  let description_temp = "";
+  for (i = 0; i <this.list_of_charts.length ; i++){
+    this.list_of_charts[i].destroy();
+  }
+  var yLabel = "";
+  this.list_of_charts=[];
+
+  var x_axis=[];
+  var dataset_list = [];
+  //this for loop will get each of the graphs
+  var charts,graphs,functions;
+  //var colors=['red','blue','purple','yellow','black','brown','Crimson','Cyan','DarkOrchid'];
+  var canvases = ['canvas','canvas1','canvas2','canvas3','canvas4','canvas5'];
+  var iterator =0;
+  // the following strings need to match the values they have in the backend
+  // to properly access the data.
+  // the code below, starts decapsuling the data received from the backend
+  // and stores the data from each layer in its corresponding variable.
+  // The concept of the code below is similar to the russian dolls.
+  // To better understand the structure of the data received, check \
+  // the backend code
+  var graphs_container = "Figures";
+  var description="default";
+  var i =1;
+      for (let graphs in data[graphs_container]){
+        for (functions in data[graphs_container][graphs]){
+          console.log("outside")
+          if (functions == "x-axis"){
+            x_axis = data[graphs_container][graphs][functions];
+            console.log("x_axis")
+            console.log(x_axis);
+          }else if(functions=="description"){
+            description_temp+=data[graphs_container][graphs][functions]+"\n";
+          }else if(functions == 'yLabel'){
+            yLabel = data[graphs_container][graphs][functions];
+          }
+          else{
+            // console.log(data[graphs_container][graphs][functions]);
+            if((graphs == "figure3") && (data[graphs_container][graphs][functions].length > 2)){
+              let checkBool = (data[graphs_container][graphs][functions][2] === 'true')
+              dataset_list.push( this.initializeDataset(functions, data[graphs_container][graphs][functions][0],
+                data[graphs_container][graphs][functions][1],data[graphs_container][graphs][functions][1], checkBool));
+            }
+            else{
+              dataset_list.push( this.initializeDataset(functions, data[graphs_container][graphs][functions][0],
+              data[graphs_container][graphs][functions][1],data[graphs_container][graphs][functions][1], true));
+            }
+            iterator = iterator +1;
+          }
+        }
+        //this allocates the graphs into the canvases in the html
+        if (dataset_list.length>0){
+          this.initializeGraph("canvas"+i,dataset_list,x_axis, yLabel);
+          var canvas = <HTMLCanvasElement>document.getElementById("canvas"+(i));
+          var context = canvas.getContext("2d");
+          dataset_list=[];
+          iterator=0;
+          i=i+1;
+        }
+      }
 }
-// to make the chart code shorter and more understandable
-// to learn more about the charts, refer to chart.js
-private initializeGraph (id,_datasets, _labels){
-  this.chart = new Chart (id,{
-    type:'line',
-    data: {
-      labels: _labels,
-      datasets:_datasets,
+// this function helps reducing the code int the getGraphArr function
+    // the data returned is a component necessary to build the entire chart
+    private initializeDataset (_label,_data, _backgroundColor, _borderColor, _showLineBool){
+      // let shape = _showLineBool ? "circle" : "star";
+      let shapeBackground = _showLineBool ? _backgroundColor : "#e9ecef";
+      // console.log("shape");
+      // console.log(shape);
+      var ans ={"label": _label , "data":_data, "backgroundColor":_backgroundColor, "borderColor": _borderColor,"fill": false, "showLine": _showLineBool, "pointStyle": "circle", "pointBackgroundColor": shapeBackground};
+      //console.log(ans);
+      return ans;
     }
-  })
-  this.list_of_charts.push(this.chart);
-}
+    // using the smaller components, the entire chart is built. The purpose of this
+    // function is to reduce the size of getGraphArr
+    private initializeGraph (id,_datasets, _labels, yAxisLabel){
+      this.chart = new Chart (id,{
+        type:'line',
+        data: {
+          // labels: [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0],
+          labels: _labels,
+          datasets:_datasets,
+        },
+        options : {
+          scales: {
+            yAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: yAxisLabel
+              }
+            }],
+            xAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: 'Time (Semesters)'
+              }
+            }]
+          }
+        }
+      })
+      this.list_of_charts.push(this.chart);
+    }
 
 // this eventually should not be hardcoded
 // based on the input of the college, the departments of the college would change
@@ -357,6 +451,49 @@ private initializeGraph (id,_datasets, _labels){
     //  authorization: ['', Validators.required],
   });
     this.cohortAcademicType = Object.keys(this.ExcelDataObject[this.studentTypeSelected][this.cohortYearSelected]);
+  }
+
+  clearOnSelect(){
+    // this.upload_boolean = false
+    this.showTrain = false;
+
+    for (let i = 0; i <this.list_of_charts.length ; i++){
+      this.list_of_charts[i].destroy();
+    }
+
+    this.list_of_charts=[];
+
+  }
+
+  resetOnNewSubmit(){
+    //These are 2 flags to control the flow of the options are shown un the upload component
+    this.upload_boolean = false
+    this.showTrain = false;
+
+
+    //Resets data of uploaded file
+    this.files = [];
+    this.fileContent = {};
+    this.ExcelDataObject = {};
+    
+
+    //Restets data associated with drop down menu for upload
+    this.studentType = [];
+    this. studentTypeSelected  = "";
+    this.cohortYear = [];
+    this.cohortYearSelected = "";
+    this.cohortAcademicType = [];
+    this.cohortAcademicTypeSelected = "";
+
+    //Resets the charts
+    for (let i = 0; i <this.list_of_charts.length ; i++){
+      this.list_of_charts[i].destroy();
+    }
+
+    this.list_of_charts=[];
+
+    
+
   }
 
 }

@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
 //SliderModule
 import { Options } from 'ng5-slider';
+
 @Component({
   selector: 'app-charts',
   templateUrl: './charts.component.html',
@@ -52,6 +53,9 @@ export class ChartsComponent implements OnInit {
   list_of_charts=[];
   // this variable will include the description of each of the graphs
   description_temp="";
+
+  // this id is used for querying the highereddatabase when we edit the cohor
+  higherEdId = "";
 
   constructor(private http: HttpClient,
     private formBuilder: FormBuilder,
@@ -141,6 +145,7 @@ export class ChartsComponent implements OnInit {
       for (i = 0; i <this.list_of_charts.length ; i++){
         this.list_of_charts[i].destroy();
       }
+      var yLabel = "";
       this.list_of_charts=[];
 
       var x_axis=[];
@@ -162,20 +167,33 @@ export class ChartsComponent implements OnInit {
       var i =1;
           for (let graphs in data[graphs_container]){
             for (functions in data[graphs_container][graphs]){
+              console.log("outside")
               if (functions == "x-axis"){
                 x_axis = data[graphs_container][graphs][functions];
+                console.log("x_axis")
+                console.log(x_axis);
               }else if(functions=="description"){
                 this.description_temp+=data[graphs_container][graphs][functions]+"\n";
-              }else{
+              }else if(functions == 'yLabel'){
+                yLabel = data[graphs_container][graphs][functions];
+              }
+              else{
                 // console.log(data[graphs_container][graphs][functions]);
-                dataset_list.push( this.initializeDataset(functions, data[graphs_container][graphs][functions][0],
-                data[graphs_container][graphs][functions][1],data[graphs_container][graphs][functions][1])  );
+                if((graphs == "figure3") && (data[graphs_container][graphs][functions].length > 2)){
+                  let checkBool = (data[graphs_container][graphs][functions][2] === 'true')
+                  dataset_list.push( this.initializeDataset(functions, data[graphs_container][graphs][functions][0],
+                    data[graphs_container][graphs][functions][1],data[graphs_container][graphs][functions][1], checkBool));
+                }
+                else{
+                  dataset_list.push( this.initializeDataset(functions, data[graphs_container][graphs][functions][0],
+                  data[graphs_container][graphs][functions][1],data[graphs_container][graphs][functions][1], true));
+                }
                 iterator = iterator +1;
               }
             }
             //this allocates the graphs into the canvases in the html
             if (dataset_list.length>0){
-              this.initializeGraph("canvas"+i,dataset_list,x_axis);
+              this.initializeGraph("canvas"+i,dataset_list,x_axis, yLabel);
               var canvas = <HTMLCanvasElement>document.getElementById("canvas"+(i));
               var context = canvas.getContext("2d");
               dataset_list=[];
@@ -196,7 +214,8 @@ export class ChartsComponent implements OnInit {
         //logs in the console what is being received
         this.http.get(`http://localhost:8000/getPredictionData/${this.studentTypeSelected}/${this.cohortYearSelected}/${this.cohortAcademicTypeSelected}`).subscribe(data =>{
         //set the variables based on our request for the prediction values
-        var metaData =  data["MetaData"]
+        this.higherEdId = data["higherEdId"];
+        var metaData =  data["MetaData"];
         this.userInput = metaData.numberOfStudents;
         this.sigma = this.sigma + metaData.sigma;
         this.alpha = this.alpha + metaData.alpha;
@@ -271,20 +290,40 @@ export class ChartsComponent implements OnInit {
     }
     // this function helps reducing the code int the getGraphArr function
     // the data returned is a component necessary to build the entire chart
-    private initializeDataset (_label,_data, _backgroundColor, _borderColor){
-      var ans ={"label": _label , "data":_data, "backgroundColor":_backgroundColor, "borderColor": _borderColor,"fill": false};
+    private initializeDataset (_label,_data, _backgroundColor, _borderColor, _showLineBool){
+      // let shape = _showLineBool ? "circle" : "star";
+      let shapeBackground = _showLineBool ? _backgroundColor : "#e9ecef";
+      // console.log("shape");
+      // console.log(shape);
+      var ans ={"label": _label , "data":_data, "backgroundColor":_backgroundColor, "borderColor": _borderColor,"fill": false, "showLine": _showLineBool, "pointStyle": "circle", "pointBackgroundColor": shapeBackground};
       //console.log(ans);
       return ans;
     }
     // using the smaller components, the entire chart is built. The purpose of this
     // function is to reduce the size of getGraphArr
-    private initializeGraph (id,_datasets, _labels){
+    private initializeGraph (id,_datasets, _labels, yAxisLabel){
       this.chart = new Chart (id,{
         type:'line',
         data: {
           // labels: [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0],
           labels: _labels,
           datasets:_datasets,
+        },
+        options : {
+          scales: {
+            yAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: yAxisLabel
+              }
+            }],
+            xAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: 'Time (Semesters)'
+              }
+            }]
+          }
         }
       })
       this.list_of_charts.push(this.chart);
@@ -300,14 +339,13 @@ export class ChartsComponent implements OnInit {
       this.userInput = (<HTMLInputElement>event.target).value;
     }
 
-    getCohort(aBool){
+    getCohort(steadyState){
       if(isNaN(+this.sigma) || isNaN(+this.alpha) || isNaN(+this.beta)){
         console.log("Error we got non numeric values")
         return;
       }
-      this.http.get(`http://localhost:8000/getModifiedChartCohort/${this.userInput}/${this.sigma}/${this.alpha}/${this.beta}/${aBool}`).subscribe(data =>{
+      this.http.get(`http://localhost:8000/getModifiedChartCohort/${this.userInput}/${this.sigma}/${this.alpha}/${this.beta}/${steadyState}/${this.higherEdId}`).subscribe(data =>{
         //Reset greek letters shown in input both labels and editable values  
-        console.log(data);
         this.sigma = data["MetaData"]["sigma"];
         this.alpha = data["MetaData"]["alpha"];
         this.beta = data["MetaData"]["beta"]; 
@@ -364,35 +402,23 @@ export class ChartsComponent implements OnInit {
     getYearTerm(){
       this.resetForms('', this.studentTypeSelected, '', '');
       this.resetMenuItems([], [], []);
-      // this.hideInputsAndChart();
-        this.list_of_charts=[];
-      console.log(this.studentTypeSelected);
+      this.list_of_charts=[];
       this.http.get(`http://localhost:8000/getYearTerm/${this.studentTypeSelected}`).subscribe(data =>{
-        console.log(data);
         this.cohortYear = Object.values(data).map(a => a.yearTerm);
-        console.log(this.cohortYear);
       });
     }
     getAcademicLabel(){
       this.resetForms('', this.studentTypeSelected, this.cohortYearSelected, '');
       this.resetMenuItems([], this.cohortYear, []);
-      // this.hideInputsAndChart();
-      console.log(this.academicLabelSelected);
       this.http.get(`http://localhost:8000/getAcademicLabel/${this.studentTypeSelected}/${this.cohortYearSelected}`).subscribe(data =>{
-        console.log(data);
         this.academicLabel = Object.values(data).map(a => a.academicLabel);
-        console.log(this.academicLabel);
       });
     }
     getAcademicType(){
       this.resetForms(this.academicLabelSelected, this.studentTypeSelected, this.cohortYearSelected, '');
       this.resetMenuItems(this.academicLabel, this.cohortYear, []);
-      // this.hideInputsAndChart();
-      console.log(this.cohortAcademicTypeSelected);
       this.http.get(`http://localhost:8000/getAcademicType/${this.studentTypeSelected}/${this.cohortYearSelected}/${this.academicLabelSelected}`).subscribe(data =>{
-        console.log(data);
         this.cohortAcademicType = Object.values(data).map(a => a.academicType);
-        console.log(this.cohortAcademicType);
       });
     }
 
