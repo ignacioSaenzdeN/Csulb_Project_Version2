@@ -42,7 +42,7 @@ export class UploadFileComponent  {
   // training charts
   list_of_charts=[];
   chart = Chart;
-  
+
   //this boolean switches from the uploading form to the training section once the form is submitted
   upload_boolean=false;
   // bool that activates once the user click train
@@ -143,16 +143,16 @@ export class UploadFileComponent  {
       // return;
 
       //this sends the form to the backend, in the front end we get the ID of the submission
-      this.userService.upload(this.uploadForm.value)
-          .pipe(first())
-          .subscribe(
-              data =>{
-                console.log("unique ID");
-                console.log(data);
-                this.uniqueID= data;
-               },
-              error => {console.log("in error");this.loading = false;
-              });
+      this.userService.upload(this.uploadForm.value).subscribe( data =>{
+          console.log("unique ID");
+          console.log(data);
+          this.uniqueID= data;
+          this.train();
+
+         },
+        error => {console.log("in error");this.loading = false;
+      })
+
 
       console.log("sent");
       this.loading = false;
@@ -256,50 +256,10 @@ train (){
       this.list_of_charts[i].destroy();
     }
     this.list_of_charts=[];
+    console.log("data upload");
+    console.log(data);
     this.displayGraph(data);
-
-    // var x_axis=[];
-    // var dataset_list = [];
-    //this for loop will get each of the graphs
-    // var charts,graphs,functions;
-    // the colors are not used as we switched to colorblind-friendly colors
-    // var colors=['red','blue','purple','yellow','black','brown','Crimson','Cyan','DarkOrchid'];
-    // var canvases = ['canvas','canvas1','canvas2','canvas3','canvas4','canvas5'];
-    // var iterator =0;
-    // var graphs_container = "Figures";
-    // var description="default";
-    // var i =1;
-    //please refers to the charts component to unserstand this logic.
-    // SUMMARY: the charts data is received as single points in json objects
-    // the function goes layer by layer, collects the points and then creates a graph
-      //   for (let graphs in data){
-      //     if (graphs=="figure3"){
-      //     for (functions in data[graphs]){
-      //       if (functions == "x-axis"){
-      //         x_axis = data[graphs][functions];
-      //       }else if(functions=="description"){
-      //         description=functions;
-      //       }else{
-      //         dataset_list.push( this.initializeDataset(functions, data[graphs][functions][0],
-      //         data[graphs][functions][1],data[graphs][functions][1])  );
-      //         iterator = iterator +1;
-      //       }
-      //     }
-      //     if (dataset_list.length>0){
-      //       console.log("dataset_list")
-      //       console.log(dataset_list)
-      //       console.log("x_axis")
-      //       console.log(x_axis)
-      //       this.initializeGraph("canvas"+i,dataset_list,x_axis);
-      //       dataset_list=[];
-      //       iterator=0;
-      //       i=i+1;
-      //     }
-      //   }
-      // }
         this.train_wait=false;
-        console.log("Data")
-        console.log(data);
   });
 
 }
@@ -308,9 +268,10 @@ private accepted(){
   this.accepted_bool=true;
 }
 private displayGraph(data){
-
+  console.log("data in displayGraph")
+  console.log(data)
   let description_temp = "";
-  for (i = 0; i <this.list_of_charts.length ; i++){
+  for (let i = 0; i <this.list_of_charts.length ; i++){
     this.list_of_charts[i].destroy();
   }
   var yLabel = "";
@@ -333,28 +294,31 @@ private displayGraph(data){
   var graphs_container = "Figures";
   var description="default";
   var i =1;
-      for (let graphs in data[graphs_container]){
-        for (functions in data[graphs_container][graphs]){
+      for (let graphs in data){
+       if (graphs=="figure3"){
+        console.log("first for loop")
+        for (functions in data[graphs]){
+          console.log("sedond for loop")
           console.log("outside")
           if (functions == "x-axis"){
-            x_axis = data[graphs_container][graphs][functions];
+            x_axis = data[graphs][functions];
             console.log("x_axis")
             console.log(x_axis);
           }else if(functions=="description"){
-            description_temp+=data[graphs_container][graphs][functions]+"\n";
+            description_temp+=data[graphs][functions]+"\n";
           }else if(functions == 'yLabel'){
-            yLabel = data[graphs_container][graphs][functions];
+            yLabel = data[graphs][functions];
           }
           else{
             // console.log(data[graphs_container][graphs][functions]);
-            if((graphs == "figure3") && (data[graphs_container][graphs][functions].length > 2)){
-              let checkBool = (data[graphs_container][graphs][functions][2] === 'true')
-              dataset_list.push( this.initializeDataset(functions, data[graphs_container][graphs][functions][0],
-                data[graphs_container][graphs][functions][1],data[graphs_container][graphs][functions][1], checkBool));
+            if((graphs == "figure3") && (data[graphs][functions].length > 2)){
+              let checkBool = (data[graphs][functions][2] === 'true')
+              dataset_list.push( this.initializeDataset(functions, data[graphs][functions][0],
+                data[graphs][functions][1],data[graphs][functions][1], checkBool));
             }
             else{
-              dataset_list.push( this.initializeDataset(functions, data[graphs_container][graphs][functions][0],
-              data[graphs_container][graphs][functions][1],data[graphs_container][graphs][functions][1], true));
+              dataset_list.push( this.initializeDataset(functions, data[graphs][functions][0],
+              data[graphs][functions][1],data[graphs][functions][1], true));
             }
             iterator = iterator +1;
           }
@@ -369,6 +333,7 @@ private displayGraph(data){
           i=i+1;
         }
       }
+    }
 }
 // this function helps reducing the code int the getGraphArr function
     // the data returned is a component necessary to build the entire chart
@@ -475,7 +440,7 @@ private displayGraph(data){
     this.files = [];
     this.fileContent = {};
     this.ExcelDataObject = {};
-    
+
 
     //Restets data associated with drop down menu for upload
     this.studentType = [];
@@ -492,7 +457,7 @@ private displayGraph(data){
 
     this.list_of_charts=[];
 
-    
+
 
   }
 
