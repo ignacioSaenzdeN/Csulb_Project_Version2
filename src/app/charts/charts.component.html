@@ -4,7 +4,7 @@
   <!-- <ng5-slider [(value)]="userInput" [options]="options" (input)="onUpdateServerName($event)"></ng5-slider>
 <br> -->
   <form [formGroup]="queryGraphs">
-    <div *ngIf="showChartOptionalInputs && hideNewCohortButton">
+    <!-- <div *ngIf="showChartOptionalInputs && hideNewCohortButton">
       <div class="numberCircle">1</div><label>Select a cohort: </label>
       <br>
       <button (click)="hideSelectCohort = true; hideNewCohortButton= false; hideInputsAndChart()"
@@ -13,12 +13,14 @@
       </button>
       <br>
       <br>
-    </div>
-    <div *ngIf="hideSelectCohort">
+    </div> -->
+    <div *ngIf="hideSelectCohort" >
       <div class="numberCircle">1</div><label>Select a cohort: </label>
+      <div>
       <div class="form-group">
+
         <!-- <label *ngIf="studentType" for="universityName">Student type</label> -->
-        <select formControlName="studentType" class="form-control" (change)="getYearTerm($event)"
+        <select formControlName="studentType" class="form-control" (change)="getYearTerm($event); hideInputsAndChart();"
           [(ngModel)]="studentTypeSelected">
           <option selected [disabled]="true">- Select student type -</option>
           <option *ngFor="let type of studentType">{{type}}
@@ -31,7 +33,7 @@
       <div class="form-group">
         <!-- <label *ngIf="studentType" for="universityName">Student type</label> -->
         <select *ngIf="studentTypeSelected" [disabled]="studentTypeSelected" formControlName="yearTerm"
-          class="form-control" (change)="getAcademicLabel($event)" [(ngModel)]="cohortYearSelected">
+          class="form-control" (change)="getAcademicLabel($event);hideInputsAndChart();" [(ngModel)]="cohortYearSelected">
           <option selected [disabled]="true" value="">- Year term -</option>
           <option *ngFor="let year of cohortYear">{{year}}
           </option>
@@ -43,7 +45,7 @@
       <div class="form-group">
         <!-- <label  *ngIf="studentTypeSelected" for="collegeName">Year term</label> -->
         <select *ngIf="cohortYearSelected" [disabled]="cohortYearSelected" formControlName="academicLabel"
-          class="form-control" (change)="getAcademicType($event)" [(ngModel)]="academicLabelSelected">
+          class="form-control" (change)="getAcademicType($event);hideInputsAndChart();" [(ngModel)]="academicLabelSelected">
           <option selected [disabled]="true" value="">- Academic label -</option>
           <option *ngFor="let label of academicLabel">{{label}}
           </option>
@@ -53,20 +55,21 @@
       </div> -->
       </div>
 
-      <div class="form-group">
+      <div class="form-group" id="scrollToView">
         <!-- <label *ngIf="cohortYearSelected" for="departmentName">Academic type</label> -->
         <select *ngIf="academicLabelSelected" [disabled]="academicLabelSelected" formControlName="academicType"
-          class="form-control" [(ngModel)]="cohortAcademicTypeSelected">
+          class="form-control"  (change)="hideInputsAndChart();" [(ngModel)]="cohortAcademicTypeSelected">
           <option selected [disabled]="true" value="">- Select academic type -</option>
           <option *ngFor="let cohortAcademic of cohortAcademicType">{{cohortAcademic}}
           </option>
         </select>
+      </div>
         <!-- <div *ngIf="submitted && f.academicTypeF.errors" class="invalid-feedback">
           <div *ngIf="f.academicType.errors.required">Department is required</div>
       </div> -->
       </div>
       <div class="form-group">
-        <button *ngIf="cohortAcademicTypeSelected" (click)="getGraphArr(userInput); hideNewCohortButton= true"
+        <button *ngIf="cohortAcademicTypeSelected" (click)=" getGraphArr(userInput); hideInputsAndChart();"
           [disabled]="loading" class="btn btn-primary">
           <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
           Get charts
@@ -74,10 +77,11 @@
       </div>
     </div>
   </form>
-</div>
 
-<div *ngIf="showChartOptionalInputs">
-  <div class="numberCircle">2</div><label>Manipulate the cohort: </label>
+</div>
+<div *ngIf="showChartOptionalInputs" >
+
+  <div  class="numberCircle">2</div><label>Manipulate the cohort: </label>
   <ng5-slider [(value)]="userInput" [options]="options" (input)="onUpdateSlider($event)"></ng5-slider>
   <br>
   <br>
@@ -96,15 +100,13 @@
   </button>
   <br>
   <br>
+  <label >Steady state (p):</label>&nbsp;
   <br>
-
-  <label>Steady state (p):</label>&nbsp;
-  <br>
-  <p class="btn-switch">					
+  <p class="btn-switch">
     <input (change)="getCohort($event.target.value)"  checked="checked" type="radio" id="yes" name="switch" class="btn-switch__radio btn-switch__radio_yes" value="True" />
-    <input  (change)="getCohort($event.target.value)" type="radio" checked id="no" name="switch" class="btn-switch__radio btn-switch__radio_no" value="False"/>		
-    <label for="yes" class="btn-switch__label btn-switch__label_yes"><span class="btn-switch__txt">On</span></label>								  
-    <label for="no" class="btn-switch__label btn-switch__label_no"><span class="btn-switch__txt">Off</span></label>							
+    <input  (change)="getCohort($event.target.value)" type="radio" checked id="no" name="switch" class="btn-switch__radio btn-switch__radio_no" value="False"/>
+    <label for="yes" class="btn-switch__label btn-switch__label_yes"><span class="btn-switch__txt">On</span></label>
+    <label for="no" class="btn-switch__label btn-switch__label_no"><span class="btn-switch__txt">Off</span></label>
   </p>
 </div>
 <!-- displays the demograph -->
@@ -119,7 +121,6 @@
   <canvas class="cv" id="canvas3"></canvas>
   <canvas class="cv" id="canvas4"></canvas>
 </div>
-
 <!-- for future use if needed -->
 <!-- <div class="canvas-container">
   <canvas class ="cv"  id="canvas5" ></canvas>

@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
 //SliderModule
 import { Options } from 'ng5-slider';
+import { ViewportScroller } from '@angular/common';
 
 @Component({
   selector: 'app-charts',
@@ -42,6 +43,7 @@ export class ChartsComponent implements OnInit {
   alpha:string = "";
   beta:string= "";
 
+  hideOptionalComponentsAndCharts:boolean = false;
   //addition
   //this input will be the number of students
   @Input('inputter') userInput :string;
@@ -61,10 +63,11 @@ export class ChartsComponent implements OnInit {
     private formBuilder: FormBuilder,
     private authenticationService: AuthenticationService,
     private router: Router,
+    private vps: ViewportScroller,
   ){}
   //if the user is logged in, the user will remain in ChartsComponent, the user
   // will be redirected to the login otherwise
-  ngOnInit() {  
+  ngOnInit() {
     if (this.authenticationService.currentUserValue && this.authenticationService.isTokenValid() ) {
         this.router.navigate(['/charts']);
     }else{
@@ -222,10 +225,11 @@ export class ChartsComponent implements OnInit {
         this.beta = this.beta + metaData.beta;
         this.displayGraph(data);
         //Hide cohort input when charts show
-        this.hideSelectCohort = false;
+        // this.hideSelectCohort = false;
         //Shows slider and greek leeters fields
         this.showChartOptionalInputs = true;
-        
+        this.vps.scrollToAnchor("scrollToView");
+
         // This loop destorys the previously stored data to make sure there is
         // no overlap betwee old data and new data
           // for (i = 0; i <this.list_of_charts.length ; i++){
@@ -286,7 +290,7 @@ export class ChartsComponent implements OnInit {
         // this.tempSigma = "";
         // this.tempAlpha = "";
         // this.tempBeta = "";
-        
+
     }
     // this function helps reducing the code int the getGraphArr function
     // the data returned is a component necessary to build the entire chart
@@ -345,26 +349,26 @@ export class ChartsComponent implements OnInit {
         return;
       }
       this.http.get(`http://localhost:8000/getModifiedChartCohort/${this.userInput}/${this.sigma}/${this.alpha}/${this.beta}/${steadyState}/${this.higherEdId}`).subscribe(data =>{
-        //Reset greek letters shown in input both labels and editable values  
+        //Reset greek letters shown in input both labels and editable values
         this.sigma = data["MetaData"]["sigma"];
         this.alpha = data["MetaData"]["alpha"];
-        this.beta = data["MetaData"]["beta"]; 
+        this.beta = data["MetaData"]["beta"];
         this.displayGraph(data);
       });
     }
 
     // steadyTrigger(aBool){
     //   this.http.get(`http://localhost:8000/getModifiedChartCohort/${this.userInput}/${this.sigma}/${this.alpha}/${this.beta}/aBool`).subscribe(data =>{
-    //     //Reset greek letters shown in input both labels and editable values  
+    //     //Reset greek letters shown in input both labels and editable values
     //     console.log(data);
     //     this.sigma = data["MetaData"]["sigma"];
     //     this.alpha = data["MetaData"]["alpha"];
-    //     this.beta = data["MetaData"]["beta"]; 
+    //     this.beta = data["MetaData"]["beta"];
     //     this.displayGraph(data);
     //   });
     // }
 
-    //Helper function reset the state of the select of form selections when changing the combination 
+    //Helper function reset the state of the select of form selections when changing the combination
     resetForms(academicLabel, studentType, yearTerm, academicType){
       this.queryGraphs = this.formBuilder.group({
         academicLabel: [academicLabel, Validators.required],
@@ -388,14 +392,15 @@ export class ChartsComponent implements OnInit {
         this.list_of_charts[i].destroy();
       }
       //We also wanna reset the selection fields's selected variables so that they dont know until selected again
-      this.studentTypeSelected = "";
-      this.cohortYearSelected = "";
-      this.academicLabelSelected = "";
-      this.cohortAcademicTypeSelected = "";
+      // this.studentTypeSelected = "";
+      // this.cohortYearSelected = "";
+      // this.academicLabelSelected = "";
+      // this.cohortAcademicTypeSelected = "";
       //Clears greek letters
       this.sigma = "";
       this.alpha = "";
-      this.beta = "";    
+      this.beta = "";
+
     }
 
     // With these three functions that do http get requests, we are able to populate the chart menu selection dynamically
