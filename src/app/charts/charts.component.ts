@@ -54,7 +54,7 @@ export class ChartsComponent implements OnInit {
   //this variable will include all the raw data from each set of graphs
   list_of_charts=[];
   // this variable will include the description of each of the graphs
-  description_temp=[];
+  description_temp="";
 
   // this id is used for querying the highereddatabase when we edit the cohor
   higherEdId = "";
@@ -144,7 +144,7 @@ export class ChartsComponent implements OnInit {
     }
 
     private displayGraph(data){
-      this.description_temp = [];
+      // this.description_temp = [];
       for (i = 0; i <this.list_of_charts.length ; i++){
         this.list_of_charts[i].destroy();
       }
@@ -173,7 +173,8 @@ export class ChartsComponent implements OnInit {
               if (functions == "x-axis"){
                 x_axis = data[graphs_container][graphs][functions];
               }else if(functions=="description"){
-                this.description_temp.push(data[graphs_container][graphs][functions]+"\n");
+                this.description_temp = (data[graphs_container][graphs][functions]);
+                // +"\n"
               }else if(functions == 'yLabel'){
                 yLabel = data[graphs_container][graphs][functions];
               }
@@ -193,7 +194,7 @@ export class ChartsComponent implements OnInit {
             }
             //this allocates the graphs into the canvases in the html
             if (dataset_list.length>0){
-              this.initializeGraph("canvas"+i,dataset_list,x_axis, yLabel);
+              this.initializeGraph("canvas"+i,dataset_list,x_axis, yLabel,this.description_temp);
               var canvas = <HTMLCanvasElement>document.getElementById("canvas"+(i));
               var context = canvas.getContext("2d");
               dataset_list=[];
@@ -201,7 +202,6 @@ export class ChartsComponent implements OnInit {
               i=i+1;
             }
           }
-          console.log(this.description_temp)
     }
 
 // This function will send the user input (# of students) and receive all the
@@ -230,67 +230,8 @@ export class ChartsComponent implements OnInit {
         //Shows slider and greek leeters fields
         this.showChartOptionalInputs = true;
         this.vps.scrollToAnchor("scrollToView");
-
-        // This loop destorys the previously stored data to make sure there is
-        // no overlap betwee old data and new data
-          // for (i = 0; i <this.list_of_charts.length ; i++){
-          //   this.list_of_charts[i].destroy();
-          // }
-          // this.list_of_charts=[];
-
-          // var x_axis=[];
-          // var dataset_list = [];
-          // //this for loop will get each of the graphs
-          // var charts,graphs,functions;
-          // //var colors=['red','blue','purple','yellow','black','brown','Crimson','Cyan','DarkOrchid'];
-          // var canvases = ['canvas','canvas1','canvas2','canvas3','canvas4','canvas5'];
-          // var iterator =0;
-          // // the following strings need to match the values they have in the backend
-          // // to properly access the data.
-          // // the code below, starts decapsuling the data received from the backend
-          // // and stores the data from each layer in its corresponding variable.
-          // // The concept of the code below is similar to the russian dolls.
-          // // To better understand the structure of the data received, check \
-          // // the backend code
-          // var graphs_container = "Figures";
-          // var description="default";
-          // var i =1;
-          //     for (let graphs in data[graphs_container]){
-          //       for (functions in data[graphs_container][graphs]){
-          //         if (functions == "x-axis"){
-          //           x_axis = data[graphs_container][graphs][functions];
-          //         }else if(functions=="description"){
-          //           this.description_temp+=data[graphs_container][graphs][functions]+"\n";
-          //         }else{
-          //           // console.log(data[graphs_container][graphs][functions]);
-          //           dataset_list.push( this.initializeDataset(functions, data[graphs_container][graphs][functions][0],
-          //           data[graphs_container][graphs][functions][1],data[graphs_container][graphs][functions][1])  );
-          //           iterator = iterator +1;
-          //         }
-          //       }
-          //       //this allocates the graphs into the canvases in the html
-          //       if (dataset_list.length>0){
-          //         this.initializeGraph("canvas"+i,dataset_list,x_axis);
-          //         var canvas = <HTMLCanvasElement>document.getElementById("canvas"+(i));
-          //         var context = canvas.getContext("2d");
-          //         dataset_list=[];
-          //         iterator=0;
-          //         i=i+1;
-          //       }
-          //     }
          }
         );
-        // //Hide cohort input when charts show
-        // this.hideSelectCohort = false;
-        // //Shows slider and greek leeters fields
-        // this.showChartOptionalInputs = true;
-        // //Reset greek letters shown in input both labels and editable values
-        // this.sigma="σ:  ";
-        // this.alpha="α:   ";
-        // this.beta="β:  ";
-        // this.tempSigma = "";
-        // this.tempAlpha = "";
-        // this.tempBeta = "";
 
     }
     // this function helps reducing the code int the getGraphArr function
@@ -306,7 +247,7 @@ export class ChartsComponent implements OnInit {
     }
     // using the smaller components, the entire chart is built. The purpose of this
     // function is to reduce the size of getGraphArr
-    private initializeGraph (id,_datasets, _labels, yAxisLabel){
+    private initializeGraph (id,_datasets, _labels, yAxisLabel, title){
       this.chart = new Chart (id,{
         type:'line',
         data: {
@@ -315,6 +256,12 @@ export class ChartsComponent implements OnInit {
           datasets:_datasets,
         },
         options : {
+
+          title: {
+     display: true,
+     text: title,
+     position:'bottom'
+ },
           scales: {
             yAxes: [{
               scaleLabel: {
