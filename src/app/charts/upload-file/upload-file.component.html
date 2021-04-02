@@ -89,6 +89,7 @@ using the previously updated data -->
 
 
 <div *ngIf="this.upload_boolean && showTrain">
+
   <div class="numberCircle">3</div><label>Train the cohort </label>
   <br>
   <button class="btn btn-primary" [disabled]="this.train_wait===true" (click)="train()">Train
@@ -107,6 +108,9 @@ using the previously updated data -->
   <br>
   <p>Selected cohort: {{studentTypeSelected}} in {{cohortYearSelected}} for {{cohortAcademicTypeSelected}}</p>
 </div> -->
+  <br>
+  &nbsp; &emsp; &emsp; &emsp;
+  <p style = "font-size: 1.2vw;"> Headcount/ Number of Students: {{cohortamountOfStudents}}</p>
   <div class="canvas-container">
     <canvas class="cv" id="canvas1"></canvas>
     <canvas class="cv" id="canvas2"></canvas>

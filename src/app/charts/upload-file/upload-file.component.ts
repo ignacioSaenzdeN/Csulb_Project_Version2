@@ -53,6 +53,8 @@ export class UploadFileComponent  {
   showTrain = false;
 
 
+  headCount =0;
+
   //slider Stuff
   value: number = 100;
   options: Options = {
@@ -107,11 +109,9 @@ export class UploadFileComponent  {
       // this.isSubmitClicked = true;
       // this.showUpload = false;
       this.upload_boolean=true;
-      console.log(this.ExcelDataObject);
       //Sets the object with cohort data and amount of students to be handled by the backend
       this.cohortamountOfStudents = this.ExcelDataObject[this.studentTypeSelected][this.cohortYearSelected][this.cohortAcademicTypeSelected]["HEADCOUNT"][0];
       this.fileContent = this.ExcelDataObject[this.studentTypeSelected][this.cohortYearSelected][this.cohortAcademicTypeSelected];
-      console.log(this.fileContent)
       // it was easier to set the slider value and the file content this way
       this.uploadForm.controls.amountOfStudents.setValue(this.cohortamountOfStudents);
       this.uploadForm.controls.data.setValue(this.fileContent);
@@ -144,8 +144,6 @@ export class UploadFileComponent  {
 
       //this sends the form to the backend, in the front end we get the ID of the submission
       this.userService.upload(this.uploadForm.value).subscribe( data =>{
-          console.log("unique ID");
-          console.log(data);
           this.uniqueID= data;
           this.train();
 
@@ -224,7 +222,6 @@ export class UploadFileComponent  {
 
   //deletes an uploaded file from the list
   deleteAttachment(index) {
-    console.log("here")
     this.files.splice(index, 1)
   }
 
@@ -247,17 +244,12 @@ onUpdateDepartment (event: any){
 // train the model
 train (){
   this.train_wait=true;
-  console.log(this.cohortYearSelected, this.studentTypeSelected, this.cohortAcademicTypeSelected)
-  console.log(this.uniqueID, this.cohortamountOfStudents)
   this.http.post(`http://localhost:8000/train/`, {'uniqueID':this.uniqueID,'amountOfStudents':this.cohortamountOfStudents}).subscribe(data =>{
-    console.log(data);
     // to prevent the graphs from overlapping when the user trains the model multiple times, the variable are resetted
     for (let i = 0; i <this.list_of_charts.length ; i++){
       this.list_of_charts[i].destroy();
     }
     this.list_of_charts=[];
-    console.log("data upload");
-    console.log(data);
     this.displayGraph(data);
         this.train_wait=false;
   });
@@ -268,8 +260,6 @@ private accepted(){
   this.accepted_bool=true;
 }
 private displayGraph(data){
-  console.log("data in displayGraph")
-  console.log(data)
   let description_temp = "";
   for (let i = 0; i <this.list_of_charts.length ; i++){
     this.list_of_charts[i].destroy();
@@ -295,15 +285,10 @@ private displayGraph(data){
   var description="default";
   var i =1;
       for (let graphs in data){
-       if (graphs=="figure3"){
-        console.log("first for loop")
+       if (graphs=="figure4"){
         for (functions in data[graphs]){
-          console.log("sedond for loop")
-          console.log("outside")
           if (functions == "x-axis"){
             x_axis = data[graphs][functions];
-            console.log("x_axis")
-            console.log(x_axis);
           }else if(functions=="description"){
             description_temp+=data[graphs][functions]+"\n";
           }else if(functions == 'yLabel'){
@@ -311,7 +296,7 @@ private displayGraph(data){
           }
           else{
             // console.log(data[graphs_container][graphs][functions]);
-            if((graphs == "figure3") && (data[graphs][functions].length > 2)){
+            if((graphs == "figure4") && (data[graphs][functions].length > 2)){
               let checkBool = (data[graphs][functions][2] === 'true')
               dataset_list.push( this.initializeDataset(functions, data[graphs][functions][0],
                 data[graphs][functions][1],data[graphs][functions][1], checkBool));
@@ -402,7 +387,6 @@ private displayGraph(data){
       data: [ '', [Validators.required]],
     //  authorization: ['', Validators.required],
   });
-    console.log(this.studentTypeSelected)
     this.cohortYear = Object.keys(this.ExcelDataObject[this.studentTypeSelected]);
   }
   setAcademicType(){

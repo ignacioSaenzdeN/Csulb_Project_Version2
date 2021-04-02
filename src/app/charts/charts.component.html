@@ -88,11 +88,11 @@
   <!-- TODO: make sure to output warning message -->
   <div class="input-group col-sm-12">
     <label>σ:&nbsp;</label>
-    <input value={{sigma}} type="text" class="form-control" placeholder={{sigma}} [(ngModel)]="sigma" />
-    <label>α:&nbsp;</label>
-    <input value={{alpha}} type="text" class="form-control" placeholder={{alpha}} [(ngModel)]="alpha" />
-    <label>β:&nbsp;</label>
-    <input value={{beta}} type="text" class="form-control" placeholder={{beta}} [(ngModel)]="beta" />
+    <input value={{sigma}} type="text" style = "width: 9%;" placeholder={{sigma}} [(ngModel)]="sigma" />
+    <label>&nbsp;&nbsp;&nbsp;α:&nbsp;</label>
+    <input value={{alpha}} type="text"  style = "width: 9%;"placeholder={{alpha}} [(ngModel)]="alpha" />
+    <label>&nbsp;&nbsp;&nbsp;β:&nbsp;</label>
+    <input value={{beta}}    type="text" style = "width: 9%;"placeholder={{beta}} [(ngModel)]="beta" />
   </div>
   <br>
   <button (click)="getCohort($event, False)" class="btn btn-primary">

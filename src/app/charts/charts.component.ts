@@ -54,7 +54,7 @@ export class ChartsComponent implements OnInit {
   //this variable will include all the raw data from each set of graphs
   list_of_charts=[];
   // this variable will include the description of each of the graphs
-  description_temp="";
+  description_temp=[];
 
   // this id is used for querying the highereddatabase when we edit the cohor
   higherEdId = "";
@@ -144,7 +144,7 @@ export class ChartsComponent implements OnInit {
     }
 
     private displayGraph(data){
-      this.description_temp = "";
+      this.description_temp = [];
       for (i = 0; i <this.list_of_charts.length ; i++){
         this.list_of_charts[i].destroy();
       }
@@ -170,19 +170,16 @@ export class ChartsComponent implements OnInit {
       var i =1;
           for (let graphs in data[graphs_container]){
             for (functions in data[graphs_container][graphs]){
-              console.log("outside")
               if (functions == "x-axis"){
                 x_axis = data[graphs_container][graphs][functions];
-                console.log("x_axis")
-                console.log(x_axis);
               }else if(functions=="description"){
-                this.description_temp+=data[graphs_container][graphs][functions]+"\n";
+                this.description_temp.push(data[graphs_container][graphs][functions]+"\n");
               }else if(functions == 'yLabel'){
                 yLabel = data[graphs_container][graphs][functions];
               }
               else{
                 // console.log(data[graphs_container][graphs][functions]);
-                if((graphs == "figure3") && (data[graphs_container][graphs][functions].length > 2)){
+                if((graphs == "figure4") && (data[graphs_container][graphs][functions].length > 2)){
                   let checkBool = (data[graphs_container][graphs][functions][2] === 'true')
                   dataset_list.push( this.initializeDataset(functions, data[graphs_container][graphs][functions][0],
                     data[graphs_container][graphs][functions][1],data[graphs_container][graphs][functions][1], checkBool));
@@ -204,6 +201,7 @@ export class ChartsComponent implements OnInit {
               i=i+1;
             }
           }
+          console.log(this.description_temp)
     }
 
 // This function will send the user input (# of students) and receive all the
@@ -212,18 +210,21 @@ export class ChartsComponent implements OnInit {
 // converted into functions to reduce the overall size of this function
     private getGraphArr(userInput){
         // resetting description_temp variable
-        this.description_temp="";
-        this.description_temp="Description of each figure: \n"
         //logs in the console what is being received
         this.http.get(`http://localhost:8000/getPredictionData/${this.studentTypeSelected}/${this.cohortYearSelected}/${this.cohortAcademicTypeSelected}`).subscribe(data =>{
         //set the variables based on our request for the prediction values
         this.higherEdId = data["higherEdId"];
         var metaData =  data["MetaData"];
         this.userInput = metaData.numberOfStudents;
-        this.sigma = this.sigma + metaData.sigma;
-        this.alpha = this.alpha + metaData.alpha;
-        this.beta = this.beta + metaData.beta;
+
+        // this.sigma = this.sigma + metaData.sigma;
+        // this.alpha = this.alpha + metaData.alpha;
+        // this.beta = this.beta + metaData.beta;
+        this.sigma = metaData.sigma.toFixed(3);
+        this.alpha = metaData.alpha.toFixed(3);
+        this.beta = metaData.beta.toFixed(3);
         this.displayGraph(data);
+        // console.log("trimmed alpha is", this.alpha.substring(0,5))
         //Hide cohort input when charts show
         // this.hideSelectCohort = false;
         //Shows slider and greek leeters fields
