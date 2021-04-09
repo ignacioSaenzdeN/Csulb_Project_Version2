@@ -44,6 +44,8 @@ export class ChartsComponent implements OnInit {
   beta:string= "";
 
   hideOptionalComponentsAndCharts:boolean = false;
+
+  steadyState: string ="False";
   //addition
   //this input will be the number of students
   @Input('inputter') userInput :string;
@@ -256,13 +258,13 @@ export class ChartsComponent implements OnInit {
           datasets:_datasets,
         },
         options : {
-
+        
           title: {
      display: true,
      text: title,
      position:'bottom'
- },
-          scales: {
+    },
+    scales: {
             yAxes: [{
               scaleLabel: {
                 display: true,
@@ -291,12 +293,16 @@ export class ChartsComponent implements OnInit {
       this.userInput = (<HTMLInputElement>event.target).value;
     }
 
-    getCohort(steadyState){
+    getCohort(){
+      let steadyState= this.steadyState;
+      console.log("steadyState");
+      console.log(steadyState);
+
       if(isNaN(+this.sigma) || isNaN(+this.alpha) || isNaN(+this.beta)){
         console.log("Error we got non numeric values")
         return;
       }
-      this.http.get(`http://localhost:8000/getModifiedChartCohort/${this.userInput}/${this.sigma}/${this.alpha}/${this.beta}/${steadyState}/${this.higherEdId}`).subscribe(data =>{
+      this.http.get(`http://localhost:8000/getModifiedChartCohort/${this.userInput}/${this.sigma}/${this.alpha}/${this.beta}/${this.steadyState}/${this.higherEdId}`).subscribe(data =>{
         //Reset greek letters shown in input both labels and editable values
         this.sigma = data["MetaData"]["sigma"];
         this.alpha = data["MetaData"]["alpha"];
@@ -339,6 +345,7 @@ export class ChartsComponent implements OnInit {
       for (let i = 0; i <this.list_of_charts.length ; i++){
         this.list_of_charts[i].destroy();
       }
+      this.steadyState="False";
       //We also wanna reset the selection fields's selected variables so that they dont know until selected again
       // this.studentTypeSelected = "";
       // this.cohortYearSelected = "";

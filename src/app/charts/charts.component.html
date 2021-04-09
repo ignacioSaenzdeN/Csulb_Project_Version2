@@ -95,7 +95,7 @@
     <input value={{beta}}    type="text" style = "width: 9%;"placeholder={{beta}} [(ngModel)]="beta" />
   </div>
   <br>
-  <button (click)="getCohort($event, False)" class="btn btn-primary">
+  <button (click)="getCohort($event)" class="btn btn-primary">
     Edit cohort
   </button>
   <br>
@@ -103,8 +103,8 @@
   <label >Steady state (p):</label>&nbsp;
   <br>
   <p class="btn-switch">
-    <input (change)="getCohort($event.target.value)"  checked="checked" type="radio" id="yes" name="switch" class="btn-switch__radio btn-switch__radio_yes" value="True" />
-    <input  (change)="getCohort($event.target.value)" type="radio" checked id="no" name="switch" class="btn-switch__radio btn-switch__radio_no" value="False"/>
+    <input (change)="getCohort($event.target.value)"  checked="checked" type="radio" id="yes" name="switch" class="btn-switch__radio btn-switch__radio_yes"value="True" [(ngModel)]="steadyState" />
+    <input  (change)="getCohort($event.target.value)" type="radio" checked id="no" name="switch" class="btn-switch__radio btn-switch__radio_no" value="False" [(ngModel)]="steadyState">
     <label for="yes" class="btn-switch__label btn-switch__label_yes"><span class="btn-switch__txt">On</span></label>
     <label for="no" class="btn-switch__label btn-switch__label_no"><span class="btn-switch__txt">Off</span></label>
   </p>
@@ -136,4 +136,4 @@
 <br>
 <br>
 <!-- this will load the description of the graphs displayed above -->
-<pre>{{this.description_temp}}</pre>
+<!-- <pre>{{this.description_temp}}</pre> -->
