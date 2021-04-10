@@ -82,10 +82,13 @@
 <div *ngIf="showChartOptionalInputs" >
 
   <div  class="numberCircle">2</div><label>Manipulate the cohort: </label>
+  <br>
+  <label for="">Number of Students:</label>
   <ng5-slider [(value)]="userInput" [options]="options" (input)="onUpdateSlider($event)"></ng5-slider>
   <br>
   <br>
   <!-- TODO: make sure to output warning message -->
+  <label for="">Greek Letters:</label>
   <div class="input-group col-sm-12">
     <label>σ:&nbsp;</label>
     <input value={{sigma}} type="text" style = "width: 9%;" placeholder={{sigma}} [(ngModel)]="sigma" />
