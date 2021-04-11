@@ -258,7 +258,7 @@ export class ChartsComponent implements OnInit {
           datasets:_datasets,
         },
         options : {
-        
+
           title: {
      display: true,
      text: title,

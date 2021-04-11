@@ -10,6 +10,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 })
 export class SnapshotChartComponent implements OnInit {
   queryGraphs: FormGroup;
+  cohortYear:string[];
   constructor(
     private formBuilder: FormBuilder,
     private authenticationService: AuthenticationService,
@@ -25,6 +26,7 @@ export class SnapshotChartComponent implements OnInit {
         this.router.navigate(['/']);
     }
     this.createForm();
+    this.getYearTerm();
   }
 
 
@@ -35,5 +37,21 @@ export class SnapshotChartComponent implements OnInit {
         academicType: ['', Validators.required],
       });
     }
-
+    getYearTerm(){
+      // this.resetForms('', this.studentTypeSelected, '', '');
+      // this.resetMenuItems([], [], []);
+      // this.list_of_charts=[];
+      this.http.get(`http://localhost:8000/getYearTermAll/`).subscribe(data =>{
+        console.log(data);
+        this.cohortYear = Object.values(data).map(a => a.yearTerm);
+      });
+    }
+    getAcademicLabel(){
+      // TODO
+      // this.resetForms('', this.studentTypeSelected, this.cohortYearSelected, '');
+      // this.resetMenuItems([], this.cohortYear, []);
+      // this.http.get(`http://localhost:8000/getAcademicLabel/${this.studentTypeSelected}/${this.cohortYearSelected}`).subscribe(data =>{
+      //   this.academicLabel = Object.values(data).map(a => a.academicLabel);
+      // });
+    }
 }
