@@ -1,0 +1,34 @@
+<div>
+  <h2>Charts (Snapshot)</h2>
+</div>
+  <form [formGroup]="queryGraphs">
+    <div  >
+      <!-- *ngIf="hideSelectCohort" -->
+      <div class="numberCircle">1</div><label>Select a snapshot: </label>
+      <div class="form-group">
+        <select *ngIf="studentTypeSelected" [disabled]="studentTypeSelected" formControlName="yearTerm"
+          class="form-control" (change)="getAcademicLabel($event);hideInputsAndChart();" [(ngModel)]="cohortYearSelected">
+          <option selected [disabled]="true" value="">- Year term -</option>
+          <option *ngFor="let year of cohortYear">{{year}}
+          </option>
+        </select>
+      </div>
+      <div class="form-group">
+        <select *ngIf="cohortYearSelected" [disabled]="cohortYearSelected" formControlName="academicLabel"
+          class="form-control" (change)="getAcademicType($event);hideInputsAndChart();" [(ngModel)]="academicLabelSelected">
+          <option selected [disabled]="true" value="">- Academic label -</option>
+          <option *ngFor="let label of academicLabel">{{label}}
+          </option>
+        </select>
+      </div>
+        <div class="form-group" id="scrollToView">
+          <!-- <label *ngIf="cohortYearSelected" for="departmentName">Academic type</label> -->
+          <select *ngIf="academicLabelSelected" [disabled]="academicLabelSelected" formControlName="academicType"
+            class="form-control"  (change)="hideInputsAndChart();" [(ngModel)]="cohortAcademicTypeSelected">
+            <option selected [disabled]="true" value="">- Select academic type -</option>
+            <option *ngFor="let cohortAcademic of cohortAcademicType">{{cohortAcademic}}
+            </option>
+          </select>
+        </div>
+    </div>
+  </form>

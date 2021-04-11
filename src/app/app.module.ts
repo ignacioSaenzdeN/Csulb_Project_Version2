@@ -29,6 +29,7 @@ import { AccountResetValidateComponent } from './account-reset/account-reset-val
 
 //FormsModule for dropdown in data submission
 import { FormsModule } from '@angular/forms';
+import { SnapshotChartComponent } from './snapshot-chart/snapshot-chart.component';
 
 //Toggle button for charts
 
@@ -57,6 +58,7 @@ import { FormsModule } from '@angular/forms';
         UploadFileComponent,
         AccountResetComponent,
         AccountResetValidateComponent,
+        SnapshotChartComponent,
 
         // ChartsComponent,
         // BarChartComponent,
