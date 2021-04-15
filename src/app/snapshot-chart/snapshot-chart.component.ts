@@ -18,6 +18,8 @@ export class SnapshotChartComponent implements OnInit {
   snapshotYear:string = "21";
 
   queryGraphs: FormGroup;
+
+  labelAndTypeList= [];
   constructor(
     private formBuilder: FormBuilder,
     private authenticationService: AuthenticationService,
@@ -61,15 +63,26 @@ export class SnapshotChartComponent implements OnInit {
       this.resetMenuItems([], []);
       this.http.get(`http://localhost:8000/getAcademicLabelAll/${this.snapshotYear}/`).subscribe(data =>{
         console.log(data);
-        this.academicLabel = Object.values(data).map(a => a);
+        var temp = [];
+        for (var index in data){
+          for (var labelAndType of data[index]){
+            this.labelAndTypeList.push(labelAndType);
+            var temp_var =labelAndType['academicLabel'];
+            if (!temp.includes(temp_var)) temp.push(temp_var);
+          }
+      }
+        this.academicLabel = temp;
+        // this.academicLabel = Object.values(data).map(a => a['academicLabel']);
       });
     }
     getAcademicType(){
-      this.resetForms(this.academicLabelSelected,'');
+      console.log("hi");
       this.resetMenuItems(this.academicLabel, []);
-      this.http.get(`http://localhost:8000/getAcademicTypelAll/${this.snapshotYear}/${this.academicLabelSelected}`).subscribe(data =>{
-        console.log(data);
-        this.academicType = Object.values(data).map(a => a);
-      });
+      console.log(this.academicLabelSelected);
+      var temp =[]
+      for (let labelAndType of this.labelAndTypeList )
+        if (this.academicLabelSelected === labelAndType['academicLabel'] && !temp.includes(labelAndType['academicType']))
+          temp.push(labelAndType['academicType'])
+      this.academicType = temp;
     }
 }
