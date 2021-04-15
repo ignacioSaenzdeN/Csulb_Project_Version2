@@ -9,14 +9,21 @@ import { Router, ActivatedRoute } from '@angular/router';
   styleUrls: ['./snapshot-chart.component.less']
 })
 export class SnapshotChartComponent implements OnInit {
+  academicLabel:string[];
+  academicType:string[];
+
+  academicLabelSelected:string = "";
+  academicTypeSelected:string = "";
+
+  snapshotYear:string = "21";
+
   queryGraphs: FormGroup;
-  cohortYear:string[];
   constructor(
     private formBuilder: FormBuilder,
     private authenticationService: AuthenticationService,
     private http: HttpClient,
     private router: Router,
-  ) { }
+  ) {}
 
   ngOnInit() {
     if (this.authenticationService.currentUserValue && this.authenticationService.isTokenValid() ) {
@@ -26,32 +33,43 @@ export class SnapshotChartComponent implements OnInit {
         this.router.navigate(['/']);
     }
     this.createForm();
-    this.getYearTerm();
+    this.getAcademicLabel();
   }
+
+      //Helper function reset the state of the select of form selections when changing the combination
+      resetForms(academicLabel, academicType){
+        this.queryGraphs = this.formBuilder.group({
+          academicLabel: [academicLabel, Validators.required],
+          academicType: [academicType, Validators.required],
+        });
+      }
+      //Helper function to reset the list of options for the dropdown menus when selecting a new combination
+      resetMenuItems(academicLabel, academicType){
+        this.academicLabel = academicLabel;
+        this.academicType = academicType;
+      }
 
 
     private createForm(){
       this.queryGraphs = this.formBuilder.group({
         academicLabel: ['', Validators.required],
-        yearTerm: ['', Validators.required],
         academicType: ['', Validators.required],
       });
     }
-    getYearTerm(){
-      // this.resetForms('', this.studentTypeSelected, '', '');
-      // this.resetMenuItems([], [], []);
-      // this.list_of_charts=[];
-      this.http.get(`http://localhost:8000/getYearTermAll/`).subscribe(data =>{
+    getAcademicLabel(){
+      this.resetForms(this.academicLabelSelected,'');
+      this.resetMenuItems([], []);
+      this.http.get(`http://localhost:8000/getAcademicLabelAll/${this.snapshotYear}/`).subscribe(data =>{
         console.log(data);
-        this.cohortYear = Object.values(data).map(a => a.yearTerm);
+        this.academicLabel = Object.values(data).map(a => a);
       });
     }
-    getAcademicLabel(){
-      // TODO
-      // this.resetForms('', this.studentTypeSelected, this.cohortYearSelected, '');
-      // this.resetMenuItems([], this.cohortYear, []);
-      // this.http.get(`http://localhost:8000/getAcademicLabel/${this.studentTypeSelected}/${this.cohortYearSelected}`).subscribe(data =>{
-      //   this.academicLabel = Object.values(data).map(a => a.academicLabel);
-      // });
+    getAcademicType(){
+      this.resetForms(this.academicLabelSelected,'');
+      this.resetMenuItems(this.academicLabel, []);
+      this.http.get(`http://localhost:8000/getAcademicTypelAll/${this.snapshotYear}/${this.academicLabelSelected}`).subscribe(data =>{
+        console.log(data);
+        this.academicType = Object.values(data).map(a => a);
+      });
     }
 }

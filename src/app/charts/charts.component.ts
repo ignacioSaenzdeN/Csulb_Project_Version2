@@ -332,10 +332,10 @@ export class ChartsComponent implements OnInit {
       });
     }
     //Helper function to reset the list of options for the dropdown menus when selecting a new combination
-    resetMenuItems(academicLabel, cohortYear, cohortAcademicTye){
+    resetMenuItems(academicLabel, cohortYear, cohortAcademicType){
       this.academicLabel = academicLabel;
       this.cohortYear = cohortYear;
-      this.cohortAcademicType = cohortAcademicTye;
+      this.cohortAcademicType = cohortAcademicType;
     }
 
     hideInputsAndChart(){
@@ -346,12 +346,6 @@ export class ChartsComponent implements OnInit {
         this.list_of_charts[i].destroy();
       }
       this.steadyState="False";
-      //We also wanna reset the selection fields's selected variables so that they dont know until selected again
-      // this.studentTypeSelected = "";
-      // this.cohortYearSelected = "";
-      // this.academicLabelSelected = "";
-      // this.cohortAcademicTypeSelected = "";
-      //Clears greek letters
       this.sigma = "";
       this.alpha = "";
       this.beta = "";
