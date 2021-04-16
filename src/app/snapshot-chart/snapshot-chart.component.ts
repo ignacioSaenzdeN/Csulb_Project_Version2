@@ -75,10 +75,10 @@ export class SnapshotChartComponent implements OnInit {
         // this.academicLabel = Object.values(data).map(a => a['academicLabel']);
       });
     }
+
     getAcademicType(){
-      console.log("hi");
+      this.resetForms(this.academicLabelSelected, '')
       this.resetMenuItems(this.academicLabel, []);
-      console.log(this.academicLabelSelected);
       var temp =[]
       for (let labelAndType of this.labelAndTypeList )
         if (this.academicLabelSelected === labelAndType['academicLabel'] && !temp.includes(labelAndType['academicType']))
