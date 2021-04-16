@@ -61,7 +61,7 @@ export class SnapshotChartComponent implements OnInit {
     getAcademicLabel(){
       this.resetForms(this.academicLabelSelected,'');
       this.resetMenuItems([], []);
-      this.http.get(`http://localhost:8000/getAcademicLabelAll/${this.snapshotYear}/`).subscribe(data =>{
+      this.http.get(`http://localhost:8000/getAcademicLabelFromYearAll/${this.snapshotYear}/`).subscribe(data =>{
         console.log(data);
         var temp = [];
         for (var index in data){
