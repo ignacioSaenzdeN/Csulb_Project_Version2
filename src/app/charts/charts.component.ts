@@ -52,7 +52,6 @@ export class ChartsComponent implements OnInit {
 
   // title: 'Graph';
   chart = Chart;
-
   //this variable will include all the raw data from each set of graphs
   list_of_charts=[];
   // this variable will include the description of each of the graphs
