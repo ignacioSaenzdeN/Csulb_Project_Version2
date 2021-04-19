@@ -355,7 +355,8 @@ export class ChartsComponent implements OnInit {
     getYearTerm(){
       this.resetForms('', this.studentTypeSelected, '', '');
       this.resetMenuItems([], [], []);
-      this.list_of_charts=[];
+      this.hideInputsAndChart();
+      // this.list_of_charts=[];
       this.http.get(`http://localhost:8000/getYearTerm/${this.studentTypeSelected}`).subscribe(data =>{
         this.cohortYear = Object.values(data).map(a => a.yearTerm);
       });
@@ -363,6 +364,7 @@ export class ChartsComponent implements OnInit {
     getAcademicLabel(){
       this.resetForms('', this.studentTypeSelected, this.cohortYearSelected, '');
       this.resetMenuItems([], this.cohortYear, []);
+      this.hideInputsAndChart();
       this.http.get(`http://localhost:8000/getAcademicLabel/${this.studentTypeSelected}/${this.cohortYearSelected}`).subscribe(data =>{
         this.academicLabel = Object.values(data).map(a => a.academicLabel);
       });
@@ -370,6 +372,7 @@ export class ChartsComponent implements OnInit {
     getAcademicType(){
       this.resetForms(this.academicLabelSelected, this.studentTypeSelected, this.cohortYearSelected, '');
       this.resetMenuItems(this.academicLabel, this.cohortYear, []);
+      this.hideInputsAndChart();
       this.http.get(`http://localhost:8000/getAcademicType/${this.studentTypeSelected}/${this.cohortYearSelected}/${this.academicLabelSelected}`).subscribe(data =>{
         this.cohortAcademicType = Object.values(data).map(a => a.academicType);
       });
