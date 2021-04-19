@@ -344,6 +344,7 @@ export class ChartsComponent implements OnInit {
       for (let i = 0; i <this.list_of_charts.length ; i++){
         this.list_of_charts[i].destroy();
       }
+      this.list_of_charts=[];
       this.steadyState="False";
       this.sigma = "";
       this.alpha = "";
@@ -355,12 +356,19 @@ export class ChartsComponent implements OnInit {
     getYearTerm(){
       this.resetForms('', this.studentTypeSelected, '', '');
       this.resetMenuItems([], [], []);
+      for (let i = 0; i <this.list_of_charts.length ; i++){
+        this.list_of_charts[i].destroy();
+      }
       this.list_of_charts=[];
       this.http.get(`http://localhost:8000/getYearTerm/${this.studentTypeSelected}`).subscribe(data =>{
         this.cohortYear = Object.values(data).map(a => a.yearTerm);
       });
     }
     getAcademicLabel(){
+      for (let i = 0; i <this.list_of_charts.length ; i++){
+        this.list_of_charts[i].destroy();
+      }
+      this.list_of_charts=[];
       this.resetForms('', this.studentTypeSelected, this.cohortYearSelected, '');
       this.resetMenuItems([], this.cohortYear, []);
       this.http.get(`http://localhost:8000/getAcademicLabel/${this.studentTypeSelected}/${this.cohortYearSelected}`).subscribe(data =>{
@@ -368,6 +376,10 @@ export class ChartsComponent implements OnInit {
       });
     }
     getAcademicType(){
+      for (let i = 0; i <this.list_of_charts.length ; i++){
+        this.list_of_charts[i].destroy();
+      }
+      this.list_of_charts=[];
       this.resetForms(this.academicLabelSelected, this.studentTypeSelected, this.cohortYearSelected, '');
       this.resetMenuItems(this.academicLabel, this.cohortYear, []);
       this.http.get(`http://localhost:8000/getAcademicType/${this.studentTypeSelected}/${this.cohortYearSelected}/${this.academicLabelSelected}`).subscribe(data =>{
