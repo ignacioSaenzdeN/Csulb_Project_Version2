@@ -9,6 +9,7 @@ import { first } from 'rxjs/operators';
   templateUrl: './account-reset.component.html',
   styleUrls: ['./account-reset.component.less']
 })
+// 
 export class AccountResetComponent implements OnInit {
   accountResetForm: FormGroup;
   submitted = false;
@@ -17,7 +18,7 @@ export class AccountResetComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
-    private userService: UserService, 
+    private userService: UserService,
     private alertService: AlertService
   ) { }
 
@@ -26,7 +27,7 @@ export class AccountResetComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]]
     });
   }
-  
+  // convenience getter for easy access to form fields
   get f() { return this.accountResetForm.controls; }
 
   onSubmit() {
@@ -35,21 +36,21 @@ export class AccountResetComponent implements OnInit {
     this.alertService.clear();
 
     if (this.accountResetForm.invalid) {
-        return;
+      return;
     }
-    this.loading = true;  
+    this.loading = true;
+    // TODO: Check why error messages are not working well
     this.userService.sendPasswordResetLink(this.accountResetForm.value).subscribe(
-      data => {this.alertService.success("Email sent"), setTimeout(() => {
-        this.router.navigate(['/login']);
-     }, 500);},
-      error => {this.alertService.success('Please enter the e-mail account associated to your account', false);
-      this.loading = false;});
+      data => {
+        this.alertService.success("Email sent"), setTimeout(() => {
+          this.router.navigate(['/login']);
+        }, 500);
+      },
+      error => {
+        this.alertService.success('Please enter the e-mail account associated to your account', false);
+        this.loading = false;
+      });
     this.loading = false;
   }
-  // handleResponse(res){
-  //   console.log(res);
-  //   this.accountResetForm.controls.email = null;
-  // }
-
 
 }

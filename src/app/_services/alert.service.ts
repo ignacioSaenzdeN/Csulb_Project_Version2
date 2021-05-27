@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router, NavigationStart } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 
-
+// TODO: sucess alerts seems to work but error alerts do not
 // The following code aims to provide success/ fail notifications to the User
 @Injectable({ providedIn: 'root' })
 export class AlertService {
@@ -27,17 +27,17 @@ export class AlertService {
     getAlert(): Observable<any> {
         return this.subject.asObservable();
     }
-
+    // success creates a success message with a specific text
     success(message: string, keepAfterRouteChange = false) {
         this.keepAfterRouteChange = keepAfterRouteChange;
         this.subject.next({ type: 'success', text: message });
     }
-
+    // error creates a error message with a specific text
     error(message: string, keepAfterRouteChange = false) {
         this.keepAfterRouteChange = keepAfterRouteChange;
         this.subject.next({ type: 'error', text: message });
     }
-
+    // it deletes the existing alerts
     clear() {
         // clear by calling subject.next() without parameters
         this.subject.next();

@@ -1,13 +1,15 @@
-<!-- nav -->
+
 <!-- *ngIf="currentUser" shows content only if users id logged in -->
+<!-- this html acts as the main component and it loads
+     the navigation bar as well as the rest of the components -->
 <ng-progress></ng-progress>
 <title>CSU Seer</title>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light" *ngIf="currentUser">
     <div class="navbar-nav">
         <a class="nav-item nav-link" routerLink="/home" >Home</a>
-        <a class="nav-item nav-link" routerLink="/charts">Charts (Cohort)</a>
-        <a class="nav-item nav-link" routerLink="/snapshot-chart">Charts (Snapshot)</a>
+        <a class="nav-item nav-link" routerLink="/charts">Cohort Charts</a>
+        <a class="nav-item nav-link" routerLink="/snapshot-chart">Snapshot Charts</a>
         <a class="nav-item nav-link" routerLink="/register" *ngIf="this.authenticationService.isProvider">Invite user</a>
         <a class="nav-item nav-link" routerLink="/uploadView" *ngIf="this.authenticationService.isProvider">Upload data</a>
         <a class="nav-item nav-link" routerLink="/profile">Profile</a>

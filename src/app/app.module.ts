@@ -3,9 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgProgressModule } from '@ngx-progressbar/core';
-import { NgProgressHttpModule  } from '@ngx-progressbar/http';
-// used to create fake backend
-
+import { NgProgressHttpModule } from '@ngx-progressbar/http';
 
 import { appRoutingModule } from './app.routing';
 import { JwtInterceptor, ErrorInterceptor } from './_helpers';
@@ -31,7 +29,6 @@ import { AccountResetValidateComponent } from './account-reset/account-reset-val
 import { FormsModule } from '@angular/forms';
 import { SnapshotChartComponent } from './snapshot-chart/snapshot-chart.component';
 
-//Toggle button for charts
 
 
 @NgModule({
@@ -59,10 +56,6 @@ import { SnapshotChartComponent } from './snapshot-chart/snapshot-chart.componen
         AccountResetComponent,
         AccountResetValidateComponent,
         SnapshotChartComponent,
-
-        // ChartsComponent,
-        // BarChartComponent,
-        // LineChartComponent
     ],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

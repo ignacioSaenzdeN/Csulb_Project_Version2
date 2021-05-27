@@ -1,4 +1,4 @@
-<!-- The purpose of the html code is not display a form that retrieves the necessary
+<!-- The purpose of the html code is to display a form that retrieves the necessary
 data a user needs to input to train the model -->
 <div>
   <h2>Train cohort</h2>
@@ -12,9 +12,6 @@ data a user needs to input to train the model -->
     <br>
   </div>
   <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()">
-    <!-- <div  *ngIf="submitted &&  this.fileContent.length==0" class="alert alert-danger" role="alert">
-    The value in the excel file should only be integers, please fix the issue and submit again.
-  </div> -->
     <!-- this section of code is specifically for the upload of files -->
     <div *ngIf="!upload_boolean">
       <div class="numberCircle">1</div><label> Insert a data sheet: </label>
@@ -30,14 +27,11 @@ data a user needs to input to train the model -->
       </div>
       <br>
     </div>
-    <!--
-  <ng5-slider [(value)]="userInput" [options]="options" (input)="onUpdateSlider($event)"></ng5-slider>
-  <br> -->
+
 
 
     <div *ngIf="studentType" class="form-group">
       <div class="numberCircle">2</div><label>Select a cohort: </label>
-      <!-- <label *ngIf="studentType" for="universityName">Student type</label> -->
       <select formControlName="studentTypeF" class="form-control" (change)="setCohorYearType($event); clearOnSelect()"
         [(ngModel)]="studentTypeSelected">
         <option selected [disabled]="true" value="">- Student type -</option>
@@ -49,7 +43,6 @@ data a user needs to input to train the model -->
       </div>
     </div>
     <div class="form-group">
-      <!-- <label  *ngIf="studentTypeSelected" for="collegeName">Year term</label> -->
       <select *ngIf="studentTypeSelected" formControlName="yearTermF" class="form-control"
         (change)="setAcademicType($event); clearOnSelect()" [(ngModel)]="cohortYearSelected">
         <option selected [disabled]="true" value="">- Year term -</option>
@@ -62,7 +55,6 @@ data a user needs to input to train the model -->
     </div>
 
     <div class="form-group">
-      <!-- <label *ngIf="cohortYearSelected" for="departmentName">Academic type</label> -->
       <select *ngIf="cohortYearSelected" formControlName="academicTypeF" class="form-control" (change)="clearOnSelect()"
         [(ngModel)]="cohortAcademicTypeSelected">
         <option selected [disabled]="true" value="">- Academic type -</option>
@@ -101,13 +93,6 @@ using the previously updated data -->
       The information has been stored
     </p>
   </div>
-  <!-- <div *ngIf="this.train_wait===true">
-  <p>
-      (Please wait, the process can take a few seconds)
-  </p>
-  <br>
-  <p>Selected cohort: {{studentTypeSelected}} in {{cohortYearSelected}} for {{cohortAcademicTypeSelected}}</p>
-</div> -->
   <br>
   &nbsp; &emsp; &emsp; &emsp;
   <p style = "font-size: 1.2vw;"> Headcount/ Number of Students: {{cohortamountOfStudents}}</p>
