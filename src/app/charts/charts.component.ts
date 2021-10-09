@@ -4,6 +4,7 @@ import { UserService, AuthenticationService, AlertService } from '../_services';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
+import { CohortService } from '../_services/cohort.service';
 //SliderModule
 import { Options } from 'ng5-slider';
 import { ViewportScroller } from '@angular/common';
@@ -14,26 +15,15 @@ import { ViewportScroller } from '@angular/common';
   styleUrls: ['./charts.component.less']
 })
 export class ChartsComponent implements OnInit {
-
   //slider stuff
   value: number = 100;
   options: Options = {
     floor: 0,
     ceil: 2000
   };
-  queryGraphs: FormGroup;
 
   //this will contain queried data for the drop down menu
-  academicLabel: string[];
-  academicLabelSelected: string = "";
-  studentType: string[] = ["FRESHMEN", "TRANSFER"];
-  studentTypeSelected: string = "";
-  cohortYear: string[];
-  cohortYearSelected: string = "";
-  cohortAcademicType: string[];
-  cohortAcademicTypeSelected: string = "";
   showChartOptionalInputs: boolean = false;
-  //these four variables are used to set the charts
   numberOfStudents: string = "0";
   //This flag hides the cohort selection for charts
   hideSelectCohort: boolean = true;
@@ -42,9 +32,7 @@ export class ChartsComponent implements OnInit {
   sigma: string = "";
   alpha: string = "";
   beta: string = "";
-
   hideOptionalComponentsAndCharts: boolean = false;
-
   steadyState: string = "False";
   //addition
   //this input will be the number of students
@@ -61,8 +49,8 @@ export class ChartsComponent implements OnInit {
   higherEdId = "";
 
   constructor(private http: HttpClient,
-    private formBuilder: FormBuilder,
     private authenticationService: AuthenticationService,
+    private cohortService: CohortService,
     private router: Router,
     private vps: ViewportScroller,
   ) { }
@@ -78,71 +66,13 @@ export class ChartsComponent implements OnInit {
     // if graph must show at the beginning of anything put code here
     this.userInput = "0";
     //initializes the form
-    this.createForm();
+    this.cohortService.clearDropDown();
+    this.cohortService.createForm();
   }// end of ngOnInit()
 
-  private createForm() {
-    this.queryGraphs = this.formBuilder.group({
-      academicLabel: ['', Validators.required],
-      studentType: ['', Validators.required],
-      yearTerm: ['', Validators.required],
-      academicType: ['', Validators.required],
-    });
-  }
-
   // f() is just a shortcut to access the controls
-  get f() { return this.queryGraphs.controls; }
-  //Demo graphs to see structure of a graph
-  private getGraph() {
-    this.http.get(`http://localhost:8000/markov/900/`).subscribe(data => { console.log(data); });
-    //.subscribe(data =>{console.log(data);})
-    this.chart = new Chart('canvas', {
-      type: 'line',
-      data: {
-        //labels are in one of the coordinatesEg: months (JAN,FEB,ETC.)
-        labels: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
-        //datasets are the elements to be charted, the lines each {} is one line/function
-        datasets: [{
-          label: 'COE Enrolled',
-          data: [0, 900, 834, 807, 785, 764, 743, 720, 698, 548, 337, 168, 67, 19, 2, 0],
-          backgroundColor: 'red',
-          borderColor: 'red',
-          fill: false,
-        },
-        {
-          label: 'COE graduating',
-          data: [0, 0, 0, 0, 0, 0, 0, 164, 212, 155, 83, 34, 9, 0, 0, 0],
-          backgroundColor: 'blue',
-          borderColor: 'blue',
-          fill: false,
-        }//end of second dataset
-        ]//end of dataset
-      }//end of data
-    })// enf of this.chart
-    this.chart = new Chart('canvas1', {
-      type: 'line',
-      data: {
-        //labels are in one of the coordinatesEg: months (JAN,FEB,ETC.)
-        labels: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
-        //datasets are the elements to be charted, the lines each {} is one line/function
-        datasets: [{
-          label: 'COE Enrolled',
-          data: [0, 900, 834, 807, 785, 764, 743, 720, 698, 548, 337, 168, 67, 19, 2, 0],
-          backgroundColor: 'red',
-          borderColor: 'red',
-          fill: false,
-        },
-        {
-          label: 'COE graduating',
-          data: [0, 0, 0, 0, 0, 0, 0, 164, 212, 155, 83, 34, 9, 0, 0, 0],
-          backgroundColor: 'blue',
-          borderColor: 'blue',
-          fill: false,
-        }//end of second dataset
-        ]//end of dataset
-      }//end of data
-    })// enf of this.chart
-  }
+  get f() { return this.cohortService.queryGraphs.controls; }
+  
 
   private displayGraph(data) {
     // this.description_temp = [];
@@ -207,25 +137,20 @@ export class ChartsComponent implements OnInit {
 
   // This function will send the user input (# of students) and receive all the
   // necessary data to create the desired graphs
-  // NOTE: In order to make this function easier to read, parts of the code has been
+  // NOTE: In order to make this function easier to read, parts of the code have been
   // converted into functions to reduce the overall size of this function
   private getGraphArr(userInput) {
     // resetting description_temp variable
     //logs in the console what is being received
-    this.http.get(`http://localhost:8000/getPredictionData/${this.studentTypeSelected}/${this.cohortYearSelected}/${this.cohortAcademicTypeSelected}`).subscribe(data => {
+    this.http.get(`http://localhost:8000/getPredictionData/${this.cohortService.cohort.studentType}/${this.cohortService.cohort.cohortYear}/${this.cohortService.cohort.academicType}`).subscribe(data => {
       //set the variables based on our request for the prediction values
       this.higherEdId = data["higherEdId"];
       var metaData = data["MetaData"];
       this.userInput = metaData.numberOfStudents;
-
-      // this.sigma = this.sigma + metaData.sigma;
-      // this.alpha = this.alpha + metaData.alpha;
-      // this.beta = this.beta + metaData.beta;
       this.sigma = metaData.sigma.toFixed(3);
       this.alpha = metaData.alpha.toFixed(3);
       this.beta = metaData.beta.toFixed(3);
       this.displayGraph(data);
-      // console.log("trimmed alpha is", this.alpha.substring(0,5))
       //Hide cohort input when charts show
       // this.hideSelectCohort = false;
       //Shows slider and greek leeters fields
@@ -240,10 +165,7 @@ export class ChartsComponent implements OnInit {
   private initializeDataset(_label, _data, _backgroundColor, _borderColor, _showLineBool) {
     // let shape = _showLineBool ? "circle" : "star";
     let shapeBackground = _showLineBool ? _backgroundColor : "#e9ecef";
-    // console.log("shape");
-    // console.log(shape);
     var ans = { "label": _label, "data": _data, "backgroundColor": _backgroundColor, "borderColor": _borderColor, "fill": false, "showLine": _showLineBool, "pointStyle": "circle", "pointBackgroundColor": shapeBackground };
-    //console.log(ans);
     return ans;
   }
   // using the smaller components, the entire chart is built. The purpose of this
@@ -282,16 +204,16 @@ export class ChartsComponent implements OnInit {
     this.list_of_charts.push(this.chart);
   }
 
-  //this function is for testing purposes
-  private getGraphTest(userInput) {
-    this.http.get(`http://localhost:8000/markov/` + userInput + `/`).subscribe(data => { console.log(data); });
-    //.subscribe(data =>{console.log(data);})
-  }
-  //Not used
-  onUpdateServerName(event: any) {
-    this.userInput = (<HTMLInputElement>event.target).value;
-  }
+  // //this function is for testing purposes
+  // private getGraphTest(userInput) {
+  //   this.http.get(`http://localhost:8000/markov/` + userInput + `/`).subscribe(data => { console.log(data); });
+  // }
+  // //Not used
+  // onUpdateServerName(event: any) {
+  //   this.userInput = (<HTMLInputElement>event.target).value;
+  // }
 
+  //TODO rename this function to something else
   getCohort() {
     let steadyState = this.steadyState;
     console.log("steadyState");
@@ -310,33 +232,6 @@ export class ChartsComponent implements OnInit {
     });
   }
 
-  // steadyTrigger(aBool){
-  //   this.http.get(`http://localhost:8000/getModifiedChartCohort/${this.userInput}/${this.sigma}/${this.alpha}/${this.beta}/aBool`).subscribe(data =>{
-  //     //Reset greek letters shown in input both labels and editable values
-  //     console.log(data);
-  //     this.sigma = data["MetaData"]["sigma"];
-  //     this.alpha = data["MetaData"]["alpha"];
-  //     this.beta = data["MetaData"]["beta"];
-  //     this.displayGraph(data);
-  //   });
-  // }
-
-  //Helper function reset the state of the select of form selections when changing the combination
-  resetForms(academicLabel, studentType, yearTerm, academicType) {
-    this.queryGraphs = this.formBuilder.group({
-      academicLabel: [academicLabel, Validators.required],
-      studentType: [studentType, Validators.required],
-      yearTerm: [yearTerm, Validators.required],
-      academicType: [academicType, Validators.required],
-    });
-  }
-  //Helper function to reset the list of options for the dropdown menus when selecting a new combination
-  resetMenuItems(academicLabel, cohortYear, cohortAcademicType) {
-    this.academicLabel = academicLabel;
-    this.cohortYear = cohortYear;
-    this.cohortAcademicType = cohortAcademicType;
-  }
-
   hideInputsAndChart() {
     this.showChartOptionalInputs = false;
     // This loop destorys the previously stored data to make sure there is
@@ -351,45 +246,5 @@ export class ChartsComponent implements OnInit {
     this.beta = "";
 
   }
-
-  // With these three functions that do http get requests, we are able to populate the chart menu selection dynamically
-  getYearTerm() {
-    this.resetForms('', this.studentTypeSelected, '', '');
-    this.resetMenuItems([], [], []);
-    for (let i = 0; i < this.list_of_charts.length; i++) {
-      this.list_of_charts[i].destroy();
-    }
-    this.list_of_charts = [];
-    this.hideInputsAndChart();
-    // this.list_of_charts=[];
-    this.http.get(`http://localhost:8000/getYearTerm/${this.studentTypeSelected}`).subscribe(data => {
-      this.cohortYear = Object.values(data).map(a => a.yearTerm);
-    });
-  }
-  getAcademicLabel() {
-    for (let i = 0; i < this.list_of_charts.length; i++) {
-      this.list_of_charts[i].destroy();
-    }
-    this.list_of_charts = [];
-    this.resetForms('', this.studentTypeSelected, this.cohortYearSelected, '');
-    this.resetMenuItems([], this.cohortYear, []);
-    this.hideInputsAndChart();
-    this.http.get(`http://localhost:8000/getAcademicLabel/${this.studentTypeSelected}/${this.cohortYearSelected}`).subscribe(data => {
-      this.academicLabel = Object.values(data).map(a => a.academicLabel);
-    });
-  }
-  getAcademicType() {
-    for (let i = 0; i < this.list_of_charts.length; i++) {
-      this.list_of_charts[i].destroy();
-    }
-    this.list_of_charts = [];
-    this.resetForms(this.academicLabelSelected, this.studentTypeSelected, this.cohortYearSelected, '');
-    this.resetMenuItems(this.academicLabel, this.cohortYear, []);
-    this.hideInputsAndChart();
-    this.http.get(`http://localhost:8000/getAcademicType/${this.studentTypeSelected}/${this.cohortYearSelected}/${this.academicLabelSelected}`).subscribe(data => {
-      this.cohortAcademicType = Object.values(data).map(a => a.academicType);
-    });
-  }
-
 
 }

@@ -5,7 +5,7 @@ import { RegisterComponent } from './register';
 import { AuthGuard } from './_helpers';
 import { ChartsComponent } from './charts';
 import { ProfileComponent } from './profile/profile.component';
-import { UploadFileComponent } from './charts/upload-file/upload-file.component';
+import { UploadFileComponent } from './upload-file/upload-file.component';
 import { AccountResetComponent } from './account-reset/account-reset.component';
 import { AccountResetValidateComponent } from "./account-reset/account-reset-validate/account-reset-validate.component";
 import { SnapshotChartComponent } from './snapshot-chart/snapshot-chart.component';

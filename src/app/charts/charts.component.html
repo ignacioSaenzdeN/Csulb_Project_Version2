@@ -3,13 +3,13 @@
   <!-- this is only in case we ant the upload information in the graphs -->
   <!-- <ng5-slider [(value)]="userInput" [options]="options" (input)="onUpdateServerName($event)"></ng5-slider>
 <br> -->
-  <form [formGroup]="queryGraphs">
+  <form [formGroup]="cohortService.queryGraphs">
     <!-- <div *ngIf="showChartOptionalInputs && hideNewCohortButton">
       <div class="numberCircle">1</div><label>Select a cohort: </label>
       <br>
       <button (click)="hideSelectCohort = true; hideNewCohortButton= false; hideInputsAndChart()"
         class="btn btn-primary">
-        New cohort
+        New cohort 
       </button>
       <br>
       <br>
@@ -20,10 +20,10 @@
       <div class="form-group">
 
         <!-- <label *ngIf="studentType" for="universityName">Student type</label> -->
-        <select formControlName="studentType" class="form-control" (change)="getYearTerm($event); hideInputsAndChart();"
-          [(ngModel)]="studentTypeSelected">
-          <option selected [disabled]="true">- Select student type -</option>
-          <option *ngFor="let type of studentType">{{type}}
+        <select formControlName="studentType" class="form-control" (change)="cohortService.getYearTerm($event); hideInputsAndChart();"
+          [(ngModel)]="cohortService.cohort.studentType">
+          <option hidden value="" >- Select student type -</option>
+          <option *ngFor="let type of this.cohortService.studentTypeArr">{{type}}
           </option>
         </select>
         <!-- <div *ngIf="submitted && f.studentType.errors" class="invalid-feedback">
@@ -32,10 +32,10 @@
       </div>
       <div class="form-group">
         <!-- <label *ngIf="studentType" for="universityName">Student type</label> -->
-        <select *ngIf="studentTypeSelected" [disabled]="studentTypeSelected" formControlName="yearTerm"
-          class="form-control" (change)="getAcademicLabel($event);hideInputsAndChart();" [(ngModel)]="cohortYearSelected">
-          <option selected [disabled]="true" value="">- Year term -</option>
-          <option *ngFor="let year of cohortYear">{{year}}
+        <select *ngIf="cohortService.cohort.studentType" [disabled]="cohortService.cohort.studentType" formControlName="yearTerm"
+          class="form-control" (change)="cohortService.getAcademicLabel($event); hideInputsAndChart();" [(ngModel)]="cohortService.cohort.cohortYear">
+          <option hidden value="" >- Year term -</option>
+          <option *ngFor="let year of cohortService.cohortYearArr">{{year}}
           </option>
         </select>
         <!-- <div *ngIf="submitted && f.academicLabel.errors" class="invalid-feedback">
@@ -44,10 +44,10 @@
       </div>
       <div class="form-group">
         <!-- <label  *ngIf="studentTypeSelected" for="collegeName">Year term</label> -->
-        <select *ngIf="cohortYearSelected" [disabled]="cohortYearSelected" formControlName="academicLabel"
-          class="form-control" (change)="getAcademicType($event);hideInputsAndChart();" [(ngModel)]="academicLabelSelected">
-          <option selected [disabled]="true" value="">- Academic label -</option>
-          <option *ngFor="let label of academicLabel">{{label}}
+        <select *ngIf="cohortService.cohort.cohortYear" [disabled]="cohortService.cohort.cohortYear" formControlName="academicLabel"
+          class="form-control" (change)="cohortService.getAcademicType($event); hideInputsAndChart();" [(ngModel)]="cohortService.cohort.academicLabel">
+          <option hidden value="">- Academic label -</option>
+          <option *ngFor="let label of cohortService.academicLabelArr">{{label}}
           </option>
         </select>
         <!-- <div *ngIf="submitted && f.yearTerm.errors" class="invalid-feedback">
@@ -57,10 +57,10 @@
 
       <div class="form-group" id="scrollToView">
         <!-- <label *ngIf="cohortYearSelected" for="departmentName">Academic type</label> -->
-        <select *ngIf="academicLabelSelected" [disabled]="academicLabelSelected" formControlName="academicType"
-          class="form-control"  (change)="hideInputsAndChart();" [(ngModel)]="cohortAcademicTypeSelected">
-          <option selected [disabled]="true" value="">- Select academic type -</option>
-          <option *ngFor="let cohortAcademic of cohortAcademicType">{{cohortAcademic}}
+        <select *ngIf="cohortService.cohort.academicLabel" [disabled]="cohortService.cohort.academicLabel" formControlName="academicType"
+          class="form-control"  (change)="hideInputsAndChart();" [(ngModel)]="cohortService.cohort.academicType">
+          <option hidden value="">- Select academic type -</option>
+          <option *ngFor="let cohortAcademic of cohortService.cohortAcademicTypeArr">{{cohortAcademic}}
           </option>
         </select>
       </div>
@@ -69,7 +69,7 @@
       </div> -->
       </div>
       <div class="form-group">
-        <button *ngIf="cohortAcademicTypeSelected" (click)=" getGraphArr(userInput); hideInputsAndChart();"
+        <button *ngIf="cohortService.cohort.academicType" (click)=" getGraphArr(userInput); hideInputsAndChart();"
           [disabled]="loading" class="btn btn-primary">
           <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
           Get charts

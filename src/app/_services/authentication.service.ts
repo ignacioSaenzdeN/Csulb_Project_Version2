@@ -130,6 +130,9 @@ export class AuthenticationService {
       // return false;
     }
   }
+  getCurrentUser(){
+    return JSON.parse(window.atob(localStorage.getItem('currentUser').split('.')[1])).username;
+  }
   // logout removes user from local storage and set current user to null
   logout() {
     localStorage.removeItem('currentUser');
