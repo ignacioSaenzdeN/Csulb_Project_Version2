@@ -1,6 +1,6 @@
 export class File {
-    name: string;
-    data: string;
-    user: string;
-    date: string;
+    fileName: string;
+    data: object;
+    createdBy: string;
+    pubDate: string;
 }

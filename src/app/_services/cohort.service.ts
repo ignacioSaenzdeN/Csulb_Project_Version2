@@ -52,20 +52,6 @@ export class CohortService {
         this.cohortAcademicTypeArr = cohortAcademicType;
     }
     
-    // getFileName(){
-    //     //this.fileName = '';
-    //     this.cohort.academicType = '';
-    //     this.cohort.academicLabel = '';
-    //     this.cohort.cohortYear = '';
-    //     //this.resetForms('', '', '', '');
-    //     this.resetMenuItems([],[], []);
-    //     //In the future need to work on passing the permissions to get the right files
-    //     this.http.get(`http://localhost:8000/getFileName/`).subscribe(data => {
-    //       this.fileNameArr = Object.values(data).map(a => a.fileName);
-    //     });
-
-
-    // }
     
     getYearTerm() {
         this.cohort.academicType = '';
@@ -73,7 +59,7 @@ export class CohortService {
         this.cohort.cohortYear = '';
         //this.cohortYearArr = []
         // before calling getYearTerm make sure you resetForm
-        this.resetForms('', this.cohort.studentType, '', '');
+        this.resetForms(this.cohort.studentType, '', '', '');
         this.resetMenuItems([], [], []);
         //TODO: implement way to desetroy charts in charts service
         // for (let i = 0; i < this.list_of_charts.length; i++) {

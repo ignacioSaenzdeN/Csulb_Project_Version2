@@ -27,7 +27,6 @@ export class UploadFileComponent {
   csvData: any[][];
   //uploadService.csvDataObject: {} = {}
   studentType: string[];
-  fileDropdownSelected: string = "";
   cohortYear: string[];
   cohortYearSelected: string = "";
   cohortAcademicType: string[];
@@ -45,7 +44,7 @@ export class UploadFileComponent {
   chart = Chart;
 
   //this boolean switches from the uploading form to the training section once the form is submitted
-  uploadBoolean = false;
+  uploadBoolean = true;
   trainBoolean = false;
   // bool that activates once the user click train
   train_wait = false;
@@ -54,8 +53,10 @@ export class UploadFileComponent {
   //Hides train component when a new selection is made
   showTrain = false;
 
-
   headCount = 0;
+
+  //NEW VARIABLES
+  fileDropdownSelected: string = "";
 
   //slider Stuff
   value: number = 100;
@@ -93,7 +94,8 @@ export class UploadFileComponent {
   private createForm() {
     this.uploadForm = this.formBuilder.group({
       fileDropdown: ['', Validators.required],
-      yearTermF: ['', Validators.required],
+      academicType: ['', Validators.required],
+      //these might need to be deleted later
       academicTypeF: ['', Validators.required],
       amountOfStudents: ['', [Validators.required]],
       academicLabel: ['', [Validators.required]],
@@ -109,9 +111,6 @@ export class UploadFileComponent {
     // Hides upload and cohort selection components when training is about to occur
     // this.uploadBoolean = true;
     // //Sets the object with cohort data and amount of students to be handled by the backend
-    // console.log(this.uploadService)
-    // console.log("year")
-    // console.log(this.cohortYearSelected);
     // this.cohortamountOfStudents = this.uploadService.csvDataObject[this.studentTypeSelected][this.cohortYearSelected][this.cohortAcademicTypeSelected]["HEADCOUNT"][0];
     // this.fileContent = this.uploadService.csvDataObject[this.studentTypeSelected][this.cohortYearSelected][this.cohortAcademicTypeSelected];
     // // it was easier to set the slider value and the file content this way
@@ -143,6 +142,9 @@ export class UploadFileComponent {
     this.showTrain = true;
   }
 
+  getStudentTypeData(){
+
+  }
   
   uploadBoolSwitch(){
     if(this.uploadBoolean){
@@ -165,7 +167,12 @@ export class UploadFileComponent {
   private accepted() {
     this.accepted_bool = true;
   }
-
+  redirectToTrain(){
+    this.alertService.success("You have sucessfully uploaded the file(s)."), setTimeout(() => {
+      // after the password is resetted the user will be redirected to the login page
+      this.router.navigate(['/train']);
+    }, 500)
+  }
   clearOnSelect() {
     this.showTrain = false;
     for (let i = 0; i < this.list_of_charts.length; i++) {
