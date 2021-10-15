@@ -10,7 +10,7 @@ data a user needs to input to train the model -->
       <select formControlName="fileDropdown" class="form-control"   
         [(ngModel)]="uploadService.file.fileName"  (change)="uploadService.getFile($event)">
         <option  hidden value="">- File -</option>
-        <option [disabled]="upload_boolean" *ngFor="let file of uploadService.queriedFilesNames">{{file.fileName}}
+        <option [disabled]="upload_boolean" *ngFor="let file of trainService.queriedFilesNames">{{file.fileName}}
         </option>
       </select>
       <div *ngIf="uploadService.file.fileName">

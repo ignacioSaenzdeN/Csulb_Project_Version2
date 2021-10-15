@@ -2,21 +2,9 @@
 data a user needs to input to train the model -->
 <div>
   <h2>Upload File</h2>
-  <!-- <div *ngIf="upload_boolean" class="div-button">
-    <div>
-      <div class="numberCircle">1</div><label>Insert a data sheet: </label>
-      <br>
-      <button [disabled]="train_wait" (click)="resetOnNewSubmit()" class="btn btn-primary">
-        New upload
-      </button>
-    </div>
-    <br>
-    <br>
-  </div> -->
 
   <!-- <br> -->
   
- 
   <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()">
     <!-- this section of code is specifically for the upload of files -->
     <div *ngIf="uploadBoolean">
@@ -37,7 +25,7 @@ data a user needs to input to train the model -->
     </div>
 
 
-    <div *ngIf="trainBoolean" class="form-group">
+    <!-- <div *ngIf="trainBoolean" class="form-group">
       <div class="numberCircle">2</div><label>Select a cohort: </label>
       <select formControlName="fileDropdown" class="form-control" 
         [(ngModel)]="uploadService.file.fileName"  (change)="uploadService.getFile($event)">
@@ -62,7 +50,7 @@ data a user needs to input to train the model -->
       <div *ngIf="submitted && f.yearTermF.errors" class="invalid-feedback">
         <div *ngIf="f.yearTermF.errors.required"> Academic Type is required</div>
       </div>
-    </div>
+    </div> -->
 
     <!-- <div class="form-group">
       <select *ngIf="cohortYearSelected" formControlName="academicTypeF" class="form-control" (change)="clearOnSelect()"
@@ -75,14 +63,14 @@ data a user needs to input to train the model -->
         <div *ngIf="f.academicTypeF.errors.required">Academic type is required</div>
       </div>
     </div> -->
-    <div class="form-group">
+    <!-- <div class="form-group">
       <button *ngIf="cohortAcademicTypeSelected" [disabled]="train_wait" class="btn btn-primary">
         <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
         Submit & train
       </button>
     </div>
   </form>
-</div>
+</div> -->
 
 <!-- The following code can be converted into its own component but it was chosen
 to be included as part of this component as it was a small addition.
@@ -90,7 +78,7 @@ Once the data is upload the following html code will allow for the model to be t
 using the previously updated data -->
 
 
-<div *ngIf="this.upload_boolean && showTrain">
+<!-- <div *ngIf="this.upload_boolean && showTrain">
 
   <div class="numberCircle">3</div><label>Train the cohort </label>
   <br>
@@ -111,4 +99,4 @@ using the previously updated data -->
     <canvas class="cv" id="canvas2"></canvas>
   </div>
 
-</div>
+</div> -->

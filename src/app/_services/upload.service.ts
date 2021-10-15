@@ -3,6 +3,7 @@ import { HttpClient } from "@angular/common/http";
 import { AuthenticationService } from "../_services";
 import { Cohort } from "../_models";
 import { AlertService } from "./alert.service";
+import { TrainService } from "./train.service";
 import { Router } from "@angular/router";
 import { File } from "../_models";
 import * as XLSX from "xlsx";
@@ -12,13 +13,13 @@ export class UploadService {
   public file = new File();
   public reader: FileReader = new FileReader();
   public filesNames: any = [];
-  public queriedFilesNames: any = [];
+  //public queriedFilesNames: any = [];
   public files: any = [];
   public queriedFiles: any = [];
   public csvData: any[][];
   public formatedData: any = [];
   public showTrain: boolean;
-  public studentType: string[] = [];
+  public studentType: string;
   public academicType: string[] = [];
   // public cohortYearArr: string[];
   // public academicLabelArr: string[];
@@ -53,15 +54,15 @@ export class UploadService {
     }
   }
 
-  getFilesNames() {
-    this.http
-      .get(
-        `http://localhost:8000/getFilesNames/${this.authenticationService.getCurrentUser()}`
-      )
-      .subscribe((data) => {
-        this.queriedFilesNames = Object.values(data).map((a) => a);
-      });
-  }
+  // getFilesNames() {
+  //   this.http
+  //     .get(
+  //       `http://localhost:8000/getFilesNames/${this.authenticationService.getCurrentUser()}`
+  //     )
+  //     .subscribe((data) => {
+  //       this.queriedFilesNames = Object.values(data).map((a) => a);
+  //     });
+  // }
 
   getFile() {
     this.http
@@ -84,7 +85,6 @@ export class UploadService {
     } else {
       cohortYear = "SPRING " + fileName[0].slice(3);
     }
-    console.log(this.file.data[studentType][cohortYear])
     return this.file.data[studentType][cohortYear];
   }
 
@@ -95,7 +95,6 @@ export class UploadService {
     for (let index = 0; index < event.length; index++) {
       const element = event[index];
       this.formatFileName(element.name);
-      //this.filesNames.push(element.name)
     }
     // this whole process is just to access the data inside the sheet of an Excel file
     // we have to go layer by layer like a russian doll
@@ -120,6 +119,7 @@ export class UploadService {
     this.reader.readAsBinaryString(event[0]);
     console.log(this.filesNames.length);
   }
+  
   formatFileName(fileName) {
     var splitedName = fileName.split(/[.,\/_]/);
     var name = "";
@@ -160,7 +160,8 @@ export class UploadService {
       }
     }
     this.formatedData.push(csvDataObject);
-    this.studentType = Object.keys(csvDataObject);
+    this.studentType = Object.keys(csvDataObject)[0];
+    console.log(this.studentType);
     this.showTrain = true;
   }
 

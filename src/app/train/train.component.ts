@@ -18,7 +18,7 @@ export class TrainComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.uploadService.getFilesNames();
+    this.trainService.getFilesNames();
     this.createForm();
   }
 
