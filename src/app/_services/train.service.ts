@@ -7,13 +7,16 @@ import { GraphService } from "./graph.service";
 import { AuthenticationService } from "../_services";
 import { UploadService } from "./upload.service";
 import { cpuUsage } from "process";
+import { File } from "../_models";
 
 @Injectable({ providedIn: "root" })
 export class TrainService {
+  public file = new File();
   public cohortData: object;
   public uniqueID: any;
   public cohort = new Cohort();
   public queriedFilesNames: any = [];
+  public academicType: string[] = [];
   // public cohortamountOfStudents: string;
   // public academicTypeSelected: String;
   // public academicLabelSelected: String;
@@ -36,22 +39,9 @@ export class TrainService {
     //console.log(this.cohort.academicLabel)
     //this.cohort.numOfStudents =  this.cohort.data["HEADCOUNT"][0];
     //console.log(this.cohort.numOfStudents);
-    // this.cohort.academicLabel = 
+    // this.cohort.academicLabel =
     // this.academicLabelSelected =  this.uploadService.csvData[1][2].slice(3);
-    
   }
-
-  // getCohortData() {
-  //   const fileName = this.uploadService.file.fileName.split(" ");
-  //   var studentType = fileName[1][0] === "F" ? "FRESHMEN" : "TRANSFER";
-  //   var cohortYear;
-  //   if (fileName[0][0] === "F") {
-  //     cohortYear = "FALL " + fileName[0].slice(3);
-  //   } else {
-  //     cohortYear = "SPRING " + fileName[0].slice(3);
-  //   }
-  //   return this.uploadService.file.data[studentType][cohortYear];
-  // }
 
   getFilesNames() {
     this.http
@@ -63,15 +53,29 @@ export class TrainService {
       });
   }
 
-
   getFile() {
     this.http
-      .get(
-        `http://localhost:8000/getFiles/${this.authenticationService.getCurrentUser()}`
-      )
+      .get(`http://localhost:8000/getFile/${this.file.fileName}`)
       .subscribe((data) => {
-        this.files = Object.values(data).map((a) => a);
+        this.file.data = JSON.parse(data[0]["data"].replace(/'/g, '"'));
+        this.file.createdBy = data[0]["createdBy"];
+        this.file.pubDate = data[0]["pubDate"];
+        // Need to access data from http request
+        // calling getCohortData here makes sure that we get the data before modifying it
+        this.academicType = Object.keys(this.getCohortData());
       });
+  }
+
+  getCohortData() {
+    const fileName = this.file.fileName.split(" ");
+    var studentType = fileName[1][0] === "F" ? "FRESHMEN" : "TRANSFER";
+    var cohortYear;
+    if (fileName[0][0] === "F") {
+      cohortYear = "FALL " + fileName[0].slice(3);
+    } else {
+      cohortYear = "SPRING " + fileName[0].slice(3);
+    }
+    return this.file.data[studentType][cohortYear];
   }
 
   train() {
@@ -114,7 +118,7 @@ export class TrainService {
   }
 
   extractCohortData() {
-    var cohortData = this.uploadService.getCohortData();
+    var cohortData = this.getCohortData();
     var studentSize = cohortData[this.cohort.academicType]["HEADCOUNT"];
     var content = cohortData[this.cohort.academicType];
   }

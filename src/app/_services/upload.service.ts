@@ -10,7 +10,6 @@ import * as XLSX from "xlsx";
 
 @Injectable({ providedIn: "root" })
 export class UploadService {
-  public file = new File();
   public reader: FileReader = new FileReader();
   public filesNames: any = [];
   //public queriedFilesNames: any = [];
@@ -20,7 +19,6 @@ export class UploadService {
   public formatedData: any = [];
   public showTrain: boolean;
   public studentType: string;
-  public academicType: string[] = [];
   // public cohortYearArr: string[];
   // public academicLabelArr: string[];
   // public cohortAcademicTypeArr: string[];
@@ -64,29 +62,29 @@ export class UploadService {
   //     });
   // }
 
-  getFile() {
-    this.http
-      .get(`http://localhost:8000/getFile/${this.file.fileName}`)
-      .subscribe((data) => {
-        this.file.data = JSON.parse(data[0]["data"].replace(/'/g, '"')); 
-        this.file.createdBy = data[0]["createdBy"];
-        this.file.pubDate = data[0]["pubDate"];
-        this.academicType = Object.keys(this.getCohortData());
-      });
-  }
+  // getFile() {
+  //   this.http
+  //     .get(`http://localhost:8000/getFile/${this.file.fileName}`)
+  //     .subscribe((data) => {
+  //       this.file.data = JSON.parse(data[0]["data"].replace(/'/g, '"')); 
+  //       this.file.createdBy = data[0]["createdBy"];
+  //       this.file.pubDate = data[0]["pubDate"];
+  //       this.academicType = Object.keys(this.getCohortData());
+  //     });
+  // }
 
   //TODO: find a way to move this functtion to train services.
-  getCohortData() {
-    const fileName = this.file.fileName.split(" ");
-    var studentType = fileName[1][0] === "F" ? "FRESHMEN" : "TRANSFER";
-    var cohortYear;
-    if (fileName[0][0] === "F") {
-      cohortYear = "FALL " + fileName[0].slice(3);
-    } else {
-      cohortYear = "SPRING " + fileName[0].slice(3);
-    }
-    return this.file.data[studentType][cohortYear];
-  }
+  // getCohortData() {
+  //   const fileName = this.file.fileName.split(" ");
+  //   var studentType = fileName[1][0] === "F" ? "FRESHMEN" : "TRANSFER";
+  //   var cohortYear;
+  //   if (fileName[0][0] === "F") {
+  //     cohortYear = "FALL " + fileName[0].slice(3);
+  //   } else {
+  //     cohortYear = "SPRING " + fileName[0].slice(3);
+  //   }
+  //   return this.file.data[studentType][cohortYear];
+  // }
 
   formatFile(event) {
     this.showTrain = false;
