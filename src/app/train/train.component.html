@@ -3,38 +3,61 @@ data a user needs to input to train the model -->
 <div>
   <h2>Cohort Train</h2>
   <form [formGroup]="trainForm" (ngSubmit)="onSubmit()">
-
-
     <div class="form-group">
-      <div class="numberCircle">1</div><label>Select a file to train: </label>
-      <select formControlName="fileDropdown" class="form-control"   
-        [(ngModel)]="trainService.file.fileName"  (change)="trainService.getFile($event)">
-        <option  hidden value="">- File -</option>
-        <option [disabled]="upload_boolean" *ngFor="let file of trainService.queriedFilesNames">{{file.fileName}}
+      <div class="numberCircle">1</div>
+      <label>Select a file to train: </label>
+      <select
+        formControlName="fileDropdown"
+        class="form-control"
+        [(ngModel)]="trainService.file.fileName"
+        (change)="trainService.getFile($event)"
+      >
+        <option hidden value="">- File -</option>
+        <option
+          [disabled]="upload_boolean"
+          *ngFor="let file of trainService.queriedFilesNames"
+        >
+          {{ file.fileName }}
         </option>
       </select>
       <div *ngIf="trainService.file.fileName">
-        <p>File last uploaded on: {{trainService.file.pubDate}}</p>
+        <p>File last uploaded on: {{ trainService.file.pubDate }}</p>
       </div>
       <div *ngIf="submitted && f.studentTypeF.errors" class="invalid-feedback">
         <div *ngIf="f.studentTypeF.errors.required">A file is required</div>
       </div>
     </div>
     <div class="form-group">
-      <select *ngIf="trainService.file.fileName" formControlName="academicType" class="form-control"
-        (change)="setAcademicType($event); clearOnSelect()" [(ngModel)]="trainService.academicTypeSelected">
+      <select
+        *ngIf="trainService.file.fileName"
+        formControlName="academicType"
+        class="form-control"
+        (change)="trainService.getCohortHeadcount($event)"
+        [(ngModel)]="trainService.cohort.academicType"
+      >
         <option selected [disabled]="true" value="">- Academic Type -</option>
-        <option [disabled]="train_wait" *ngFor="let type of trainService.academicType">{{type}}
+        <option
+          [disabled]="train_wait"
+          *ngFor="let type of trainService.academicTypesLabels"
+        >
+          {{ type }}
         </option>
       </select>
       <div *ngIf="submitted && f.yearTermF.errors" class="invalid-feedback">
-        <div *ngIf="f.yearTermF.errors.required"> Academic Type is required</div>
+        <div *ngIf="f.yearTermF.errors.required">Academic Type is required</div>
       </div>
     </div>
 
     <div class="form-group">
-      <button *ngIf="trainService.academicTypeSelected" [disabled]="train_wait" class="btn btn-primary">
-        <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+      <button
+        *ngIf="trainService.academicTypeSelected"
+        [disabled]="train_wait"
+        class="btn btn-primary"
+      >
+        <span
+          *ngIf="loading"
+          class="spinner-border spinner-border-sm mr-1"
+        ></span>
         Submit & train
       </button>
     </div>
@@ -46,26 +69,28 @@ to be included as part of this component as it was a small addition.
 Once the data is upload the following html code will allow for the model to be trained
 using the previously updated data -->
 
-
 <div *ngIf="this.upload_boolean && showTrain">
-
-  <div class="numberCircle">3</div><label>Train the cohort </label>
-  <br>
-  <button class="btn btn-primary" [disabled]="this.train_wait===true" (click)="trainService.train()">Train
-  </button>&nbsp;
-  <button class="btn btn-primary" (click)="accepted()">Accept
-  </button>
-  <div *ngIf="this.accepted_bool===true">
-    <p>
-      The information has been stored
-    </p>
+  <div class="numberCircle">3</div>
+  <label>Train the cohort </label>
+  <br />
+  <button
+    class="btn btn-primary"
+    [disabled]="this.train_wait === true"
+    (click)="trainService.train()"
+  >
+    Train</button
+  >&nbsp;
+  <button class="btn btn-primary" (click)="accepted()">Accept</button>
+  <div *ngIf="this.accepted_bool === true">
+    <p>The information has been stored</p>
   </div>
-  <br>
+  <br />
   &nbsp; &emsp; &emsp; &emsp;
-  <p style = "font-size: 1.2vw;"> Headcount/ Number of Students: {{cohortamountOfStudents}}</p>
+  <p style="font-size: 1.2vw">
+    Headcount/ Number of Students: {{ cohortamountOfStudents }}
+  </p>
   <div class="canvas-container">
     <canvas class="cv" id="canvas1"></canvas>
     <canvas class="cv" id="canvas2"></canvas>
   </div>
-
 </div>

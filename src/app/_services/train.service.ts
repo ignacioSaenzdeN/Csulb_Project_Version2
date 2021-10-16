@@ -12,11 +12,11 @@ import { File } from "../_models";
 @Injectable({ providedIn: "root" })
 export class TrainService {
   public file = new File();
-  public cohortData: object;
+  // public cohortData: object;
   public uniqueID: any;
   public cohort = new Cohort();
   public queriedFilesNames: any = [];
-  public academicType: string[] = [];
+  public academicTypesLabels: string[] = [];
   // public cohortamountOfStudents: string;
   // public academicTypeSelected: String;
   // public academicLabelSelected: String;
@@ -32,16 +32,17 @@ export class TrainService {
     private uploadService: UploadService
   ) {}
 
-  ngOnInit() {
-    //console.log(this.uploadService.file.fileName);
-    //this.cohort.data = this.getCohortData();
-    //this.cohort.academicLabel = this.uploadService.csvData[1][2].slice(3);
-    //console.log(this.cohort.academicLabel)
-    //this.cohort.numOfStudents =  this.cohort.data["HEADCOUNT"][0];
-    //console.log(this.cohort.numOfStudents);
-    // this.cohort.academicLabel =
-    // this.academicLabelSelected =  this.uploadService.csvData[1][2].slice(3);
-  }
+  // ngOnInit() {
+  //   //console.log(this.uploadService.file.fileName);
+  //   this.cohort.data = this.getCohortData();
+  //   console.log(this.cohort.data);
+  //   //this.cohort.academicLabel = this.uploadService.csvData[1][2].slice(3);
+  //   //console.log(this.cohort.academicLabel)
+  //   //this.cohort.numOfStudents =  this.cohort.data["HEADCOUNT"][0];
+  //   //console.log(this.cohort.numOfStudents);
+  //   // this.cohort.academicLabel =
+  //   // this.academicLabelSelected =  this.uploadService.csvData[1][2].slice(3);
+  // }
 
   getFilesNames() {
     this.http
@@ -62,9 +63,24 @@ export class TrainService {
         this.file.pubDate = data[0]["pubDate"];
         // Need to access data from http request
         // calling getCohortData here makes sure that we get the data before modifying it
-        this.academicType = Object.keys(this.getCohortData());
+        this.cohort.data = this.getCohortData();
+        this.academicTypesLabels = Object.keys(this.cohort.data);
+
+        // Getting the cohort data after use selects the file for training
+        this.cohort.academicLabel = data[0]["academicLabel"];
+        this.cohort.studentType = Object.keys(this.file.data)[0];
+        this.cohort.cohortYear = Object.keys(this.file.data[this.cohort.studentType])[0];
       });
   }
+
+  getCohortHeadcount(){
+    this.cohort.data = this.cohort.data[this.cohort.academicType];
+    // Gets the headcount after user selectes the academic type
+    this.cohort.numOfStudents = this.file.data[this.cohort.studentType][this.cohort.cohortYear][this.cohort.academicType]["HEADCOUNT"][0];
+  }
+
+
+
 
   getCohortData() {
     const fileName = this.file.fileName.split(" ");
@@ -98,13 +114,9 @@ export class TrainService {
   //TODO: this function uploads the cohort selection before training based on dropdown
   uploadCohort() {
     this.http
-      .post(`http://localhost:8000/uploadData/`, {
-        // data: this.cohortData,
-        // yearTerm: this.uploadService.file.data[""],
-        // academicType: this.academicTypeSelected,
-        // studentType: null,
-        // amountOfStudents: this.cohortamountOfStudents,
-        // academicLabel: this.academicLabelSelected,
+      .post(`http://localhost:8000/uploadCohort/`, {
+        data: this.cohort,
+        //studentType: this.uploadService.studentType,
       })
       .subscribe((data) => {
         // to prevent the graphs from overlapping when the user trains the model multiple times, the variable are resetted
@@ -117,9 +129,9 @@ export class TrainService {
       });
   }
 
-  extractCohortData() {
-    var cohortData = this.getCohortData();
-    var studentSize = cohortData[this.cohort.academicType]["HEADCOUNT"];
-    var content = cohortData[this.cohort.academicType];
-  }
+  // extractCohortData() {
+  //   var cohortData = this.getCohortData();
+  //   var studentSize = cohortData[this.cohort.academicType]["HEADCOUNT"];
+  //   var content = cohortData[this.cohort.academicType];
+  // }
 }

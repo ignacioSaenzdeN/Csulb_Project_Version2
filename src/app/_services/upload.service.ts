@@ -18,7 +18,8 @@ export class UploadService {
   public csvData: any[][];
   public formatedData: any = [];
   public showTrain: boolean;
-  public studentType: string;
+  //public studentType: string;
+  public academicLabels: any = [];
   // public cohortYearArr: string[];
   // public academicLabelArr: string[];
   // public cohortAcademicTypeArr: string[];
@@ -37,6 +38,7 @@ export class UploadService {
         .post(`http://localhost:8000/uploadCsv/`, {
           fileName: this.filesNames[i],
           data: this.formatedData[i],
+          academicLabel: this.academicLabels[i],
           createdBy: this.authenticationService.getCurrentUser(),
         })
         .subscribe((data) => {
@@ -110,6 +112,8 @@ export class UploadService {
       const page1_sheet: XLSX.WorkSheet = file.Sheets[page1];
       // Break down the structure of the data sheet for easier access
       this.csvData = XLSX.utils.sheet_to_json(page1_sheet, { header: 1 });
+      // Populate array of academic labels for training
+      this.academicLabels.push(this.csvData[1][2].slice(3));
       this.files.push(this.csvData);
       this.formatData();
     };
@@ -158,8 +162,7 @@ export class UploadService {
       }
     }
     this.formatedData.push(csvDataObject);
-    this.studentType = Object.keys(csvDataObject)[0];
-    console.log(this.studentType);
+    //this.studentType = Object.keys(csvDataObject)[0];
     this.showTrain = true;
   }
 
