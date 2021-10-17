@@ -4,7 +4,6 @@ data a user needs to input to train the model -->
   <h2>Cohort Train</h2>
   <form [formGroup]="trainForm" (ngSubmit)="onSubmit()">
     <div class="form-group">
-      <div class="numberCircle">1</div>
       <label>Select a file to train: </label>
       <select
         formControlName="fileDropdown"
@@ -47,10 +46,9 @@ data a user needs to input to train the model -->
         <div *ngIf="f.yearTermF.errors.required">Academic Type is required</div>
       </div>
     </div>
-
     <div class="form-group">
       <button
-        *ngIf="trainService.academicTypeSelected"
+        *ngIf="trainService.cohort.academicType"
         [disabled]="train_wait"
         class="btn btn-primary"
       >
@@ -58,8 +56,20 @@ data a user needs to input to train the model -->
           *ngIf="loading"
           class="spinner-border spinner-border-sm mr-1"
         ></span>
-        Submit & train
+        Train
       </button>
+      <button *ngIf="trainService.showTrain" class="btn btn-primary">
+        Save
+      </button>
+    </div>
+    <div *ngIf="trainService.showTrain">
+      <p style="font-size: 1.2vw">
+        Headcount/ Number of Students: {{ trainService.cohort.numOfStudents }}
+      </p>
+    </div>
+    <div class="canvas-container">
+      <canvas class="cv" id="canvas1"></canvas>
+      <canvas class="cv" id="canvas2"></canvas>
     </div>
   </form>
 </div>
@@ -69,10 +79,7 @@ to be included as part of this component as it was a small addition.
 Once the data is upload the following html code will allow for the model to be trained
 using the previously updated data -->
 
-<div *ngIf="this.upload_boolean && showTrain">
-  <div class="numberCircle">3</div>
-  <label>Train the cohort </label>
-  <br />
+<!-- <div>
   <button
     class="btn btn-primary"
     [disabled]="this.train_wait === true"
@@ -87,10 +94,10 @@ using the previously updated data -->
   <br />
   &nbsp; &emsp; &emsp; &emsp;
   <p style="font-size: 1.2vw">
-    Headcount/ Number of Students: {{ cohortamountOfStudents }}
+    Headcount/ Number of Students: {{ trainService.cohort.numOfStudents }}
   </p>
   <div class="canvas-container">
     <canvas class="cv" id="canvas1"></canvas>
     <canvas class="cv" id="canvas2"></canvas>
   </div>
-</div>
+</div> -->

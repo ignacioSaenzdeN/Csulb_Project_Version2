@@ -17,6 +17,9 @@ export class TrainService {
   public cohort = new Cohort();
   public queriedFilesNames: any = [];
   public academicTypesLabels: string[] = [];
+  public formattedCohortData: object;
+  public cohortUniqueId: string = "";
+  public showTrain: Boolean = false;
   // public cohortamountOfStudents: string;
   // public academicTypeSelected: String;
   // public academicLabelSelected: String;
@@ -63,8 +66,8 @@ export class TrainService {
         this.file.pubDate = data[0]["pubDate"];
         // Need to access data from http request
         // calling getCohortData here makes sure that we get the data before modifying it
-        this.cohort.data = this.getCohortData();
-        this.academicTypesLabels = Object.keys(this.cohort.data);
+        this.formattedCohortData = this.getCohortData();
+        this.academicTypesLabels = Object.keys(this.formattedCohortData);
 
         // Getting the cohort data after use selects the file for training
         this.cohort.academicLabel = data[0]["academicLabel"];
@@ -74,7 +77,8 @@ export class TrainService {
   }
 
   getCohortHeadcount(){
-    this.cohort.data = this.cohort.data[this.cohort.academicType];
+    this.cohort.data = this.formattedCohortData[this.cohort.academicType];
+    console.log(this.cohort.data);
     // Gets the headcount after user selectes the academic type
     this.cohort.numOfStudents = this.file.data[this.cohort.studentType][this.cohort.cohortYear][this.cohort.academicType]["HEADCOUNT"][0];
   }
@@ -97,17 +101,18 @@ export class TrainService {
   train() {
     this.http
       .post(`http://localhost:8000/train/`, {
-        uniqueID: this.uniqueID,
+        uniqueID: this.cohortUniqueId,
         amountOfStudents: this.cohort.numOfStudents,
       })
       .subscribe((data) => {
         // to prevent the graphs from overlapping when the user trains the model multiple times, the variable are resetted
+        this.showTrain = true;
         for (let i = 0; i < this.list_of_charts.length; i++) {
           this.list_of_charts[i].destroy();
         }
         this.list_of_charts = [];
         this.graphService.displayGraph(data);
-        // this.train_wait = false;
+        
       });
   }
 
@@ -116,9 +121,9 @@ export class TrainService {
     this.http
       .post(`http://localhost:8000/uploadCohort/`, {
         data: this.cohort,
-        //studentType: this.uploadService.studentType,
       })
       .subscribe((data) => {
+        this.cohortUniqueId = String(data);
         // to prevent the graphs from overlapping when the user trains the model multiple times, the variable are resetted
         for (let i = 0; i < this.list_of_charts.length; i++) {
           this.list_of_charts[i].destroy();
@@ -126,6 +131,7 @@ export class TrainService {
         this.list_of_charts = [];
         this.graphService.displayGraph(data);
         // this.train_wait = false;
+        this.train();
       });
   }
 

@@ -28,4 +28,8 @@ export class TrainComponent implements OnInit {
       academicType: ["", Validators.required],
     });
   }
+
+  onSubmit(){
+    this.trainService.uploadCohort();
+  }
 }
