@@ -9,7 +9,7 @@ data a user needs to input to train the model -->
         formControlName="fileDropdown"
         class="form-control"
         [(ngModel)]="trainService.file.fileName"
-        (change)="trainService.getFile($event); formatFileDate($event);"
+        (change)="trainService.getFile($event);"
       >
         <option hidden value="">- File -</option>
         <option

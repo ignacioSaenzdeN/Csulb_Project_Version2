@@ -6,6 +6,7 @@ import { Cohort } from "../_models";
 import { GraphService } from "./graph.service";
 import { AuthenticationService } from "../_services";
 import { UploadService } from "./upload.service";
+import { TrainComponent } from "../train/train.component";
 import { cpuUsage } from "process";
 import { File } from "../_models";
 import * as moment from 'moment';
@@ -33,20 +34,13 @@ export class TrainService {
     private formBuilder: FormBuilder,
     private graphService: GraphService,
     private authenticationService: AuthenticationService,
-    private uploadService: UploadService
-  ) {}
+    private uploadService: UploadService,
+    private trainService: TrainService,
+  ) {
+  }
 
-  // ngOnInit() {
-  //   //console.log(this.uploadService.file.fileName);
-  //   this.cohort.data = this.getCohortData();
-  //   console.log(this.cohort.data);
-  //   //this.cohort.academicLabel = this.uploadService.csvData[1][2].slice(3);
-  //   //console.log(this.cohort.academicLabel)
-  //   //this.cohort.numOfStudents =  this.cohort.data["HEADCOUNT"][0];
-  //   //console.log(this.cohort.numOfStudents);
-  //   // this.cohort.academicLabel =
-  //   // this.academicLabelSelected =  this.uploadService.csvData[1][2].slice(3);
-  // }
+  ngOnInit() {  
+  }
 
   getFilesNames() {
     this.http

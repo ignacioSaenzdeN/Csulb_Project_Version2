@@ -2,7 +2,9 @@ import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { UploadService } from "../_services/upload.service";
 import { TrainService } from "../_services/train.service";
-//import * as moment from 'moment';
+import { Router,NavigationEnd   } from '@angular/router';
+import { Cohort, File } from "../_models";
+
 
 @Component({
   selector: "app-train",
@@ -16,13 +18,22 @@ export class TrainComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private trainService: TrainService,
-    private uploadService: UploadService
-  ) {}
+    private uploadService: UploadService,
+    private router: Router,
+  ) {
+    //Resets file selection, cohort and train labels when user navigates to a different component
+    this.router.events.subscribe((e) => {
+      if (e instanceof NavigationEnd) {
+        trainService.file = new File();
+        trainService.cohort = new Cohort();
+        trainService.showTrain = false;
+      }
+    });
+  }
 
   ngOnInit() {
     this.trainService.getFilesNames();
     this.createForm();
-    //this.formatFileDate();
   }
 
   private createForm() {
@@ -31,11 +42,6 @@ export class TrainComponent implements OnInit {
       academicType: ["", Validators.required],
     });
   }
-
-  // private formatFileDate(){
-  //   this.formatedDate = moment(this.trainService.file.pubDate).format('MMMM Do YYYY, h:mm:ss a');
-  // }
-
   onSubmit(){
     this.trainService.uploadCohort();
   }
