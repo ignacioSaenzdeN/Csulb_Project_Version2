@@ -9,7 +9,7 @@ data a user needs to input to train the model -->
         formControlName="fileDropdown"
         class="form-control"
         [(ngModel)]="trainService.file.fileName"
-        (change)="trainService.getFile($event)"
+        (change)="trainService.getFile($event); formatFileDate($event);"
       >
         <option hidden value="">- File -</option>
         <option
@@ -20,7 +20,7 @@ data a user needs to input to train the model -->
         </option>
       </select>
       <div *ngIf="trainService.file.fileName">
-        <p>File last uploaded on: {{ trainService.file.pubDate }}</p>
+        <p>File last uploaded on: <b>{{ trainService.file.pubDate }}</b></p>
       </div>
       <div *ngIf="submitted && f.studentTypeF.errors" class="invalid-feedback">
         <div *ngIf="f.studentTypeF.errors.required">A file is required</div>
@@ -48,6 +48,7 @@ data a user needs to input to train the model -->
     </div>
     <div class="form-group">
       <button
+        style="margin:5px;"
         *ngIf="trainService.cohort.academicType"
         [disabled]="train_wait"
         class="btn btn-primary"

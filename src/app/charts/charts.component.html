@@ -1,5 +1,5 @@
 <div>
-  <h2>Charts</h2>
+  <h2>Cohort Charts</h2>
   <!-- this is only in case we ant the upload information in the graphs -->
   <!-- <ng5-slider [(value)]="userInput" [options]="options" (input)="onUpdateServerName($event)"></ng5-slider>
 <br> -->
@@ -22,7 +22,7 @@
         <!-- <label *ngIf="studentType" for="universityName">Student type</label> -->
         <select formControlName="studentType" class="form-control" (change)="cohortService.getYearTerm($event); hideInputsAndChart();"
           [(ngModel)]="cohortService.cohort.studentType">
-          <option hidden value="" >- Select student type -</option>
+          <option hidden value="" >- Student type -</option>
           <option *ngFor="let type of this.cohortService.studentTypeArr">{{type}}
           </option>
         </select>
@@ -59,7 +59,7 @@
         <!-- <label *ngIf="cohortYearSelected" for="departmentName">Academic type</label> -->
         <select *ngIf="cohortService.cohort.academicLabel" [disabled]="cohortService.cohort.academicLabel" formControlName="academicType"
           class="form-control"  (change)="hideInputsAndChart();" [(ngModel)]="cohortService.cohort.academicType">
-          <option hidden value="">- Select academic type -</option>
+          <option hidden value="">- Academic type -</option>
           <option *ngFor="let cohortAcademic of cohortService.cohortAcademicTypeArr">{{cohortAcademic}}
           </option>
         </select>

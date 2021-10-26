@@ -8,6 +8,7 @@ import { AuthenticationService } from "../_services";
 import { UploadService } from "./upload.service";
 import { cpuUsage } from "process";
 import { File } from "../_models";
+import * as moment from 'moment';
 
 @Injectable({ providedIn: "root" })
 export class TrainService {
@@ -63,7 +64,7 @@ export class TrainService {
       .subscribe((data) => {
         this.file.data = JSON.parse(data[0]["data"].replace(/'/g, '"'));
         this.file.createdBy = data[0]["createdBy"];
-        this.file.pubDate = data[0]["pubDate"];
+        this.file.pubDate = moment(data[0]["pubDate"]).format('MMMM Do YYYY, h:mm:ss a');
         // Need to access data from http request
         // calling getCohortData here makes sure that we get the data before modifying it
         this.formattedCohortData = this.getCohortData();
