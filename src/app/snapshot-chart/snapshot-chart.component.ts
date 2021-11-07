@@ -17,6 +17,7 @@ export class SnapshotChartComponent implements OnInit {
   academicLabelSelected:string = "";
   academicTypeSelected:string = "";
 
+  //TODO: change it so it grabs current year 
   snapshotYear:string = "21";
 
   queryGraphs: FormGroup;

@@ -9,7 +9,7 @@ import { UploadService } from "./upload.service";
 import { TrainComponent } from "../train/train.component";
 import { cpuUsage } from "process";
 import { File } from "../_models";
-import * as moment from 'moment';
+import * as moment from "moment";
 
 @Injectable({ providedIn: "root" })
 export class TrainService {
@@ -35,12 +35,10 @@ export class TrainService {
     private graphService: GraphService,
     private authenticationService: AuthenticationService,
     private uploadService: UploadService,
-    private trainService: TrainService,
-  ) {
-  }
+    private trainService: TrainService
+  ) {}
 
-  ngOnInit() {  
-  }
+  ngOnInit() {}
 
   getFilesNames() {
     this.http
@@ -58,7 +56,9 @@ export class TrainService {
       .subscribe((data) => {
         this.file.data = JSON.parse(data[0]["data"].replace(/'/g, '"'));
         this.file.createdBy = data[0]["createdBy"];
-        this.file.pubDate = moment(data[0]["pubDate"]).format('MMMM Do YYYY, h:mm:ss a');
+        this.file.pubDate = moment(data[0]["pubDate"]).format(
+          "MMMM Do YYYY, h:mm:ss a"
+        );
         // Need to access data from http request
         // calling getCohortData here makes sure that we get the data before modifying it
         this.formattedCohortData = this.getCohortData();
@@ -67,19 +67,21 @@ export class TrainService {
         // Getting the cohort data after use selects the file for training
         this.cohort.academicLabel = data[0]["academicLabel"];
         this.cohort.studentType = Object.keys(this.file.data)[0];
-        this.cohort.cohortYear = Object.keys(this.file.data[this.cohort.studentType])[0];
+        this.cohort.cohortYear = Object.keys(
+          this.file.data[this.cohort.studentType]
+        )[0];
       });
   }
 
-  getCohortHeadcount(){
+  getCohortHeadcount() {
     this.cohort.data = this.formattedCohortData[this.cohort.academicType];
     console.log(this.cohort.data);
     // Gets the headcount after user selectes the academic type
-    this.cohort.numOfStudents = this.file.data[this.cohort.studentType][this.cohort.cohortYear][this.cohort.academicType]["HEADCOUNT"][0];
+    this.cohort.numOfStudents =
+      this.file.data[this.cohort.studentType][this.cohort.cohortYear][
+        this.cohort.academicType
+      ]["HEADCOUNT"][0];
   }
-
-
-
 
   getCohortData() {
     const fileName = this.file.fileName.split(" ");
@@ -98,6 +100,7 @@ export class TrainService {
       .post(`http://localhost:8000/train/`, {
         uniqueID: this.cohortUniqueId,
         amountOfStudents: this.cohort.numOfStudents,
+        academicLabel: this.cohort.academicLabel,
       })
       .subscribe((data) => {
         // to prevent the graphs from overlapping when the user trains the model multiple times, the variable are resetted
@@ -107,12 +110,13 @@ export class TrainService {
         }
         this.list_of_charts = [];
         this.graphService.displayGraph(data);
-        
       });
   }
 
   //TODO: this function uploads the cohort selection before training based on dropdown
   uploadCohort() {
+    console.log("this.cohort");
+    console.log(this.cohort);
     this.http
       .post(`http://localhost:8000/uploadCohort/`, {
         data: this.cohort,
