@@ -1,43 +1,173 @@
 <div>
   <h2>Snapshot Charts</h2>
 </div>
-  <form [formGroup]="queryGraphs">
-    <div  >
-      <!-- *ngIf="hideSelectCohort" -->
-      <div class="numberCircle">1</div><label>Select a snapshot: </label>
-      <div class="form-group">
-        <select [disabled]="cohortYearSelected" formControlName="academicLabel"
-          class="form-control" (change)="getAcademicType($event)" [(ngModel)]="academicLabelSelected">
-          <option selected [disabled]="true" value="">- Academic label -</option>
-          <option *ngFor="let label of academicLabel">{{label}}
-          </option>
-        </select>
-      </div>
-        <div class="form-group" id="scrollToView">
-          <!-- <label *ngIf="cohortYearSelected" for="departmentName">Academic type</label> -->
-          <select *ngIf="academicLabelSelected" [disabled]="academicLabelSelected" formControlName="academicType"
-            class="form-control" [(ngModel)]="academicTypeSelected">
-            <option selected [disabled]="true" value="">- Select academic type -</option>
-            <option *ngFor="let academic of academicType">{{academic}}
-            </option>
-          </select>
-        </div>
-        <div class="form-group">
-          <button *ngIf="academicTypeSelected"  (click)="getGraphArr(userInput)"
-            [disabled]="loading" class="btn btn-primary" >
-            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
-            Get charts
-          </button>
-        </div>
+<form [formGroup]="queryGraphs">
+  <div>
+    <!-- *ngIf="hideSelectCohort" -->
+    <div class="numberCircle">1</div>
+    <label>Select a snapshot: </label>
+    <div class="form-group">
+      <select
+        [disabled]="cohortYearSelected"
+        formControlName="academicLabel"
+        class="form-control"
+        (change)="getAcademicType($event)"
+        [(ngModel)]="academicLabelSelected"
+      >
+        <option selected [disabled]="true" value="">- Academic label -</option>
+        <option *ngFor="let label of academicLabel">{{ label }}</option>
+      </select>
     </div>
-  </form>
+    <div class="form-group" id="scrollToView">
+      <!-- <label *ngIf="cohortYearSelected" for="departmentName">Academic type</label> -->
+      <select
+        *ngIf="academicLabelSelected"
+        [disabled]="academicLabelSelected"
+        formControlName="academicType"
+        class="form-control"
+        [(ngModel)]="academicTypeSelected"
+      >
+        <option selected [disabled]="true" value="">
+          - Select academic type -
+        </option>
+        <option *ngFor="let academic of academicType">{{ academic }}</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <button
+        *ngIf="academicTypeSelected"
+        (click)="getGraphArr(userInput); this.snapshotService.getPredictedAvgValues()"
+        [disabled]="loading"
+        class="btn btn-primary"
+      >
+        <span
+          *ngIf="loading"
+          class="spinner-border spinner-border-sm mr-1"
+        ></span>
+        Get charts
+      </button>
+    </div>
+    <div class="numberCircle">2</div>
+    <label>Manipulate predicted cohorts: </label>
+    <br />
+    <label for="">Number of Students:</label>
 
-  <div class="canvas-container">
-    <canvas class="cv" id="canvas1"> </canvas>
-    <canvas class="cv" id="canvas2"></canvas>
-   </div>
-   <br>
-   <div class="canvas-container">
-     <canvas class="cv" id="canvas3"></canvas>
-     <canvas class="cv" id="canvas4"></canvas>
-   </div>
+    <br />
+    <br />
+    <!-- TODO: make sure to output warning message -->
+    <div *ngIf="showEditPredictCohort">
+      <label for="">Greek Letters:</label>
+      <ng5-slider
+        [(value)]="snapshotService.predictedAvgData[0]['numberOfStudents']"
+        [options]="options"
+        (input)="onUpdateSlider($event)"
+      ></ng5-slider>
+      <div class="input-group col-sm-12">
+        <label>σ:&nbsp;</label>
+        <input
+          value="{{ snapshotService.predictedAvgData[0]['sigma'] }}"
+          type="text"
+          style="width: 9%"
+          placeholder="{{ sigma1 }}"
+          [(ngModel)]="sigma1"
+        />
+        <label>&nbsp;&nbsp;&nbsp;α:&nbsp;</label>
+        <input
+          value="{{  snapshotService.predictedAvgData[0]['alpha'] }}"
+          type="text"
+          style="width: 9%"
+          placeholder="{{ alpha1 }}"
+          [(ngModel)]="alpha1"
+        />
+        <label>&nbsp;&nbsp;&nbsp;β:&nbsp;</label>
+        <input
+          value="{{  snapshotService.predictedAvgData[0]['beta'] }}"
+          type="text"
+          style="width: 9%"
+          placeholder="{{ beta1 }}"
+          [(ngModel)]="beta1"
+        />
+      </div>
+      <br />
+      <ng5-slider
+      [(value)]="snapshotService.predictedAvgData[1]['numberOfStudents']"
+        [options]="options"
+        (input)="onUpdateSlider($event)"
+      ></ng5-slider>
+      <div class="input-group col-sm-12">
+        <label>σ:&nbsp;</label>
+        <input
+          value="{{  snapshotService.predictedAvgData[1]['sigma'] }}"
+          type="text"
+          style="width: 9%"
+          placeholder="{{ sigma2 }}"
+          [(ngModel)]="sigma2"
+        />
+        <label>&nbsp;&nbsp;&nbsp;α:&nbsp;</label>
+        <input
+          value="{{  snapshotService.predictedAvgData[1]['alpha'] }}"
+          type="text"
+          style="width: 9%"
+          placeholder="{{ alpha2 }}"
+          [(ngModel)]="alpha2"
+        />
+        <label>&nbsp;&nbsp;&nbsp;β:&nbsp;</label>
+        <input
+          value="{{  snapshotService.predictedAvgData[1]['beta'] }}"
+          type="text"
+          style="width: 9%"
+          placeholder="{{ beta2 }}"
+          [(ngModel)]="beta2"
+        />
+      </div>
+      <br />
+      <ng5-slider
+      [(value)]="snapshotService.predictedAvgData[2]['numberOfStudents']"
+        [options]="options"
+        (input)="onUpdateSlider($event)"
+      ></ng5-slider>
+      <div class="input-group col-sm-12">
+        <label>σ:&nbsp;</label>
+        <input
+          value="{{  snapshotService.predictedAvgData[2]['sigma'] }}"
+          type="text"
+          style="width: 9%"
+          placeholder="{{ sigma3 }}"
+          [(ngModel)]="sigma3"
+        />
+        <label>&nbsp;&nbsp;&nbsp;α:&nbsp;</label>
+        <input
+          value="{{  snapshotService.predictedAvgData[2]['alpha'] }}"
+          type="text"
+          style="width: 9%"
+          placeholder="{{ alpha3 }}"
+          [(ngModel)]="alpha3"
+        />
+        <label>&nbsp;&nbsp;&nbsp;β:&nbsp;</label>
+        <input
+          value="{{  snapshotService.predictedAvgData[2]['beta'] }}"
+          type="text"
+          style="width: 9%"
+          placeholder="{{ beta3 }}"
+          [(ngModel)]="beta3"
+        />
+      </div>
+    </div>
+    <br />
+    <button
+      class="btn btn-primary"
+    >
+      Edit cohort
+    </button>
+  </div>
+</form>
+
+<div class="canvas-container">
+  <canvas class="cv" id="canvas1"> </canvas>
+  <canvas class="cv" id="canvas2"></canvas>
+</div>
+<br />
+<div class="canvas-container">
+  <canvas class="cv" id="canvas3"></canvas>
+  <canvas class="cv" id="canvas4"></canvas>
+</div>

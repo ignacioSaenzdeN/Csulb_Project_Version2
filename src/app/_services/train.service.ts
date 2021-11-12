@@ -92,6 +92,9 @@ export class TrainService {
     } else {
       cohortYear = "SPRING " + fileName[0].slice(3);
     }
+    console.log(studentType)
+    console.log(cohortYear)
+    console.log(this.file.data);
     return this.file.data[studentType][cohortYear];
   }
 
@@ -109,7 +112,7 @@ export class TrainService {
           this.list_of_charts[i].destroy();
         }
         this.list_of_charts = [];
-        this.graphService.displayGraph(data);
+        this.graphService.displayGraph(data, true);
       });
   }
 
@@ -122,13 +125,14 @@ export class TrainService {
         data: this.cohort,
       })
       .subscribe((data) => {
+        console.log('data', data);
         this.cohortUniqueId = String(data);
         // to prevent the graphs from overlapping when the user trains the model multiple times, the variable are resetted
         for (let i = 0; i < this.list_of_charts.length; i++) {
           this.list_of_charts[i].destroy();
         }
         this.list_of_charts = [];
-        this.graphService.displayGraph(data);
+        this.graphService.displayGraph(data, true);
         // this.train_wait = false;
         this.train();
       });
