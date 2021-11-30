@@ -221,8 +221,6 @@ export class ChartsComponent implements OnInit {
   //TODO rename this function to something else
   getCohort() {
     let steadyState = this.steadyState;
-    console.log("steadyState");
-    console.log(steadyState);
 
     if (isNaN(+this.sigma) || isNaN(+this.alpha) || isNaN(+this.beta)) {
       console.log("Error we got non numeric values")
@@ -233,7 +231,7 @@ export class ChartsComponent implements OnInit {
       this.sigma = data["MetaData"]["sigma"];
       this.alpha = data["MetaData"]["alpha"];
       this.beta = data["MetaData"]["beta"];
-      //this.displayGraph(data);
+      this.graphService.displayGraph(data, false);
     });
   }
 

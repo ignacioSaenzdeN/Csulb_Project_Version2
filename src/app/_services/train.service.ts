@@ -54,6 +54,7 @@ export class TrainService {
     this.http
       .get(`http://localhost:8000/getFile/${this.file.fileName}`)
       .subscribe((data) => {
+
         this.file.data = JSON.parse(data[0]["data"].replace(/'/g, '"'));
         this.file.createdBy = data[0]["createdBy"];
         this.file.pubDate = moment(data[0]["pubDate"]).format(
@@ -66,16 +67,19 @@ export class TrainService {
 
         // Getting the cohort data after use selects the file for training
         this.cohort.academicLabel = data[0]["academicLabel"];
+
         this.cohort.studentType = Object.keys(this.file.data)[0];
         this.cohort.cohortYear = Object.keys(
           this.file.data[this.cohort.studentType]
         )[0];
+
+      
+    
       });
   }
 
   getCohortHeadcount() {
     this.cohort.data = this.formattedCohortData[this.cohort.academicType];
-    console.log(this.cohort.data);
     // Gets the headcount after user selectes the academic type
     this.cohort.numOfStudents =
       this.file.data[this.cohort.studentType][this.cohort.cohortYear][
@@ -92,9 +96,9 @@ export class TrainService {
     } else {
       cohortYear = "SPRING " + fileName[0].slice(3);
     }
-    console.log(studentType)
-    console.log(cohortYear)
-    console.log(this.file.data);
+    // console.log(studentType)
+    // console.log(cohortYear)
+    // console.log(this.file.data);
     return this.file.data[studentType][cohortYear];
   }
 
@@ -118,14 +122,11 @@ export class TrainService {
 
   //TODO: this function uploads the cohort selection before training based on dropdown
   uploadCohort() {
-    console.log("this.cohort");
-    console.log(this.cohort);
     this.http
       .post(`http://localhost:8000/uploadCohort/`, {
         data: this.cohort,
       })
       .subscribe((data) => {
-        console.log('data', data);
         this.cohortUniqueId = String(data);
         // to prevent the graphs from overlapping when the user trains the model multiple times, the variable are resetted
         for (let i = 0; i < this.list_of_charts.length; i++) {

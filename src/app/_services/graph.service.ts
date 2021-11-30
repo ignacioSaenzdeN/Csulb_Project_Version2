@@ -16,7 +16,6 @@ export class GraphService {
   ngOnInit() {}
 
   public displayGraph(data, isTraining) {
-    console.log("im here?")
     // this.description_temp = [];
     for (i = 0; i < this.list_of_charts.length; i++) {
       this.list_of_charts[i].destroy();
