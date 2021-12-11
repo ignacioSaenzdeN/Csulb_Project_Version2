@@ -1,0 +1,103 @@
+<!-- The purpose of the html code is to display a form that retrieves the necessary
+data a user needs to input to train the model -->
+<div>
+  <h2>Cohort Train</h2>
+  <form [formGroup]="trainForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label>Select a file to train: </label>
+      <select
+        formControlName="fileDropdown"
+        class="form-control"
+        [(ngModel)]="trainService.file.fileName"
+        (change)="trainService.getFile($event);"
+      >
+        <option hidden value="">- File -</option>
+        <option
+          [disabled]="upload_boolean"
+          *ngFor="let file of trainService.queriedFilesNames"
+        >
+          {{ file.fileName }}
+        </option>
+      </select>
+      <div *ngIf="trainService.file.fileName">
+        <p>File last uploaded on: <b>{{ trainService.file.pubDate }}</b></p>
+      </div>
+      <div *ngIf="submitted && f.studentTypeF.errors" class="invalid-feedback">
+        <div *ngIf="f.studentTypeF.errors.required">A file is required</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <select
+        *ngIf="trainService.file.fileName"
+        formControlName="academicType"
+        class="form-control"
+        (change)="trainService.getCohortHeadcount($event)"
+        [(ngModel)]="trainService.cohort.academicType"
+      >
+        <option selected [disabled]="true" value="">- Academic Type -</option>
+        <option
+          [disabled]="train_wait"
+          *ngFor="let type of trainService.academicTypesLabels"
+        >
+          {{ type }}
+        </option>
+      </select>
+      <div *ngIf="submitted && f.yearTermF.errors" class="invalid-feedback">
+        <div *ngIf="f.yearTermF.errors.required">Academic Type is required</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <button
+        style="margin:5px;"
+        *ngIf="trainService.cohort.academicType"
+        [disabled]="train_wait"
+        class="btn btn-primary"
+      >
+        <span
+          *ngIf="loading"
+          class="spinner-border spinner-border-sm mr-1"
+        ></span>
+        Train
+      </button>
+      <button *ngIf="trainService.showTrain" class="btn btn-primary">
+        Save
+      </button>
+    </div>
+    <div *ngIf="trainService.showTrain">
+      <p style="font-size: 1.2vw">
+        Headcount/ Number of Students: {{ trainService.cohort.numOfStudents }}
+      </p>
+    </div>
+     <div class="canvas-container">
+       <canvas class="cv" id="canvas4"></canvas>
+     </div>
+  </form>
+</div>
+
+<!-- The following code can be converted into its own component but it was chosen
+to be included as part of this component as it was a small addition.
+Once the data is upload the following html code will allow for the model to be trained
+using the previously updated data -->
+
+<!-- <div>
+  <button
+    class="btn btn-primary"
+    [disabled]="this.train_wait === true"
+    (click)="trainService.train()"
+  >
+    Train</button
+  >&nbsp;
+  <button class="btn btn-primary" (click)="accepted()">Accept</button>
+  <div *ngIf="this.accepted_bool === true">
+    <p>The information has been stored</p>
+  </div>
+  <br />
+  &nbsp; &emsp; &emsp; &emsp;
+  <p style="font-size: 1.2vw">
+    Headcount/ Number of Students: {{ trainService.cohort.numOfStudents }}
+  </p>
+  <div class="canvas-container">
+    <canvas class="cv" id="canvas1"></canvas>
+    <canvas class="cv" id="canvas2"></canvas>
+  </div>
+</div> -->

@@ -10,8 +10,9 @@
         <a class="nav-item nav-link" routerLink="/home" >Home</a>
         <a class="nav-item nav-link" routerLink="/charts">Cohort Charts</a>
         <a class="nav-item nav-link" routerLink="/snapshot-chart">Snapshot Charts</a>
-        <a class="nav-item nav-link" routerLink="/register" *ngIf="this.authenticationService.isProvider">Invite user</a>
-        <a class="nav-item nav-link" routerLink="/uploadView" *ngIf="this.authenticationService.isProvider">Upload data</a>
+        <a class="nav-item nav-link" routerLink="/register" *ngIf="this.authenticationService.isProvider">Invite User</a>
+        <a class="nav-item nav-link" routerLink="/uploadView" *ngIf="this.authenticationService.isProvider">Upload Data</a>
+        <a class="nav-item nav-link" routerLink="/train" *ngIf="this.authenticationService.isProvider">Cohort Train</a>
         <a class="nav-item nav-link" routerLink="/profile">Profile</a>
         <a class="nav-item nav-link" routerLink="/login"(click)="logout()">Logout</a>
     </div>

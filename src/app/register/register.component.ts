@@ -26,11 +26,11 @@ export class RegisterComponent implements OnInit {
     }
 
     ngOnInit() {
-      if (this.authenticationService.currentUserValue&& this.authenticationService.isProvider &&this.authenticationService.isTokenValid()) {
-          this.router.navigate(['/register']);
-      }else{
-          this.router.navigate(['/']);
-      }
+      // if (this.authenticationService.currentUserValue&& this.authenticationService.isProvider &&this.authenticationService.isTokenValid()) {
+      //     this.router.navigate(['/register']);
+      // }else{
+      //     this.router.navigate(['/']);
+      // }
         this.registerForm = this.formBuilder.group({
             // firstName: ['', Validators.required],
             // lastName: ['', Validators.required],

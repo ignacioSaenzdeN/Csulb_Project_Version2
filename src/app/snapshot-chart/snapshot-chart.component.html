@@ -1,43 +1,125 @@
 <div>
-  <h2>Charts (Snapshot)</h2>
+  <h2>Snapshot Charts</h2>
 </div>
-  <form [formGroup]="queryGraphs">
-    <div  >
-      <!-- *ngIf="hideSelectCohort" -->
-      <div class="numberCircle">1</div><label>Select a snapshot: </label>
-      <div class="form-group">
-        <select [disabled]="cohortYearSelected" formControlName="academicLabel"
-          class="form-control" (change)="getAcademicType($event)" [(ngModel)]="academicLabelSelected">
-          <option selected [disabled]="true" value="">- Academic label -</option>
-          <option *ngFor="let label of academicLabel">{{label}}
-          </option>
-        </select>
-      </div>
-        <div class="form-group" id="scrollToView">
-          <!-- <label *ngIf="cohortYearSelected" for="departmentName">Academic type</label> -->
-          <select *ngIf="academicLabelSelected" [disabled]="academicLabelSelected" formControlName="academicType"
-            class="form-control" [(ngModel)]="academicTypeSelected">
-            <option selected [disabled]="true" value="">- Select academic type -</option>
-            <option *ngFor="let academic of academicType">{{academic}}
-            </option>
-          </select>
-        </div>
-        <div class="form-group">
-          <button *ngIf="academicTypeSelected"  (click)="getGraphArr(userInput)"
-            [disabled]="loading" class="btn btn-primary" >
-            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
-            Get charts
-          </button>
-        </div>
+<form [formGroup]="queryGraphs">
+  <div>
+    <!-- *ngIf="hideSelectCohort" -->
+    <div class="numberCircle">1</div>
+    <label>Select a snapshot: </label>
+    <div class="form-group">
+      <select
+        [disabled]="cohortYearSelected"
+        formControlName="academicLabel"
+        class="form-control"
+        (change)="getAcademicType($event); hideInputsAndChart($event)"
+        [(ngModel)]="academicLabelSelected"
+      >
+        <option selected [disabled]="true" value="">- Academic label -</option>
+        <option *ngFor="let label of academicLabel">{{ label }}</option>
+      </select>
     </div>
-  </form>
+    <div class="form-group" id="scrollToView">
+      <!-- <label *ngIf="cohortYearSelected" for="departmentName">Academic type</label> -->
+      <select
+        *ngIf="academicLabelSelected"
+        [disabled]="academicLabelSelected"
+        formControlName="academicType"
+        class="form-control"
+        (change)="hideInputsAndChart($event)"
+        [(ngModel)]="this.snapshotService.academicTypeSelected"
+      >
+        <option selected [disabled]="true" value="">
+          - Select academic type -
+        </option>
+        <option *ngFor="let academic of academicType">{{ academic }}</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <button
+        *ngIf="this.snapshotService.academicTypeSelected"
+        (click)="
+        this.snapshotService.getGraphArr(userInput)
+        "
+        [disabled]="loading"
+        class="btn btn-primary"
+      >
+        <span
+          *ngIf="loading"
+          class="spinner-border spinner-border-sm mr-1"
+        ></span>
+        Get charts
+      </button>
+    </div>
+    
+    <div *ngIf="showEditPredictCohort">
+      <div class="numberCircle">2</div>
+      <label>Manipulate predicted cohorts: </label>
 
-  <div class="canvas-container">
-    <canvas class="cv" id="canvas1"> </canvas>
-    <canvas class="cv" id="canvas2"></canvas>
-   </div>
-   <br>
-   <div class="canvas-container">
-     <canvas class="cv" id="canvas3"></canvas>
-     <canvas class="cv" id="canvas4"></canvas>
-   </div>
+      <!-- TODO: make sure to output warning message -->
+
+  
+      <div
+        *ngFor="
+          let prediction of snapshotService.predictedAvgData;
+          let i = index
+        "
+      > 
+      <br />
+      <label for="">Number of Students:</label>
+        <ng5-slider
+          [(value)]="snapshotService.predictedAvgData[i].n"
+          [options]="options"
+          (input)="onUpdateSlider($event)"
+        ></ng5-slider>
+        <br />
+        <label for="">Greek Letters:</label>
+        <div class="input-group col-sm-12">
+      
+          <label>σ:&nbsp;</label>
+          <input
+            [ngModelOptions]="{ standalone: true }"
+            [(value)]="snapshotService.predictedAvgData[i].sigma"
+            type="text"
+            style="width: 9%"
+            placeholder="0"
+            [(ngModel)]="snapshotService.predictedAvgData[i].sigma"
+          />
+          <label>&nbsp;&nbsp;&nbsp;α:&nbsp;</label>
+          <input
+            [ngModelOptions]="{ standalone: true }"
+            [(value)]="snapshotService.predictedAvgData[i].alpha"
+            type="text"
+            style="width: 9%"
+            placeholder="0"
+            [(ngModel)]="snapshotService.predictedAvgData[i].alpha"
+          />
+          <label>&nbsp;&nbsp;&nbsp;β:&nbsp;</label>
+          <input
+            [ngModelOptions]="{ standalone: true }"
+            [(value)]="snapshotService.predictedAvgData[i].beta"
+            type="text"
+            style="width: 9%"
+            placeholder="0"
+            [(ngModel)]="snapshotService.predictedAvgData[i].beta"
+          />
+        </div>
+      </div>
+      <br />
+      <button (click)="snapshotService.getModifiedSnapshotData()" class="btn btn-primary">
+        Edit cohort
+      </button>
+    </div>
+    <br />
+    
+  </div>
+</form>
+
+<div class="canvas-container">
+  <canvas class="cv" id="canvas1"> </canvas>
+  <canvas class="cv" id="canvas2"></canvas>
+</div>
+<br />
+<div class="canvas-container">
+  <canvas class="cv" id="canvas3"></canvas>
+  <canvas class="cv" id="canvas4"></canvas>
+</div>

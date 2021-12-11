@@ -28,6 +28,7 @@ import { AccountResetValidateComponent } from './account-reset/account-reset-val
 //FormsModule for dropdown in data submission
 import { FormsModule } from '@angular/forms';
 import { SnapshotChartComponent } from './snapshot-chart/snapshot-chart.component';
+import { TrainComponent } from './train/train.component';
 
 
 
@@ -56,6 +57,7 @@ import { SnapshotChartComponent } from './snapshot-chart/snapshot-chart.componen
         AccountResetComponent,
         AccountResetValidateComponent,
         SnapshotChartComponent,
+        TrainComponent,
     ],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
