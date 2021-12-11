@@ -163,7 +163,6 @@ export class SnapshotChartComponent implements OnInit {
         `http://localhost:8000/getAcademicLabelFromYearAll/${this.snapshotYear}/`
       )
       .subscribe((data) => {
-        console.log(data);
         var temp = [];
         for (var index in data) {
           for (var labelAndType of data[index]) {

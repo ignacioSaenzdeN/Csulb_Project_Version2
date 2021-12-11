@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { AuthenticationService } from "../_services";
 import { GraphService } from "./graph.service";
 
@@ -14,7 +14,7 @@ export class SnapshotService {
   
     academicLabelSelected:string = "";
     academicTypeSelected:string = "";
-    
+    modifiedXValues: [][];
 
     dummy = 1;
 
@@ -74,7 +74,7 @@ export class SnapshotService {
               sigma: data[3].sigma,
               beta: data[3].beta,
               alpha: data[3].alpha,
-              n: data[3].numberOfStudents,
+              n: data[3 ].numberOfStudents,
             },
           ];
           });
@@ -99,6 +99,14 @@ export class SnapshotService {
           // this.hideSelectCohort = false;
           //Shows slider and greek leeters fields
         });
+    }
+
+    private getModifiedSnapshotData(){
+      var predictedAvgDataStr = JSON.stringify(this.predictedAvgData)
+      let params = new HttpParams().set("cohortValue", predictedAvgDataStr)
+      this.http.get('http://localhost:8000/getModifiedSnapshotData/', {params}) .subscribe((data) => {
+        this.graphService.displayGraph(data, false);
+      });
     }
   
    
