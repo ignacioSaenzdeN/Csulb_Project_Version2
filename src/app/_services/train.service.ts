@@ -116,7 +116,7 @@ export class TrainService {
           this.list_of_charts[i].destroy();
         }
         this.list_of_charts = [];
-        this.graphService.displayGraph(data, true);
+        this.graphService.displayGraph(data, true, false);
       });
   }
 
@@ -133,7 +133,7 @@ export class TrainService {
           this.list_of_charts[i].destroy();
         }
         this.list_of_charts = [];
-        this.graphService.displayGraph(data, true);
+        this.graphService.displayGraph(data, true, false);
         // this.train_wait = false;
         this.train();
       });

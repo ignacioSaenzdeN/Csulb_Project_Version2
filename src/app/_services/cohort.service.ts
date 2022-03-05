@@ -18,8 +18,6 @@ export class CohortService {
     constructor( private http: HttpClient, private formBuilder: FormBuilder,) {
     }
 
-    ngOnInit(){
-    }
 
     createForm() {
         this.queryGraphs = this.formBuilder.group({
