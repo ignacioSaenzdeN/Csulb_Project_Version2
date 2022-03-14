@@ -112,6 +112,7 @@ export class UploadService {
       const page1_sheet: XLSX.WorkSheet = file.Sheets[page1];
       // Break down the structure of the data sheet for easier access
       this.csvData = XLSX.utils.sheet_to_json(page1_sheet, { header: 1 });
+      console.log(this.csvData)
       // Populate array of academic labels for training
       this.academicLabels.push(this.csvData[1][2].slice(3));
       this.files.push(this.csvData);
@@ -119,7 +120,7 @@ export class UploadService {
     };
     // after this function is called, onload is activated.
     this.reader.readAsBinaryString(event[0]);
-    console.log(this.filesNames.length);
+    // console.log(this.filesNames.length);
   }
   
   formatFileName(fileName) {
