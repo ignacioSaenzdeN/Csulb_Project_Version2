@@ -1,116 +1,157 @@
 <div>
   <h2>Snapshot Charts</h2>
 </div>
-<form [formGroup]="queryGraphs">
+<form [formGroup]="snapshotService.queryGraphs">
   <div>
     <!-- *ngIf="hideSelectCohort" -->
     <div class="numberCircle">1</div>
     <label>Select a snapshot: </label>
     <div class="form-group">
       <select
-        [disabled]="cohortYearSelected"
         formControlName="academicLabel"
         class="form-control"
-        (change)="getAcademicType($event); hideInputsAndChart($event)"
-        [(ngModel)]="academicLabelSelected"
+        (change)="snapshotService.getAcademicType($event); hideInputsAndChart($event)"
+        [(ngModel)]="snapshotService.academicLabelSelected"
       >
         <option selected [disabled]="true" value="">- Academic label -</option>
-        <option *ngFor="let label of academicLabel">{{ label }}</option>
+        <option *ngFor="let label of snapshotService.academicLabel">{{ label }}</option>
       </select>
     </div>
     <div class="form-group" id="scrollToView">
       <!-- <label *ngIf="cohortYearSelected" for="departmentName">Academic type</label> -->
       <select
-        *ngIf="academicLabelSelected"
-        [disabled]="academicLabelSelected"
+        *ngIf="snapshotService.academicLabelSelected"
+        [disabled]="snapshotService.academicLabelSelected"
         formControlName="academicType"
         class="form-control"
         (change)="hideInputsAndChart($event)"
-        [(ngModel)]="this.snapshotService.academicTypeSelected"
+        [(ngModel)]="snapshotService.academicTypeSelected"
       >
         <option selected [disabled]="true" value="">
           - Select academic type -
         </option>
-        <option *ngFor="let academic of academicType">{{ academic }}</option>
+        <option *ngFor="let academic of snapshotService.academicType">{{ academic }}</option>
       </select>
     </div>
     <div class="form-group">
       <button
-        *ngIf="this.snapshotService.academicTypeSelected"
+        *ngIf="snapshotService.academicTypeSelected"
         (click)="
-        this.snapshotService.getGraphArr(userInput)
+          snapshotService.getGraphArr('FRESHMEN');
+          hideInputsAndChart()
         "
-        [disabled]="loading"
+        [disabled]="false"
         class="btn btn-primary"
       >
         <span
-          *ngIf="loading"
+          *ngIf="false"
           class="spinner-border spinner-border-sm mr-1"
         ></span>
         Get charts
       </button>
     </div>
-    
-    <div *ngIf="showEditPredictCohort">
+
+    <div *ngIf="snapshotService.showEditPredictCohort">
       <div class="numberCircle">2</div>
       <label>Manipulate predicted cohorts: </label>
 
       <!-- TODO: make sure to output warning message -->
-
-  
+      <br />
+      <br />
+      <label>Student type:</label>&nbsp;
+      <br />
+      <p class="btn-switch">
+        <input
+          (change)="snapshotService.getGraphArr($event.target.value, 'False')"
+          checked="checked"
+          type="radio"
+          id="transfer"
+          name="switch"
+          class="btn-switch__radio btn-switch__radio_yes"
+          value="TRANSFER"
+        />
+        <input
+          (change)="snapshotService.getGraphArr($event.target.value, 'False')"
+          type="radio"
+          checked
+          id="freshmen"
+          name="switch"
+          class="btn-switch__radio btn-switch__radio_no"
+          value="FRESHMEN"
+        />
+        <label for="transfer" class="btn-switch__label btn-switch__label_yes"
+          ><span class="btn-switch__txt">Transfer</span></label
+        >
+        <label for="freshmen" class="btn-switch__label btn-switch__label_no"
+          ><span class="btn-switch__txt">Freshmen</span></label
+        >
+      </p>
+      <!-- <div>
+        <input type="checkbox"  [(ngModel)]="showTotalEnrollment"/> Show Total Enrollment
+      </div> -->
+      <br />
+      <label>Predicted semesters:</label>&nbsp;
       <div
         *ngFor="
           let prediction of snapshotService.predictedAvgData;
           let i = index
         "
-      > 
-      <br />
-      <label for="">Number of Students:</label>
-        <ng5-slider
-          [(value)]="snapshotService.predictedAvgData[i].n"
-          [options]="options"
-          (input)="onUpdateSlider($event)"
-        ></ng5-slider>
-        <br />
-        <label for="">Greek Letters:</label>
-        <div class="input-group col-sm-12">
-      
-          <label>σ:&nbsp;</label>
-          <input
-            [ngModelOptions]="{ standalone: true }"
-            [(value)]="snapshotService.predictedAvgData[i].sigma"
-            type="text"
-            style="width: 9%"
-            placeholder="0"
-            [(ngModel)]="snapshotService.predictedAvgData[i].sigma"
-          />
-          <label>&nbsp;&nbsp;&nbsp;α:&nbsp;</label>
-          <input
-            [ngModelOptions]="{ standalone: true }"
-            [(value)]="snapshotService.predictedAvgData[i].alpha"
-            type="text"
-            style="width: 9%"
-            placeholder="0"
-            [(ngModel)]="snapshotService.predictedAvgData[i].alpha"
-          />
-          <label>&nbsp;&nbsp;&nbsp;β:&nbsp;</label>
-          <input
-            [ngModelOptions]="{ standalone: true }"
-            [(value)]="snapshotService.predictedAvgData[i].beta"
-            type="text"
-            style="width: 9%"
-            placeholder="0"
-            [(ngModel)]="snapshotService.predictedAvgData[i].beta"
-          />
-        </div>
+      >
+        <section>
+          <article>
+            <details>
+              <summary>{{ snapshotService.availableTermsToEdit[i] }}</summary>
+              <label for="">Number of Students:</label>
+              <ng5-slider
+                [(value)]="snapshotService.predictedAvgData[i].n"
+                [options]="options"
+                getGraphArr
+              ></ng5-slider>
+              <br />
+              <label for="">Greek Letters:</label>
+              <div class="input-group col-sm-12">
+                <label>σ:&nbsp;</label>
+                <input
+                  [ngModelOptions]="{ standalone: true }"
+                  [(value)]="snapshotService.predictedAvgData[i].sigma"
+                  type="text"
+                  style="width: 9%"
+                  placeholder="0"
+                  [(ngModel)]="snapshotService.predictedAvgData[i].sigma"
+                />
+                <label>&nbsp;&nbsp;&nbsp;α:&nbsp;</label>
+                <input
+                  [ngModelOptions]="{ standalone: true }"
+                  [(value)]="snapshotService.predictedAvgData[i].alpha"
+                  type="text"
+                  style="width: 9%"
+                  placeholder="0"
+                  [(ngModel)]="snapshotService.predictedAvgData[i].alpha"
+                />
+                <label>&nbsp;&nbsp;&nbsp;β:&nbsp;</label>
+                <input
+                  [ngModelOptions]="{ standalone: true }"
+                  [(value)]="snapshotService.predictedAvgData[i].beta"
+                  type="text"
+                  style="width: 9%"
+                  placeholder="0"
+                  [(ngModel)]="snapshotService.predictedAvgData[i].beta"
+                />
+              </div>
+            </details>
+          </article>
+        </section>
       </div>
       <br />
-      <button (click)="snapshotService.getModifiedSnapshotData()" class="btn btn-primary">
+      <button
+        (click)="snapshotService.getModifiedSnapshotData()"
+        class="btn btn-primary"
+      >
         Edit cohort
       </button>
     </div>
+
     <br />
-    
   </div>
 </form>
 

@@ -30,6 +30,7 @@ import { FormsModule } from '@angular/forms';
 import { SnapshotChartComponent } from './snapshot-chart/snapshot-chart.component';
 import { TrainComponent } from './train/train.component';
 
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 @NgModule({
@@ -43,6 +44,7 @@ import { TrainComponent } from './train/train.component';
         FormsModule,
         NgProgressModule,
         NgProgressHttpModule,
+        NgbModule,
     ],
     declarations: [
         AppComponent,
